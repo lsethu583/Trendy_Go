@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>RegistrationForm</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- MATERIAL DESIGN ICONIC FONT -->
+		<link rel="stylesheet" href="reg-form/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+
+		<!-- STYLE CSS -->
+		<link rel="stylesheet" href="reg-form/css/style.css">
+	</head>
+
+	<body>
+
+		<div class="wrapper" style="background-image: url('reg-form/images/bg-registration-form-1.jpg');">
+			<div class="inner">
+				<div class="image-holder">
+					<img src="reg-form/images/registration-form-1.jpg" alt="">
+				</div>
+				<form action="/register" method="post" id="registrationForm" onsubmit="">
+					<h3>Registration Form</h3>
+					<div class="form-group">
+						<input type="text" placeholder="First Name" class="form-control" name="firstName" id="firstName">
+
+						<input type="text" name="lastName" placeholder="Last Name" class="form-control"  id="lastName">
+					</div>
+					<div class="form-wrapper">
+						<input type="text" name="phoneNumber" placeholder="Phone number" class="form-control" id="phoneNumber">
+						<i class="zmdi zmdi-account"></i>
+					</div>
+					<div class="form-wrapper">
+						<input type="text" name="email" placeholder="Email Address" class="form-control"id="email">
+						<i class="zmdi zmdi-email"></i>
+					</div>
+					<div class="form-wrapper">
+						<select name="" id="gender" class="form-control">
+							<option value="" disabled selected>Gender</option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="other">Other</option>
+						</select>
+						<i class="zmdi zmdi-caret-down" style="font-size: 17px"></i>
+					</div>
+					<div class="form-wrapper">
+						<input type="password" name="password" placeholder="Password" class="form-control" id="password">
+						<i class="zmdi zmdi-lock"></i>
+					</div>
+					<div class="form-wrapper">
+						<input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-control"  id="confirmPassword">
+						<i class="zmdi zmdi-lock"></i>
+					</div>
+					<button type="submit">Register
+						<i class="zmdi zmdi-arrow-right"></i>
+					</button>
+				</form>
+			</div>
+		</div>
+		<script>
+			function validateForm() {
+				var firstName = document.getElementById('firstName').value.trim();
+				var lastName = document.getElementById('lastName').value.trim();
+				var phoneNumber = document.getElementById('phoneNumber').value.trim();
+				var email = document.getElementById('email').value.trim();
+				var gender = document.getElementById('gender').value;
+				var password = document.getElementById('password').value.trim();
+				var confirmPassword = document.getElementById('confirmPassword').value.trim();
+	
+				// Validation for First Name
+				if (!/^[A-Za-z]{2,}$/.test(firstName)) {
+					alert('Invalid First Name');
+					return false;
+				}
+	
+				// Validation for Last Name
+				if (!/^[A-Za-z]{1,}$/.test(lastName)) {
+					alert('Invalid Last Name');
+					return false;
+				}
+	
+				// Validation for Phone Number
+				if (!/^\d{10}$/.test(phoneNumber)) {
+					alert('Invalid Phone Number');
+					return false;
+				}
+	
+				// Validation for Email
+				if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+					alert('Invalid Email Address');
+					return false;
+				}
+	
+				// Validation for Gender
+				if (!gender) {
+					alert('Please select a gender');
+					return false;
+				}
+	
+				//Validation for Password
+				if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)) {
+					alert('Invalid Password');
+					return false;
+				}
+	
+				//Validation for Confirm Password
+				if (password !== confirmPassword) {
+					alert('Passwords do not match');
+					return false;
+				}
+	
+				// If all validations pass, you can submit the form
+				return true;
+			}
+		</script>
+	</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
+	
+
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url('images/bg-registration-form-1.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrapper {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .form-group,
+        .form-wrapper {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<!-- <body>
+
+    <div class="wrapper">
+        <form action="/otp" method="post" id="otpForm" onsubmit="return validateOTP()">
+            <h3>OTP Verification</h3>
+            <div class="form-group">
+                <input type="text" name="otp" placeholder="Enter OTP" class="form-control" id="otp">
+            </div>
+            <button type="submit">Submit
+                <i class="zmdi zmdi-arrow-right"></i>
+            </button>
+            
+            <div class="form-group">
+                <button type="button" onclick="resendOTP()">Resend OTP</button>
+              </div>
+        </form>
+    </div>
+    <script>
+        async function resendOTP() {
+            try {
+                const response = await fetch('/resend-otp', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+    
+                if (response.ok) {
+                    // Request was successful
+                    alert("OTP Resent!");
+                } else {
+                    // Handle errors
+                    alert("Failed to resend OTP");
+                }
+            } catch (error) {
+                console.error("Error resending OTP:", error);
+            }
+        }
+    </script>
+    
+    
+
+</body> -->
+<body>
+
+    <div class="wrapper">
+        <form action="/otp" method="post" id="otpForm" onsubmit="return validateOTP()">
+            <h3>OTP Verification</h3>
+            <div class="form-group">
+                <input type="text" name="otp" placeholder="Enter OTP" class="form-control" id="otp">
+            </div>
+            <button type="submit">Submit
+                <i class="zmdi zmdi-arrow-right"></i>
+            </button>
+            
+            <div class="form-group">
+                <button type="button" id="resendBtn" onclick="resendOTP()">Resend OTP</button>
+                <span id="otpTimer"></span>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const timerElement = document.getElementById('otpTimer');
+        let duration = 60; // Duration in seconds
+
+        function startOTPTimer() {
+            const timerInterval = setInterval(function () {
+                timerElement.innerText = `Resend in ${duration}s`;
+
+                if (duration <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.innerText = '';
+                    document.getElementById('resendBtn').disabled = false;
+                }
+
+                duration--;
+            }, 1000);
+        }
+
+        async function resendOTP() {
+            try {
+                const response = await fetch('/resend-otp', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    // Request was successful
+                    alert("OTP Resent!");
+                    
+                    // Start the timer again after OTP is resent
+                    duration = 60;
+                    startOTPTimer();
+                } else {
+                    // Handle errors
+                    alert("Failed to resend OTP");
+                }
+            } catch (error) {
+                console.error("Error resending OTP:", error);
+            }
+        }
+
+        // Call startOTPTimer when the page loads or when the OTP is initially sent
+        startOTPTimer();
+    </script>
+
+</body>
+
+
+</html>

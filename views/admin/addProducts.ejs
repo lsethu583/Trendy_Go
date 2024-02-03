@@ -1,0 +1,341 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<form action="/admin/addProducts" method="post" enctype="multipart/form-data" id="product-form" onsubmit="return validationChecking()">
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-12">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+                    
+                    <div>
+                        
+                             <!-- <button>
+                                class="btn btn-light rounded font-sm mr-5 text-body hover-up">Cancel</button> -->
+                                <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Upload">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="product_title" class="form-label">Product title</label>
+                            <input type="text" placeholder="Type here..." name="productName" class="form-control"
+                                id="product_title">
+                                
+                            <div class="error-message" style="color: red;" id="product_title-error"></div>
+
+                        </div>
+                        
+                            <div class="col-md-6  mb-3">
+                                <label for="inputPassword4" class="form-label">category</label>
+                                <select name="productCategory" class="form-control" id="product_category">
+                                    <option value="" disabled selected>Select a Category
+                                    </option>
+                                    <% category.forEach(category=> { 
+                                        
+                                        if (category.is_Listed) {
+                                            %>
+                                          
+                                          <option value="<%= category._id %>">
+                                              <%= category.categoryName %>
+                                          </option>
+
+                                          <%
+                                        }
+                                     }); %>
+
+
+                                  
+                                </select>
+                            
+                                <div class="error-message" style="color: red;" id="product_category-error"></div>
+                            </div>
+
+
+
+                        </div>
+
+
+                    </div>
+                </div> <!-- card end// -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row gx-3">
+                    <div class="col-md-4">
+                        <label for="inputPrice" class="form-label">Price</label>
+                        <input type="text" class="form-control" name="price" placeholder="Type here..." id="product_price">
+                        <div class="error-message" style="color: red;" id="product_price-error"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="discount_price">Discount Price:</label>
+                        <input type="text" name="discount_price" placeholder="Type here..." class="form-control" id="discount_price">
+                        <div class="error-message" style="color: red;" id="discount_price-error"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+             
+                                                
+        <div class="col-md-4">
+            <label for="inputPrice" class="form-label">Size and Quantity</label>
+            <div class="size-container" id="size-container">
+                <div class="error-message" style="color: red;" id="sizes-error"></div>
+        
+                <!-- Sizes input rows (initial sizes: S, M, L) -->
+                <div class="row my-1">
+                    <div class="col-4">
+                        <label for="size-s">Size (S):</label>
+                        <input type="number" name="S" placeholder="Quantity" class="form-control" id="size-s">
+                        <div class="error-message" style="color: red;" id="size-s-error"></div>
+                    </div>
+                    <div class="col-4">
+                        <label for="size-m">Size (M):</label>
+                        <input type="number" name="M" placeholder="Quantity" class="form-control" id="size-m">
+                        <div class="error-message" style="color: red;" id="size-m-error"></div>
+                    </div>
+                    <div class="col-4">
+                        <label for="size-l">Size (L):</label>
+                        <input type="number" name="L" placeholder="Quantity" class="form-control" id="size-l">
+                        <div class="error-message" style="color: red;" id="size-l-error"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                                                    
+                                                
+                  
+                       
+
+
+
+
+               <div>
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here..." name="description" class="form-control"
+                                rows="4" id="description"></textarea>
+                            <div class="error-message" style="color: red;" id="description-error"></div>
+
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+
+            </div>
+     </div>
+ </div>
+</div>
+           
+
+            <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Picture</h4>
+                            </div>
+                            <div class="card-body">
+                                
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        
+                                        <div class="images-container">
+                                            <div class="image-preview-container d-flex flex-wrap justify-content-center">
+                                                <!-- Placeholder for default image -->
+                                                <div class="image-container border-1">
+                                                    <img style="width: 100px; height: 100px; margin-bottom: 20px;" src="/uploads.svg" alt="Default" class="image-preview">
+                                                </div>
+                                            </div>
+                                            <input class="form-control" name="image"  multiple="multiple" type="file" onchange="displayImages(this)">
+                                            <div class="error-message" style="color: red;" id="product_image-error"></div>
+                                        </div>
+                                        
+                                        <script>
+                                            function displayImages(input) {
+                                                const previewContainer = document.querySelector('.image-preview-container');
+                                                previewContainer.innerHTML = ''; // Clear previous previews
+                                        
+                                                if (input.files && input.files.length > 0) {
+                                                    for (let i = 0; i < input.files.length; i++) {
+                                                        const reader = new FileReader();
+                                                        reader.onload = function (e) {
+                                                            const imagePreview = document.createElement('div');
+                                                            imagePreview.classList.add('image-container');
+                                                            const img = document.createElement('image');
+                                                            img.src = e.target.result;
+                                                            img.style.width = '100px';
+                                                            img.style.height = '100px';
+                                                            img.style.marginBottom = '20px';
+                                                            img.style.marginRight = '5px'; 
+                                                            img.style.marginLeft = '5px'; 
+                                                            img.classList.add('image-preview');
+                                                            imagePreview.appendChild(image);
+                                                            previewContainer.appendChild(imagePreview);
+                                                        };
+                                                        reader.readAsDataURL(input.files[i]);
+                                                    }
+                                                } else {
+                                                    const defaultImagePreview = document.createElement('div');
+                                                    defaultImagePreview.classList.add('image-container');
+                                                    const defaultImg = document.createElement('image');
+                                                    defaultImg.src = '/uploads.svg';
+                                                    defaultImg.style.width = '100px';
+                                                    defaultImg.style.height = '100px';
+                                                    defaultImg.style.marginBottom = '20px';
+                                                    defaultImg.style.marginRight = '5px'; 
+                                                    defaultImg.style.marginLeft = '5px'; 
+                                                    defaultImg.classList.add('image-preview');
+                                                    defaultImagePreview.appendChild(defaultImg);
+                                                    previewContainer.appendChild(defaultImagePreview);
+                                                }
+                                                
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                  
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+            <div id="invalid">
+                <% if (typeof message !=='undefined' && message) { %>
+                    <p style="color: rgb(8, 96, 0);" id="message">
+                        <%= message %>
+                    </p>
+                    <% } %>
+                    
+            </div>
+        </div> <!-- card end// -->
+        </div>
+
+        </div>
+    </section>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+function validationChecking() {
+    // Reset all error messages initially
+    resetErrorMessages();
+
+    const product_title = document.getElementById("product_title").value;
+    const description = document.getElementById("description").value;
+    const product_price = parseFloat(document.getElementById("product_price").value);
+    const discount_price = parseFloat(document.getElementById("discount_price").value);
+    const product_category = document.querySelector('select[name="category"]').value.trim();
+    const product_gender = document.querySelector('select[name="gender"]').value.trim();
+
+    // Validate product title
+    validateField(product_title, "product_title", "Please enter product name");
+
+    // Validate description
+    validateField(description, "description", "Please enter product description");
+
+    // Validate product price
+    validatePrice(product_price, "product_price", "Please enter a valid price");
+
+    // Validate discount price
+    validatePrice(discount_price, "discount_price", "Please enter a valid discount price");
+
+    // Validate category
+    validateField(product_category, "product_category", "Please enter product category");
+
+    // Validate gender
+    validateField(product_gender, "product_gender", "Please enter gender");
+
+    // Check if discount price is greater than price
+    if (discount_price > product_price) {
+        displayError("discount_price-error", 'Discount price cannot be greater than the actual price.');
+    }
+
+    // Validate sizes
+    for (let i = 1; i <= sizeCount; i++) {
+        const sizeInput = document.getElementById(`size${i}`).value;
+        const stockInput = document.getElementById(`stock${i}`).value;
+
+        // Validate size
+        validateField(sizeInput, `size${i}`, "Please enter a valid size");
+
+        // Validate stock
+        validateStock(stockInput, `stock${i}`);
+    }
+
+    // Check if any validation errors
+    return !checkForErrors();
+}
+
+function validateField(value, elementId, errorMessage) {
+    const errorElement = document.getElementById(`${elementId}-error`);
+    errorElement.innerHTML = value.trim() === "" ? errorMessage : "";
+}
+
+function validatePrice(value, elementId, errorMessage) {
+    const errorElement = document.getElementById(`${elementId}-error`);
+    errorElement.innerHTML = isNaN(value) || value < 0 ? errorMessage : "";
+}
+
+function validateStock(value, elementId) {
+    const errorElement = document.getElementById(`${elementId}-error`);
+    errorElement.innerHTML = isNaN(value) || value < 0 ? "Please enter valid stock" : "";
+}
+
+function displayError(elementId, errorMessage) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.innerHTML = errorMessage;
+}
+
+function resetErrorMessages() {
+    // Reset all error messages
+    const errorElements = document.querySelectorAll('.error-message');
+    errorElements.forEach(element => {
+        element.innerHTML = '';
+    });
+}
+
+function checkForErrors() {
+    // Check if any error messages are present
+    const errorElements = document.querySelectorAll('.error-message');
+    for (const element of errorElements) {
+        if (element.innerHTML !== "") {
+            return true; // Errors found
+        }
+    }
+    return false; // No errors
+}
+
+
+</script>
+
+
+
+
+<%- include('../layouts/adminFooter.ejs') %>

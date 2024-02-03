@@ -1,0 +1,78 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<form action="/editCategory" method="post" enctype="multipart/form-data" onsubmit="return validationChecking()">
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Category</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <input type="hidden" name="category_id" value="<%= category ? category._id : '' %>">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="category_name" class="form-label">Category name</label>
+                            <input type="text" name="categoryName" placeholder="Type here" value="<%= category ? category.categoryName : '' %>" class="form-control" id="category_name">
+                            <div class="error-message" style="color: red;" id="category_name-error"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Full description</label>
+                            <textarea name="description" placeholder="Type here" class="form-control" rows="4" id="description"><%= category ? category.description : '' %></textarea>
+                            <div class="error-message" style="color: red;" id="description-error"></div>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Picture</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <div class="images-container">
+                                <div class="image-preview-container d-flex flex-wrap justify-content-center">
+                                    <!-- Placeholder for default image -->
+                                    <div class="image-container border-1">
+                                        <img style="width: 100px; height: 100px; margin-bottom: 20px;" src="/assetsb/uoloads/<%= category ? category.image : 'default.jpg' %>" alt="Default" class="image-preview" id="category_image_preview">
+                                    </div>
+                                </div>
+                                <input class="form-control" type="file" name="image" id="category_image">
+                            </div>
+                            <div class="error-message" style="color: red;" id="category_image-error"></div>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+                <div>
+                    <input type="submit" value="submit" class="btn btn-md rounded font-sm hover-up">
+                </div>
+                <div id="invalid">
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <p class="text-danger" id="message">
+                            <%= error %>
+                        </p>
+                    <% } %>
+                </div>
+            </div>
+            <div id="invalid">
+                <% if (typeof message !== 'undefined' && message) { %>
+                    <p style="color: rgb(8, 96, 0);" id="message">
+                        <%= message %>
+                    </p>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</form>
+
+<script>
+    // Add your JavaScript code for image preview and form validation here
+</script>
+
+<%- include('../layouts/adminFooter.ejs') %>
