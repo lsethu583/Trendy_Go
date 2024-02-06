@@ -3,10 +3,17 @@ const user_route=express()
 const userController=require("../controllers/userController")
 const {generateOTP,sendOTPEmail}=require("../controllers/userController");
 const auth=require('../middleware/auth')
+const session = require('express-session');
 
 
 user_route.set("view engine","ejs")
 user_route.set("views","./views")
+
+user_route.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+  }));
 
 user_route.get("/register",auth.isLogout,userController.loadRegister)
 user_route.post("/register",userController.insertUser)

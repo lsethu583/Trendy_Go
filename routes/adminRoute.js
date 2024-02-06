@@ -42,7 +42,7 @@ admin_route.use(session({
 admin_route.set('view engine', 'ejs');
 admin_route.set('views', './views/admin');
 
-// Example usage:
+
 admin_route.get('/dashboard', adminAuth.isLogin, adminController.loadDashboard);
 admin_route.get('/userDashboard', adminAuth.isLogin, adminController.loadUserDashboard);
 admin_route.get('/logout', adminAuth.isLogin, adminController.logout);

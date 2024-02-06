@@ -12,6 +12,9 @@
 		<link rel="stylesheet" href="reg-form/css/style.css">
 	</head>
 
+	
+	
+
 	<body>
 
 		<div class="wrapper" style="background-image: url('reg-form/images/bg-registration-form-1.jpg');">
@@ -19,36 +22,46 @@
 				<div class="image-holder">
 					<img src="reg-form/images/registration-form-1.jpg" alt="">
 				</div>
-				<form action="/register" method="post" id="registrationForm" onsubmit="">
+				<form action="/register" method="post" id="registrationForm" onsubmit="return validateForm()">
 					<h3>Registration Form</h3>
+                      <%if(locals.message){%>
+					 <div class="form-group">
+						<span style="color: red;"><%=message%></span>
+					 </div>
+					 <%}%>
 					<div class="form-group">
 						<input type="text" placeholder="First Name" class="form-control" name="firstName" id="firstName">
-
-						<input type="text" name="lastName" placeholder="Last Name" class="form-control"  id="lastName">
+						<div id="firstName-error" class="error-message"></div>
+						<input type="text" name="lastName" placeholder="Last Name" class="form-control" id="lastName">
+						<div id="lastName-error" class="error-message"></div>
 					</div>
 					<div class="form-wrapper">
 						<input type="text" name="phoneNumber" placeholder="Phone number" class="form-control" id="phoneNumber">
 						<i class="zmdi zmdi-account"></i>
+						<div id="phoneNumber-error" class="error-message"></div>
 					</div>
 					<div class="form-wrapper">
-						<input type="text" name="email" placeholder="Email Address" class="form-control"id="email">
+						<input type="text" name="email" placeholder="Email Address" class="form-control" id="email">
 						<i class="zmdi zmdi-email"></i>
+						<div id="email-error" class="error-message"></div>
 					</div>
 					<div class="form-wrapper">
-						<select name="" id="gender" class="form-control">
+						<select name="gender" id="gender" class="form-control">
 							<option value="" disabled selected>Gender</option>
 							<option value="male">Male</option>
 							<option value="female">Female</option>
 							<option value="other">Other</option>
 						</select>
 						<i class="zmdi zmdi-caret-down" style="font-size: 17px"></i>
+						<!-- <div id="gender-error" class="error-message"></div> -->
 					</div>
 					<div class="form-wrapper">
 						<input type="password" name="password" placeholder="Password" class="form-control" id="password">
 						<i class="zmdi zmdi-lock"></i>
+						<div id="password-error" class="error-message"></div>
 					</div>
 					<div class="form-wrapper">
-						<input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-control"  id="confirmPassword">
+						<input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-control" id="confirmPassword">
 						<i class="zmdi zmdi-lock"></i>
 					</div>
 					<button type="submit">Register
@@ -57,6 +70,7 @@
 				</form>
 			</div>
 		</div>
+	
 		<script>
 			function validateForm() {
 				var firstName = document.getElementById('firstName').value.trim();
@@ -66,55 +80,71 @@
 				var gender = document.getElementById('gender').value;
 				var password = document.getElementById('password').value.trim();
 				var confirmPassword = document.getElementById('confirmPassword').value.trim();
-	
-				// Validation for First Name
-				if (!/^[A-Za-z]{2,}$/.test(firstName)) {
-					alert('Invalid First Name');
+		
+				resetErrorMessages();
+		
+				// Client-side validation logic
+		
+				if (!firstName || !lastName || !phoneNumber || !email || !gender || !password || !confirmPassword) {
+					alert('Please fill in all fields');
 					return false;
 				}
-	
-				// Validation for Last Name
-				if (!/^[A-Za-z]{1,}$/.test(lastName)) {
-					alert('Invalid Last Name');
+		
+				if (!firstName) {
+					showError('firstName', 'Please enter your First Name');
 					return false;
 				}
-	
-				// Validation for Phone Number
-				if (!/^\d{10}$/.test(phoneNumber)) {
-					alert('Invalid Phone Number');
+		
+				if (!lastName) {
+					showError('lastName', 'Please enter your Last Name');
 					return false;
 				}
-	
-				// Validation for Email
-				if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-					alert('Invalid Email Address');
+		
+				if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+					showError('phoneNumber', 'Please enter a valid 10-digit Phone Number');
 					return false;
 				}
-	
-				// Validation for Gender
-				if (!gender) {
-					alert('Please select a gender');
+		
+				if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+					showError('email', 'Please enter a valid Email Address');
 					return false;
 				}
-	
-				//Validation for Password
-				if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)) {
-					alert('Invalid Password');
+				
+		
+				
+		
+				if (!password || !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)) {
+					showError('password', 'Password must be at least 8 characters and include at least one letter, one number, and one special character');
 					return false;
 				}
-	
-				//Validation for Confirm Password
+		
 				if (password !== confirmPassword) {
-					alert('Passwords do not match');
+					showError('confirmPassword', 'Passwords do not match');
 					return false;
 				}
-	
-				// If all validations pass, you can submit the form
-				return true;
+		
+				return true; // If all validations pass
+			}
+		
+			function showError(elementId, errorMessage) {
+				var errorElement = document.createElement('div');
+				errorElement.className = 'error-message';
+				errorElement.style.color = 'red';
+				errorElement.innerHTML = errorMessage;
+		
+				var inputElement = document.getElementById(elementId);
+				if (inputElement) {
+					inputElement.parentNode.insertBefore(errorElement, inputElement);
+				}
+			}
+		
+			function resetErrorMessages() {
+				var errorElements = document.getElementsByClassName('error-message');
+				for (var i = 0; i < errorElements.length; i++) {
+					errorElements[i].parentNode.removeChild(errorElements[i]);
+				}
 			}
 		</script>
-	</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
-
-	
-
+		
+	</body>
 </html>

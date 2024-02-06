@@ -232,37 +232,37 @@ const listUser = async (req, res) => {
         const id = req.query.id;
         const userValue = await User.findById(id);
 
-        if (userValue.isActive) {
+        if (userValue) {
+            // Toggle the isActive status
             await User.findByIdAndUpdate(
                 id,
                 {
                     $set: {
-                        isActive: false
+                        isActive: !userValue.isActive
                     }
                 },
                 { new: true }
             );
-        } else {
-            await User.findByIdAndUpdate(
-                id,
-                {
-                    $set: {
-                        isActive: true
-                    }
-                },
-                { new: true }
-            );
+
+            // if the user is blocked and destroy session
+            if (!userValue.isActive && req.session.user_id) {
+                delete req.session.user_id;
+            }
         }
 
-        if (req.session.user_id) {
-            delete req.session.user_id;
-        }
+        // Log statements for debugging
+        console.log('userValue:', userValue);
+        console.log('req.session.user_id:', req.session.user_id);
 
-        res.redirect('/admin/userDashboard');
+        // Redirect to the appropriate page
+        res.redirect(userValue && userValue.isActive ? '/admin/userDashboard' : '/login');
     } catch (error) {
         console.log(error.message);
+        // Handle the error appropriately, e.g., redirect to an error page
+        res.status(500).send('Internal Server Error');
     }
 };
+
 
 module.exports = {
     loadLogin,

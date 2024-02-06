@@ -198,7 +198,7 @@ const verifyOtp = async (req, res) => {
     res.redirect("/login")//loginpage
 
     } else {
-      res.status(401).send("Invalid OTP");
+      res.render("user/otp", { error: "Invalid OTP" });
     }
   } catch (error) {
     console.log(error.message);

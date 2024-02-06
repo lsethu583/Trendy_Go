@@ -105,6 +105,9 @@
             <h3>OTP Verification</h3>
             <div class="form-group">
                 <input type="text" name="otp" placeholder="Enter OTP" class="form-control" id="otp">
+                <% if (typeof error !== 'undefined') { %>
+                    <div style="color: red; margin-bottom: 10px;"><%= error %></div>
+                  <% } %>
             </div>
             <button type="submit">Submit
                 <i class="zmdi zmdi-arrow-right"></i>
