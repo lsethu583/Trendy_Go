@@ -1,9 +1,9 @@
 const express = require("express");
 const admin_route = express();
 const multer=require ("multer")
-const adminController = require('../controllers/adminController');
-const categoryController = require('../controllers/categoryController');
-const productController=require('../controllers/productController')
+const adminController = require('../controllers/adminController/adminController');
+const categoryController = require('../controllers/adminController/categoryController');
+const productController=require('../controllers/adminController/productController')
 const adminAuth = require('../middleware/adminAuth');
 
 //storage of images of category

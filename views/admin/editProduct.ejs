@@ -149,6 +149,13 @@ onsubmit="return validationChecking()">
                             <div class="error-message" style="color: red;" id="description-error"></div>
 
                         </div>
+                        <div>
+                            <label class="form-label">Full Description</label>
+                            <textarea placeholder="Type here" name="fullDescription"   class="form-control"
+                                rows="4"><%= product.fullDescription %></textarea>
+                            <div class="error-message" style="color: red;" id="fullDescription-error"></div>
+
+                        </div>
                     </div>
                 </div> 
 
@@ -311,6 +318,7 @@ imgView.src = URL.createObjectURL(event.target.files[0]);
 function validationChecking() {
     const product_title = document.getElementById("product_title").value;
     const description = document.getElementById("description").value;
+    const fullDescription = document.getElementById("fullDescription").value;
     const product_price = document.getElementById("product_price").value;
     const discount_price = document.getElementById("discount_price").value;
     const product_category = document.querySelector('select[name="category"]').value.trim();
@@ -340,6 +348,7 @@ stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFlo
 }
     const product_title_error = document.getElementById("product_title-error");
     const description_error = document.getElementById("description-error");
+    const fullDescription_error = document.getElementById("fullDescription-error");
     const product_price_error= document.getElementById("product_price-error");
     const product_category_error = document.getElementById("product_category-error");
     const product_brand_error = document.getElementById("product_brand-error");
@@ -348,6 +357,7 @@ stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFlo
 
     product_title_error.innerHTML = product_title.trim() === "" ? "Please enter product name" : "";
     description_error.innerHTML = description.trim() === "" ? "Please enter product description" : "";
+    description_error.innerHTML = fullDescription.trim() === "" ? "Please enter product fullDescription" : "";
     product_price_error.innerHTML = isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 0 ? "Please enter a valid price " : "";
     product_category_error.innerHTML = product_category.trim() === "" ? "Please enter product category" : "";
     product_brand_error.innerHTML = product_brand.trim() === "" ? "Please enter product brand" : "";
@@ -357,7 +367,7 @@ stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFlo
 
    
    
-    return !(product_title.trim() === "" || description.trim() === "" || product_price.trim() === ""|| discount_price.trim() === "" || product_category.trim() === "" || product_brand.trim() === "" || product_gender.trim() === ""); 
+    return !(product_title.trim() === "" || description.trim() === "" ||  fullDescription.trim() === "" || product_price.trim() === ""|| discount_price.trim() === "" || product_category.trim() === "" || product_brand.trim() === "" || product_gender.trim() === ""); 
    }
 
 

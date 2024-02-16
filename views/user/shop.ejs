@@ -1,4 +1,4 @@
-﻿<%-include ('../layouts/userHeader.ejs') %>
+<%-include ('../layouts/userHeader.ejs') %>
 
     <div class="mobile-header-active mobile-header-wrapper-style">
         <div class="mobile-header-wrapper-inner">
@@ -167,7 +167,7 @@
                     <div class="col-lg-9" >
                         <div class="position-relative">
                             <div class="hero-slider-1 style-3 dot-style-1 dot-style-1-position-1">
-                                <div class="single-hero-slider single-animation-wrap">
+                                <!-- <div class="single-hero-slider single-animation-wrap">
                                     <div class="container">
                                         <div class="slider-1-height-3 slider-animated-1">
                                             <div class="hero-slider-content-2">
@@ -198,7 +198,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="slider-arrow hero-slider-1-arrow style-3"></div>
                         </div>
@@ -209,7 +209,7 @@
         </section>
         <section class="featured section-padding">
             <div class="container">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
                         <div class="banner-features wow fadeIn animated hover-up animated">
                             <img src="assets/imgs/theme/icons/feature-1.png" alt="">
@@ -246,12 +246,12 @@
                             <h4 class="bg-6">24/7 Support</h4>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </section>
         <section class="product-tabs section-padding wow fadeIn animated">
             <div class="container">
-                <div class="tab-header">
+                <!-- <div class="tab-header">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="nav-tab-one" data-bs-toggle="tab" data-bs-target="#tab-one" type="button" role="tab" aria-controls="tab-one" aria-selected="true">Featured</button>
@@ -264,7 +264,7 @@
                         </li>
                     </ul>
                     <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
-                </div>
+                </div> -->
                 <!--End nav-tabs-->
 
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
@@ -301,11 +301,11 @@
                                             </span>
                                         </div>
                                         <div class="product-price">
-                                            <span>&#8377;<%= Product.discount_price %> </span>
-                                            <span class="old-price">&#8377;<%= Product.price %></span>
+                                            <span><%= Product.discount_price %> </span>
+                                            <span class="old-price"><%= Product.price %></span>
                                         </div>
                                         <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="/cart"><i class="fi-rs-shopping-bag-add"></i></a>
+                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -352,7 +352,7 @@
                                             <span class="old-price">$245.8</span>
                                         </div>
                                         <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="/cart"><i class="fi-rs-shopping-bag-add"></i></a>
+                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
                                         </div>
                                     </div>
                                 </div>

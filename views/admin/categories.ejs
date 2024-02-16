@@ -54,34 +54,34 @@
             <tbody>
               <%
               if (category.length > 0) {
-                category.forEach(Category => {
+                category.forEach(category => {
               %>
               <tr>
                
                 <td>
                   <div class="d-flex align-items-center">
                                 <img
-                                    src='/assetsb/uploads/<%= Category.image%>'
-                                    alt="<%= Category.image%>"
+                                    src='/assetsb/uploads/<%= category.image%>'
+                                    alt="<%= category.image%>"
                                     style="width: 45px; height: 45px"
                                     class="rounded-circle"
                                     />
                                 <div class="ms-3">
-                                  <p class="fw-bold mb-1"><%= Category.categoryName %></p>
-                                  <p class="text-muted mb-0">Every <%= Category.categoryName %> Products</p>
+                                  <p class="fw-bold mb-1"><%= category.categoryName %></p>
+                                  <p class="text-muted mb-0">Every <%= category.categoryName %> Products</p>
                                 </div>
                               </div>
                  
                 </td>
                 <td style="width: 400px;">
                     <div class="info align-items-center">
-                      <span><%= Category.description %></span>
+                      <span><%= category.description %></span>
                     </div>
                   </td>
                   
                 <td>
                   <div class="col-lg-2 col-sm-2 col-4 col-status">
-                    <% if (Category.is_Listed) { %>
+                    <% if (category.is_Listed) { %>
                       <span class="badge rounded-pill alert-success">listed</span>
                     <% } else { %>
                       <span class="badge rounded-pill alert-danger">unlisted</span>
@@ -89,16 +89,16 @@
                   </div>
                 </td>
                 <td>
-                  <% if (!Category.is_Listed) { %>
-                    <a  onclick="categoryUnblock('<%= Category._id %>')"  class="btn btn-sm font-sm rounded btn-brand">
+                  <% if (!category.is_Listed) { %>
+                    <a  onclick="categoryUnblock('<%= category._id %>')"  class="btn btn-sm font-sm rounded btn-brand">
                       <i class="material-icons md-edit"></i> List
                     </a>
                   <% } else { %>
-                    <a onclick="categoryBlock('<%= Category._id %>')"  class="btn btn-sm font-sm rounded btn-danger">
+                    <a onclick="categoryBlock('<%= category._id %>')"  class="btn btn-sm font-sm rounded btn-danger">
                       <i class="material-icons md-edit"></i> Unlist
                     </a>
                   <% } %>
-                  <a href="/admin/editCategory?id=<%= Category._id %>" class="btn btn-sm font-sm rounded btn-light">
+                  <a href="/admin/editCategory?id=<%= category._id %>" class="btn btn-sm font-sm rounded btn-light">
                     <i class="material-icons md-edit"></i> Edit
                   </a>
                 </td>

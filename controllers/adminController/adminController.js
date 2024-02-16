@@ -140,11 +140,11 @@
 
 // }
 
-const userController = require('./userController');
+const userController = require('../userControllers/userControllers')
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const User = require('../models/userModel');
-const Category = require('../models/categoryModel');
+const User = require('../../models/userModel');
+const Category = require('../../models/categoryModel');
 
 const securePassword = async (password) => {
     try {

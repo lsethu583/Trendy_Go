@@ -1,8 +1,8 @@
 
 
 const fs = require("fs");
-const Category = require('../models/categoryModel');
-const User = require('../models/userModel');
+const Category = require('../../models/categoryModel');
+const User = require('../../models/userModel');
 
 
 const loadCategoryList = async (req, res) => {

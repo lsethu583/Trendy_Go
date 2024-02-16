@@ -1,6 +1,6 @@
-const Products =require('../models/productModel')
-const Category=require('../models/categoryModel')
-const User=require('../models/userModel')
+const Products =require('../../models/productModel')
+const Category=require('../../models/categoryModel')
+const User=require('../../models/userModel')
 const path=require('path')
 const sharp=require('sharp')
 
@@ -70,13 +70,14 @@ const addProduct=async(req,res)=>{
 
         
 
-        const {productName,productCategory,price,description,image,discount_price}=req.body;
+        const {productName,productCategory,price,description,fullDescription,image,discount_price}=req.body;
         console.log(sizes);
         const product=new Products({
             product_name:productName,
             productCategory,
             price,
             description,
+            fullDescription,
             image:imageData,
             sizes:sizes,
             discount_price
@@ -130,7 +131,7 @@ const storeEditProduct=async(req,res)=>{
     try {
         const product = await Products.findOne({ _id: req.body.product_id  });
     let images=[],deleteData=[]
-    const {name,category,price,description,image,discount_price}=req.body;
+    const {name,category,price,description,fullDescription,image,discount_price}=req.body;
 
     const sizes = [];
     const sizeS = {
@@ -191,7 +192,8 @@ const storeEditProduct=async(req,res)=>{
             productCategory:category,
             price:price,
             sizes:sizes,
-            escription:description,
+            description:description,
+            fullDescription:fullDescription,
             image:images,
             discount_price:discount_price,
             

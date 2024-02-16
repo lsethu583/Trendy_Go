@@ -38,11 +38,14 @@ const userSchema = new mongoose.Schema({
     city:{type:String},
     landmark:{type:String},
     state:{type:String},
+    country:{type:String},
     pincode:{type:Number},
     adressType:{type:String},
     phone:{type:String},
     email:{type:String},
-    altPhone:{type:String}
+    altPhone:{type:String},
+    fname:{type:String},
+    lname:{type:String},
   }],
   date:{
     type:Date,
@@ -52,7 +55,10 @@ const userSchema = new mongoose.Schema({
     type:Number,
     required:true,
     default:0
-  }
+  },
+  image:{
+    type:String
+}
 
 
   // Add more fields as needed for your application (e.g., name, age, etc.)
