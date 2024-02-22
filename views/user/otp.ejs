@@ -119,6 +119,7 @@
             </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
         const timerElement = document.getElementById('otpTimer');
@@ -149,7 +150,13 @@
 
                 if (response.ok) {
                     // Request was successful
-                    alert("OTP Resent!");
+                    Swal.fire({
+    icon: 'success',
+    title: 'OTP Resent!',
+    showConfirmButton: false,
+    timer: 1500 // Set the timer to automatically close the alert after 1.5 seconds
+});
+
                     
                     // Start the timer again after OTP is resent
                     duration = 60;

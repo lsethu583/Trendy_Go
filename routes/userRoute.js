@@ -24,11 +24,11 @@ user_route.post("/otp",userController.verifyOtp)
 user_route.get('/resend-otp',userController.resendOTP)
 user_route.get('/login',auth.isLogout,userController.loadLogin)
 user_route.post('/login',userController.verifyLogin)
-user_route.get('/',auth.isLogin,userController.loadHome)
+user_route.get('/',userController.loadHome)
 user_route.get('/logout',auth.isLogin,userController.userLogout)
 
-user_route.get('/forgotpassword',userController.loadForgotPassword)
-user_route.post('/forgotpassword',userController.sendForgotOTP)
+user_route.get('/forgotpassword',userController.sendForgotOTP)
+user_route.post('/forgotpassword',userController.verifyOtp)
 user_route.get('/resend-forgototp',userController.resendForgotOTP)
 user_route.post('/forgotverification',userController.verifyResendOTP)
 user_route.post('/changepassword',userController.changePassword)
@@ -39,7 +39,7 @@ user_route.get('/productdetail',userController.loadProductDetail)
 
 user_route.get('/cart',auth.isLogin,cartController.loadCartPage );
 user_route.get('/addtocart',auth.isLogin,cartController.addToCart)
-user_route.get('/removeitem-cart',auth.isLogin,cartController.removeCartProduct)
+user_route.delete('/removeitem-cart',auth.isLogin,cartController.removeCartProduct)
 user_route.put('/updateQuantity',auth.isLogin,cartController.updateQuantity)
 
 user_route.post('/updateuser',userController.updateUser);

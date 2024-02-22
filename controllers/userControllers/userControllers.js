@@ -43,7 +43,7 @@ const insertUser = async (req, res) => {
     });
     if (existingUser) {
       const message = "Email or phone number already exists";
-      res.redirect(`/register?message=${message}`);
+      res.render('user/register',{message})
     } else {
       // if,the user is not existing
       const hashedPassword = await securePassword(password);
@@ -120,9 +120,16 @@ const verifyLogin = async (req, res) => {
 
 const loadHome=async(req,res)=>{
   try {
-    const products=await Products.find({}).populate('productCategory')
-    const category=await Category.find({})
+    let products = [];
+    let category = [];
+    if(req.session.user_id){
+     products=await Products.find({}).populate('productCategory')
+     category=await Category.find({})
+    
+    }
     res.render('user/home',{products,category})
+      
+    
   } catch (error) {
     console.log(error.message);
   }
@@ -265,7 +272,7 @@ const resendOTP = async (req, res) => {
 
 const loadForgotPassword=async(req,res)=>{
   try {
-    res.render('user/forgotpassword',{ message: false })
+    res.render('user/forgotpass',{ message: false })
   } catch (error) {
     console.log(error.message);
   }
@@ -310,7 +317,7 @@ const sendForgotOTP = async (req, res) => {
               }
               // Render OTP page after sending email and setting timeout
 
-              res.render('user/forgotpass2', { phone: phone, email: email, msg: false })
+              res.render('user/forgotpass', { phone: phone, email: email, msg: false })
           })
       } else {
           console.log(emailExist);
@@ -574,6 +581,7 @@ const loadProductDetail=async(req,res)=>{
     const productId=req.query.id;
     
     const Product = await Products.findById(productId).populate('productCategory')
+    console.log("product : ",Product);
   
     res.render('user/singleProductDetails',{Product})
   } catch (error) {

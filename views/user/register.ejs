@@ -12,139 +12,156 @@
 		<link rel="stylesheet" href="reg-form/css/style.css">
 	</head>
 
-	
-	
 
-	<body>
-
-		<div class="wrapper" style="background-image: url('reg-form/images/bg-registration-form-1.jpg');">
-			<div class="inner">
-				<div class="image-holder">
-					<img src="reg-form/images/registration-form-1.jpg" alt="">
-				</div>
-				<form action="/register" method="post" id="registrationForm" onsubmit="return validateForm()">
-					<h3>Registration Form</h3>
-                      <%if(locals.message){%>
-					 <div class="form-group">
-						<span style="color: red;"><%=message%></span>
-					 </div>
-					 <%}%>
-					<div class="form-group">
-						<input type="text" placeholder="First Name" class="form-control" name="firstName" id="firstName">
-						<div id="firstName-error" class="error-message"></div>
-						<input type="text" name="lastName" placeholder="Last Name" class="form-control" id="lastName">
-						<div id="lastName-error" class="error-message"></div>
-					</div>
-					<div class="form-wrapper">
-						<input type="text" name="phoneNumber" placeholder="Phone number" class="form-control" id="phoneNumber">
-						<i class="zmdi zmdi-account"></i>
-						<div id="phoneNumber-error" class="error-message"></div>
-					</div>
-					<div class="form-wrapper">
-						<input type="text" name="email" placeholder="Email Address" class="form-control" id="email">
-						<i class="zmdi zmdi-email"></i>
-						<div id="email-error" class="error-message"></div>
-					</div>
-					<div class="form-wrapper">
-						<select name="gender" id="gender" class="form-control">
-							<option value="" disabled selected>Gender</option>
-							<option value="male">Male</option>
-							<option value="female">Female</option>
-							<option value="other">Other</option>
-						</select>
-						<i class="zmdi zmdi-caret-down" style="font-size: 17px"></i>
-						<!-- <div id="gender-error" class="error-message"></div> -->
-					</div>
-					<div class="form-wrapper">
-						<input type="password" name="password" placeholder="Password" class="form-control" id="password">
-						<i class="zmdi zmdi-lock"></i>
-						<div id="password-error" class="error-message"></div>
-					</div>
-					<div class="form-wrapper">
-						<input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-control" id="confirmPassword">
-						<i class="zmdi zmdi-lock"></i>
-					</div>
-					<button type="submit">Register
-						<i class="zmdi zmdi-arrow-right"></i>
-					</button>
-				</form>
-			</div>
+<body>
+<div class="wrapper" style="background-image: url('reg-form/images/bg-registration-form-1.jpg');">
+	<div class="inner">
+		<div class="image-holder">
+			<img src="reg-form/images/registration-form-1.jpg" alt="">
 		</div>
-	
-		<script>
-			function validateForm() {
-				var firstName = document.getElementById('firstName').value.trim();
-				var lastName = document.getElementById('lastName').value.trim();
-				var phoneNumber = document.getElementById('phoneNumber').value.trim();
-				var email = document.getElementById('email').value.trim();
-				var gender = document.getElementById('gender').value;
-				var password = document.getElementById('password').value.trim();
-				var confirmPassword = document.getElementById('confirmPassword').value.trim();
-		
-				resetErrorMessages();
-		
-				// Client-side validation logic
-		
-				if (!firstName || !lastName || !phoneNumber || !email || !gender || !password || !confirmPassword) {
-					alert('Please fill in all fields');
-					return false;
-				}
-		
-				if (!firstName) {
-					showError('firstName', 'Please enter your First Name');
-					return false;
-				}
-		
-				if (!lastName) {
-					showError('lastName', 'Please enter your Last Name');
-					return false;
-				}
-		
-				if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
-					showError('phoneNumber', 'Please enter a valid 10-digit Phone Number');
-					return false;
-				}
-		
-				if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-					showError('email', 'Please enter a valid Email Address');
-					return false;
-				}
-				
-		
-				
-		
-				if (!password || !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)) {
-					showError('password', 'Password must be at least 8 characters and include at least one letter, one number, and one special character');
-					return false;
-				}
-		
-				if (password !== confirmPassword) {
-					showError('confirmPassword', 'Passwords do not match');
-					return false;
-				}
-		
-				return true; // If all validations pass
-			}
-		
-			function showError(elementId, errorMessage) {
-				var errorElement = document.createElement('div');
-				errorElement.className = 'error-message';
-				errorElement.style.color = 'red';
-				errorElement.innerHTML = errorMessage;
-		
-				var inputElement = document.getElementById(elementId);
-				if (inputElement) {
-					inputElement.parentNode.insertBefore(errorElement, inputElement);
-				}
-			}
-		
-			function resetErrorMessages() {
-				var errorElements = document.getElementsByClassName('error-message');
-				for (var i = 0; i < errorElements.length; i++) {
-					errorElements[i].parentNode.removeChild(errorElements[i]);
-				}
-			}
-		</script>
-		
-	</body>
+<form action="/register" method="post" id="registrationForm">
+    <h3>Registration Form</h3>
+    <div class="form-group">
+        <input type="text" placeholder="First Name" class="form-control" name="firstName" id="firstName">
+        <div id="firstName_error" class="alert alert-danger" style="display: none;"></div>
+        <input type="text" name="lastName" placeholder="Last Name" class="form-control" id="lastName">
+        <div id="lastName_error" class="alert alert-danger" style="display: none;"></div>
+    </div>
+	<% if (locals.message) { %>
+    <div class="alert alert-danger" style="color: red;"><%= message %></div>
+<% } %>
+    <div class="form-wrapper">
+        <input type="text" name="phoneNumber" placeholder="Phone number" class="form-control" id="phoneNumber">
+        <i class="zmdi zmdi-account"></i>
+        <div id="phoneNumber_error" class="alert alert-danger" style="display: none;"></div>
+    </div>
+    <div class="form-wrapper">
+        <input type="text" name="email" placeholder="Email Address" class="form-control" id="email">
+        <i class="zmdi zmdi-email"></i>
+        <div id="email_error" class="alert alert-danger" style="display: none;"></div>
+    </div>
+	<div class="form-wrapper">
+		<select name="gender" id="gender" class="form-control">
+			<option value="" disabled selected>Gender</option>
+			<option value="male">Male</option>
+			<option value="female">Female</option>
+			<option value="other">Other</option>
+		</select>
+		<i class="zmdi zmdi-caret-down" style="font-size: 17px"></i>
+	</div>
+    <div class="form-wrapper">
+        <input type="password" name="password" placeholder="Password" class="form-control" id="password">
+        <i class="zmdi zmdi-lock"></i>
+        <div id="password_error" class="alert alert-danger" style="display: none;"></div>
+    </div>
+    <div class="form-wrapper">
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-control" id="confirmPassword">
+        <i class="zmdi zmdi-lock"></i>
+        <div id="confirmPassword_error" class="alert alert-danger" style="display: none;"></div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Submit &amp; Register</button>
+    </div>
+    <div class="divider-text-center mt-15 mb-15">
+        <div class="text-muted text-center">Already have an account? <a href="/login">Login in now . . . !!</a></div>
+    </div>
+</form>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+	// Add event listeners to input fields to hide error messages on input
+document.getElementById('firstName').addEventListener('input', function() {
+    hideErrorMessage('firstName_error');
+});
+document.getElementById('lastName').addEventListener('input', function() {
+    hideErrorMessage('lastName_error');
+});
+document.getElementById('phoneNumber').addEventListener('input', function() {
+    hideErrorMessage('phoneNumber_error');
+});
+document.getElementById('email').addEventListener('input', function() {
+    hideErrorMessage('email_error');
+});
+document.getElementById('password').addEventListener('input', function() {
+    hideErrorMessage('password_error');
+});
+document.getElementById('confirmPassword').addEventListener('input', function() {
+    hideErrorMessage('confirmPassword_error');
+});
+
+// Function to hide error messages
+function hideErrorMessage(elementId) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.style.display = 'none';
+}
+
+// Function to display error messages
+function displayErrorMessage(elementId, errorMessage) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.style.display = 'block';
+    errorElement.style.color = 'red'; // Set error message color to red
+    errorElement.textContent = errorMessage;
+}
+
+// Function to validate the form fields
+function validateForm() {
+    // Reset previous error messages
+    document.querySelectorAll('.alert-danger').forEach(function(el) {
+        el.style.display = 'none';
+    });
+
+    // Perform validation for each field
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    let isValid = true;
+
+
+    if (phoneNumber === '' || !/^\d{10,14}$/.test(phoneNumber)) {
+        displayErrorMessage('phoneNumber_error', 'Enter a valid phone number of minimum 10 digits');
+        isValid = false;
+    }
+
+    if (email === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        displayErrorMessage('email_error', 'Enter a valid email address');
+        isValid = false;
+    }
+
+    if (password === '' || !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(password)) {
+        displayErrorMessage('password_error', 'Password must be at least 8 characters and include at least one letter, one number, and one special character');
+        isValid = false;
+    }
+
+    if (confirmPassword === '' || confirmPassword !== password) {
+        displayErrorMessage('confirmPassword_error', 'Passwords do not match');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+// Add event listener to the form for form submission
+document.getElementById('registrationForm').addEventListener('submit', function(event) {
+    // Prevent the default form submission
+    event.preventDefault();
+    
+    // Perform form validation
+    if (validateForm()) {
+        // If validation passes, submit the form
+        this.submit();
+    } else {
+        // If validation fails, display an error message
+        alert('Please fill in all fields correctly.');
+    }
+});
+
+</script>
+</body>
 </html>

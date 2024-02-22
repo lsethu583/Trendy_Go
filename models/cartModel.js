@@ -17,7 +17,8 @@ const addCartSchema = new mongoose.Schema({
         },
         size: {
             type: String,
-            required:true
+            default:'S' 
+            
             
         }
     }]

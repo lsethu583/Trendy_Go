@@ -32,15 +32,15 @@ const addToCart=async (req,res)=>{
     try {
             const productId=req.query.id
             const size     =req.query.size
-            const qty      =parseInt(req.query.qty)
+            const quantity =parseInt(req.query.qty)
             
-            
+            console.log(productId,size,quantity);
         const userId=req.session.user_id;
        
         const userCart = await Cart.findOne({ userId });
 
         // Add the product to the cart
-        userCart.products.push({ productId, qty, size });
+        userCart.products.push({ productId, quantity, size });
         await userCart.save();
         
         res.redirect('/cart')
@@ -49,20 +49,37 @@ const addToCart=async (req,res)=>{
     }
 }
 
-const removeCartProduct = async (req, res) => {
+const removeCartProduct =  async (req, res) => {
     try {
-        const cartId = req.query.productId;
         const userId = req.session.user_id;
-        const indexOfProduct = req.query.index;
+        const productId = req.query.product_id; // Assuming you pass productId as a query parameter
+        const cartId = req.query.cartId; // Assuming you pass productId as a query parameter
 
-        const userCart = await Cart.findByIdAndDelete(cartId);
+        const cart = await Cart.findById(cartId);
+        if (!cart) {
+            return res.status(404).json({ success: false, error: "Cart not found" });
+        }
 
-        res.redirect('user/cart');
+        // Find the index of the product to be removed
+        const productIndex = cart.products.findIndex(product => product._id.toString() === productId);
+
+        if (productIndex === -1) {
+            return res.status(404).json({ success: false, error: "Product not found in cart" });
+        }
+
+        // Remove the product from the products array
+        cart.products.splice(productIndex, 1);
+        await cart.save();
+
+        return res.status(200).json({ success: true, message: "Product removed from cart successfully" });
     } catch (error) {
-        res.redirect('/error')
+        console.error("Error removing product from cart:", error);
+        return res.status(500).json({ success: false, error: "Internal server error" });
     }
-}
+};
 
+
+  
 const updateQuantity = async (req, res) => {
     try {
         const { cartId, PID, newQuantity } = req.body;
