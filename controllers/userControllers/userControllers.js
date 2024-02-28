@@ -7,6 +7,7 @@ const Cart=require('../../models/cartModel')
 
 
 
+
 const securePassword = async (password) => {
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -272,281 +273,120 @@ const resendOTP = async (req, res) => {
 
 const loadForgotPassword=async(req,res)=>{
   try {
-    res.render('user/forgotpass',{ message: false })
+    res.render('user/forgotpassword')
   } catch (error) {
     console.log(error.message);
   }
 };
 
-const sendForgotOTP = async (req, res) => {
-  try {
-      const email = req.body.email
-      const emailExist = await User.find({ email: email })
-      const phone = emailExist[0].phone
-      if (emailExist.length > 0) {
-          const randomOTP = Math.floor(1000 + Math.random() * 9000);
-
+const forgotpassword = async(req,res)=>{
+  try{
+   const email  = req.body.email;
+   const existingUser = await User.findOne({email:email});
+     if(existingUser){
+      const otp = generateOTP(4); 
+      const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      req.session.randomOtp = randomOtp;
+        console.log(randomOtp)
+        req.session.email=email;
+        console.log( req.session.email);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "trendygosite@gmail.com",
+          pass: "qeup vubt ylss npvi",
+        },
+      });
+    
+        const mailOptions = {
+          from: "trendygosite@gmail.com",
+          to: req.body.email,
+          subject: "OTP Verification",
+          text: `Your OTP for verification is: ${randomOtp}`,
+        };
+    
+        transporter.sendMail(mailOptions, (error, info) => {
          
-
-          const mailOptions = {
-              from: 'trendygosite@gmail.com',
-              to: email,
-              subject: 'Hello, Trendy_Go!!',
-              text: `Your verification OTP is ${randomOTP}`
-          };
-
-          // Sending email asynchronously
-          transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                  console.log(error);
-                  res.status(500).send({ success: false, message: 'Error sending email' });
-              } else {
-                  console.log(`Email is sent with verification code ${randomOTP}`, info.response);
-
-                  // Update session OTP
-                  req.session.OTP = randomOTP;
-                  console.log('re-randomOTP' + randomOTP);
-                  isOtpVerified = true;
-                  setTimeout(() => {
-                      if (isOtpVerified) {
-                          req.session.OTP = null;
-                          isOtpVerified = false;
-                          console.log('Timeout over');
-                      }
-                  }, OTP_TIMEOUT);
-              }
-              // Render OTP page after sending email and setting timeout
-
-              res.render('user/forgotpass', { phone: phone, email: email, msg: false })
-          })
-      } else {
-          console.log(emailExist);
-          res.render('user/forgotpass', { message: true })
+            console.log("Email sent", info.response);
+          
+        });
+       
+        res.json({redirect:"/forgetpassword/otppage"}); // Corrected path to the "otp" view
+      } 
+    }catch (error) {
+        console.log(error.message);
       }
+    };
 
-  } catch (error) {
-
-      res.render('user/forgotpass', { message: `Cant't send OTP right now try after some time` })
-     
+    const loadOtpPageForPassword=async(req,res)=>{
+      try{
+          res.render("user/otpPasswordVerify")
+      }
+      catch(error){
+          console.log(error);
+      }
   }
+
+  const otpVerifyPasswordReset = async(req,res)=>{
+   
+    try{
+        const userEnteredOtp = req.body.otp;
+    const randomOtp = req.session.randomOtp || req.session.newOtp ;
+       
+       
+        if(userEnteredOtp === randomOtp){
+          
+                res.render("user/passwordreset")
+
+                
+        }else{
+            res.render("user/otpPasswordVerify",{message:"OTP mismatch try again"})
+        }
+        
+
+
+    }
+    catch(error){
+        console.log(error,"otpVerifyPasswordReset  page  error ");
+
+    }
 }
 
-const resendForgotOTP = async (req, res) => {
+const newPasswordReset = async (req, res) => {
   try {
-      const email = req.query.email;
-      const user = await User.find({ email: email })
-      const phone = user[0].phone
-      if (phone) {
-          // Send a new OTP
-          const randomOTP = Math.floor(1000 + Math.random() * 9000);
-          req.session.OTP = randomOTP;
-          const transporter = nodemailer.createTransport({
-              service: 'Gmail',
-              auth: {
-                  user: "trendygosite@gmail.com",
-                  pass: "qeup vubt ylss npvi",
-              },
-          });
-          console.log(email);
-          const mailOptions = {
-              from: 'trendygosite@gmail.com',
-              to: email,
-              subject: 'Hello, Trendy_Go!!',
-              text: `Your verification OTP is ${randomOTP}`
-          };
+    const userEmail = req.session.email;
+    console.log(userEmail);
 
-          // Sending email asynchronously
-          transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                  console.log(error);
-                  res.status(500).send({ success: false, message: 'Error sending email' });
-              } else {
-                  console.log('re-randomOTP' + randomOTP);
-                  console.log(`resent with verification code ${randomOTP}`, info.response);
+    // Assuming you set the email in the session earlier
+    if (!userEmail) {
+      throw new Error("User email not found in session");
+    }
 
-                  // Update session OTP
-
-                  isOtpVerified = true;
-                  setTimeout(() => {
-                      if (isOtpVerified) {
-                          req.session.OTP = null;
-                          isOtpVerified = false;
-                          console.log('Timeout over');
-                      }
-                  }, OTP_TIMEOUT);
-              }
-          })
-          // res.send({ success: true, message: 'OTP resent successfully' });
-          res.render('user/forgotpass2', { phone: phone, email: email, msg: false })
-      } else {
-          res.status(400).send({ success: false, message: 'Invalid phone number' });
-      }
-
+    const password = req.body.password;
+    const securePassword =  await bcrypt.hash(password, 10);
+    
+    const updatedData = await User.findOneAndUpdate(
+      { email: userEmail },
+      { $set: { password: securePassword } }
+    );
+    
+    if (updatedData) {
+      // Reset the email in the session after successful password reset
+      delete req.session.email;
+      res.redirect("/login");
+    } else {
+      throw new Error("User not found");
+    }
   } catch (error) {
-      res.redirect('/error')
-  }
-}
-
-const verifyResendOTP = async (req, res) => {
-  try {
-
-      const email = req.body.email
-      const otp = req.body.otp;
-      const phone = req.body.phone;
-      const orginalOTP = req.session.OTP
-      console.log(orginalOTP, otp, isOtpVerified);
-      if (otp == orginalOTP && isOtpVerified) {
-          isOtpVerified = true;
-          // Calling the insertUser function to save user data
-          const userData = await User.find({ email: email })
-
-          console.log('good');
-          if (userData) {
-              res.render('user/changepass', { email: email });
-          } else {
-              res.render('user/forgotpass2', { phone: phone, email: email, msg: true })
-          }
-      } else {
-          console.log('baad');
-          isOtpVerified = false;
-          res.render('user/forgotpass2', { phone: phone, email: email, msg: true });
-
-      }
-  } catch (error) {
-      res.redirect('/login')
-  }
-}
-
-const changePassword = async (req, res) => {
-  try {
-      const email = req.body.email;
-      const newPassword = req.body.newPassword;
-      const user = await User.findOne({ email: email });
-
-      if (user) {
-          console.log('hello');
-          // Update the password field in the user document
-          user.password = newPassword;
-
-          // Save the updated user document
-          await user.save();
-          req.session.user_id = user._id;
-          if (req.session.user_id) {
-              res.redirect('/')
-          } else {
-              res.redirect('/login')
-          }
-
-      } else {
-          res.send({ success: false, message: 'User not found' });
-      }
-  } catch (error) {
-      res.redirect('/login')
+    console.log(error.message);
+    res.redirect("/forgotpassword"); // Redirect the user back to the forgot password page in case of an error
   }
 };
 
 
-const getAddressForm = async (req, res) => {
-  try {
 
 
-      res.render('user/addressform')
 
-
-  } catch (error) {
-      console.log(error.message);
-  }
-}
-
-const addAddress = async (req, res) => {
-  try {
-      const from   = req.query.from;
-      const user_id = req.session.user_id
-      const addressname = req.body.addressname
-      const phone = req.body.phone
-      const city = req.body.city
-      const pincode = req.body.pincode
-      const landmark = req.body.landmark
-      const house = req.body.house
-      const altPhone=req.body.altPhone
-      const country = req.body.country
-      const user = await User.findById(user_id);
-      if (user) {
-
-          const newAddress = {
-              addressName: addressname,
-              phone: phone,
-              city: city,
-              pincode: pincode,
-              landmark: landmark,
-              house: house,
-              country: country,
-              description: description,
-              altPhone:altPhone,
-              fname:fname,
-             lname:lname,
-          };
-          User.address.push(newAddress);
-
-          await user.save();
-          if(from=='checkout'){
-              res.redirect('/checkout')
-          }else{
-              res.redirect('/useraccount')
-          }
-         
-
-      }
-  } catch (error) {
-      res.redirect('/error')
-  }
-}
-
-const loadEditAddress = async (req, res) => {
-  try {
-      const i = req.query.i
-      const act = req.query.act;
-      const userId = req.session.user_id
-      const user = await User.findById(userId)
-      if (act == 0) {
-          User.address.splice(i, 1);
-          await user.save();
-          res.redirect('/useraccount')
-      } else {
-          res.render('user/editaddress', { user: user, i })
-      }
-  } catch (error) {
-      res.redirect('/error')
-  }
-}
-
-const updateAddress = async (req, res) => {
-  try {
-      const userId = req.session.user_id;
-      const i = req.body.i; // Index of the address
-      const user = await User.findById(userId);
-      console.log(i);
-      if (user) {
-          const updatedAddress = {
-              addressName: req.body.addressname,
-              phone: req.body.phone,
-              city: req.body.city,
-              pincode: req.body.pincode,
-              landmark: req.body.landmark,
-              house: req.body.house,
-              country: req.body.country,
-              fname:req.body.fname,
-               lname:req.body.lname,
-              
-          };
-          User.address[i] = updatedAddress; // Update the address at index i
-          await user.save();
-          res.redirect('/useraccount');
-      }
-  } catch (error) {
-      res.redirect('/error')
-  }
-}
 
 
 const loadShop=async(req,res)=>{
@@ -589,66 +429,9 @@ const loadProductDetail=async(req,res)=>{
   }
 }
 
-const loadAccount = async (req, res) => {
-  try {
-     
-      const userId = req.session.user_id
-      const user = await User.findById(req.session.userId)
-      const category = await Category.find({})
-      const cart = await Cart.find({ userId: userId }).populate('productId');
-      const order = await Order.find({ userId: userId })
-          .sort({ orderDate: -1 }) // Sort by orderDate in descending order for latest first
-          .populate('products.productId');
-     
-          res.render('user/account', { user, category, cart, order, msg: false})
-      
-    
-
-  } catch (error) {
-      res.redirect('/error')
-  }
-}
-
-const updateUser = async(req,res)=>{
-  try {
-      const userId = req.session.user_id
-      const name = req.body.name;
-      const email = req.body.email;
-      const phone = req.body.phone;
-      const user = await User.findById(userId); // Replace 'User' with your actual User model
-
-     
-
-     
-      user.name = req.body.name;
-      user.email = req.body.email;
-      user.phone = req.body.phone;
-
-      
-      await user.save();
-
-      
-      res.redirect('/useraccount');
-
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 
 
-const uploadUserImg = async(req,res)=>{
-  try {
-      
-      const image= req.files.map(file => file.path)
-      const userId = req.session.user_id
-      await User.findByIdAndUpdate(userId,{$set:{image:image[0]}})
-      
-      res.redirect('/useraccount')
-  } catch (error) {
-      console.log(error.message);
-     
-  }
-}
+
 
 
 module.exports = {
@@ -662,18 +445,13 @@ module.exports = {
   resendOTP,
   userLogout,
   loadForgotPassword,
-  sendForgotOTP,
-  resendForgotOTP,
-  verifyResendOTP,
-  changePassword,
+  forgotpassword,
+  loadOtpPageForPassword,
+  otpVerifyPasswordReset,
+  newPasswordReset,
   loadShop,
   loadSingleshop,
   loadProductDetail,
-  getAddressForm,
-  addAddress,
-  loadEditAddress,
-  updateAddress,
-  loadAccount,
-  updateUser,
-  uploadUserImg
+  
+  
 };

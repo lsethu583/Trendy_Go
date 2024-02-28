@@ -71,7 +71,7 @@ const addProduct=async(req,res)=>{
         
 
         const {productName,productCategory,price,description,fullDescription,image,discount_price}=req.body;
-        console.log(sizes);
+        
         const product=new Products({
             product_name:productName,
             productCategory,
@@ -82,7 +82,6 @@ const addProduct=async(req,res)=>{
             sizes:sizes,
             discount_price
         })
-        console.log(product,'fd');
 
         await product.save();
         res.redirect('/admin/products');

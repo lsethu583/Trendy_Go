@@ -1,12 +1,11 @@
 const express=require("express")
 const user_route=express()
-
-
 const auth=require('../middleware/auth')
 const session = require('express-session');
 const cartController=require("../controllers/userControllers/cartController")
 const userController=require("../controllers/userControllers/userControllers")
-
+const userProfileController=require('../controllers/userControllers/userProfileController')
+const orderController=require('../controllers/userControllers/orderController')
 
 user_route.set("view engine","ejs")
 user_route.set("views","./views")
@@ -27,28 +26,31 @@ user_route.post('/login',userController.verifyLogin)
 user_route.get('/',userController.loadHome)
 user_route.get('/logout',auth.isLogin,userController.userLogout)
 
-user_route.get('/forgotpassword',userController.sendForgotOTP)
-user_route.post('/forgotpassword',userController.verifyOtp)
-user_route.get('/resend-forgototp',userController.resendForgotOTP)
-user_route.post('/forgotverification',userController.verifyResendOTP)
-user_route.post('/changepassword',userController.changePassword)
+user_route.get('/forgotpassword',userController.loadForgotPassword)
+user_route.post('/forgotpassword',userController.forgotpassword)
+user_route.get('/forgetpassword/otppage',userController.loadOtpPageForPassword)
+user_route.post('/forgetpasswordverify',userController.otpVerifyPasswordReset)
+user_route.post('/passwordreset',userController.newPasswordReset)
 
 user_route.get('/shop',auth.isLogin,userController.loadShop)
 user_route.get('/singleProduct/:id',auth.isLogin,userController.loadSingleshop)
-user_route.get('/productdetail',userController.loadProductDetail)
+user_route.get('/productdetail',auth.isLogin,userController.loadProductDetail)
 
-user_route.get('/cart',auth.isLogin,cartController.loadCartPage );
+user_route.get('/cart',auth.isLogin,auth.isBlocked,cartController.loadCartPage );
 user_route.get('/addtocart',auth.isLogin,cartController.addToCart)
 user_route.delete('/removeitem-cart',auth.isLogin,cartController.removeCartProduct)
 user_route.put('/updateQuantity',auth.isLogin,cartController.updateQuantity)
 
-user_route.post('/updateuser',userController.updateUser);
-// user_route.post('/updatepropic',upload.array('image',1),userController.uploadUserImg);
-user_route.get('/useraccount',auth.isLogin,userController.loadAccount);
 
-user_route.get('/address-form',auth.isLogin,userController.getAddressForm)
-user_route.post('/address-form',userController.addAddress)
-user_route.get('/editaddress',auth.isLogin,userController.loadEditAddress)
-user_route.post('/editaddress',userController.updateAddress)
+user_route.get('/profile',auth.isLogin,userProfileController.getProfilePage);
+user_route.post('/createaddress',auth.isLogin,userProfileController.addaddress)
+user_route.get('/getAddress/:addressID',userProfileController.getAddress)
+
+user_route.get('/checkout',auth.isLogin,orderController.loadCheckoutPage)
+user_route.post('/placeorder',auth.isLogin,orderController.placeorder)
+
+
+
+
 
 module.exports=user_route;

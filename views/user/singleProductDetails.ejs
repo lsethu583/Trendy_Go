@@ -235,6 +235,8 @@
                                         <div class="attr-detail attr-size">
                                             <strong class="mr-10">Size</strong>
                                             <ul id="selectedSize"  class="list-filter size-filter font-small">
+                                                
+                                                <input type="number" id="max" hidden>
                                                 <li onclick="showQuantity(`<%=Product.sizes[0].quantity%>`,'S')"><a href="#">S</a></li>
                                                 <li onclick="showQuantity(`<%=Product.sizes[1].quantity%>`,'M')"><a href="#">M</a></li>
                                                 <li onclick="showQuantity(`<%=Product.sizes[2].quantity%>`,'L')"><a href="#">L</a></li>
@@ -242,14 +244,48 @@
                                             </ul>
                                         </div>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                       
+                                        
                                         <div class="detail-extralink">
-                                            <div class="detail-qty border radius">
-                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                <span class="qty-val">1</span>
-                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                            <div class="detail-qty border radius" data-max="10">
+                                                <a href="#" class="qty-down" onclick="decreaseQuantity(event)"><i class="fi-rs-angle-small-down"></i></a>
+                                                <span class="qty-val" id="quantityValue">1</span>
+                                                <a href="#" class="qty-up" onclick="increaseQuantity(event)"><i class="fi-rs-angle-small-up"></i></a>
                                             </div>
+                                        </div>
+                                        
+                                        <script>
+                                            function increaseQuantity(event) {
+                                                event.preventDefault();
+                                                const quantityElement = document.getElementById('quantityValue');
+                                                const currentQuantity = parseInt(quantityElement.innerText, 10);
+                                                const max = document.getElementById('max').value
+                                                const newQuantity = max <= currentQuantity ?max : currentQuantity + 1
+                                                const maxQuantity = parseInt(document.querySelector('.detail-qty').getAttribute('data-max'));
+                                        
+                                                if (newQuantity <= maxQuantity) {
+                                                    quantityElement.innerText = newQuantity;
+                                                    document.getElementById('selectedQuantity').value = newQuantity;
+                                                }
+                                            }
+                                        
+                                            function decreaseQuantity(event) {
+                                                event.preventDefault();
+                                                const quantityElement = document.getElementById('quantityValue');
+                                                const currentQuantity = parseInt(quantityElement.innerText, 10);
+                                                const newQuantity = Math.max(currentQuantity - 1, 1); // Ensure quantity doesn't go below 1
+                                                quantityElement.innerText = newQuantity;
+                                                document.getElementById('selectedQuantity').value = newQuantity;
+                                            }
+                                        </script>
+                                        
+                                        
+                                        
+                                       
+                                        
+                                            
                                             <div class="product-extra-link2">
-                                                <button class="button button-add-to-cart" onclick="addToCart('<%= Product._id %>', document.getElementById('selectedSize').value, document.querySelector('.qty-val').textContent)">Add To Cart</button>
+                                                <button class="button button-add-to-cart" id="addToCartButton" onclick="addToCart('<%= Product._id %>', document.getElementById('selectedSize').value, document.querySelector('.qty-val').textContent)">Add To Cart</button>
 
 
 
@@ -271,7 +307,47 @@
     // Update the span tag with the new quantity and size
     document.getElementById('selectedSize').value =size
     document.getElementById('quantity').textContent = quantity + " Items In Stock for size " + size;
-}
+    document.getElementById('max').value = parseInt(quantity)
+    var addToCartButton = document.getElementById('addToCartButton');
+    if(parseInt(quantity)==0){
+        addToCartButton.style.display = 'none';
+    }else {
+        // If quantity is not zero, show the button
+        addToCartButton.style.display = 'inline-block';
+    }
+
+    const quantitySpan = document.querySelector('.qty-val');
+    quantitySpan.textContent = '1'; // Reset quantity to 1
+    quantitySpan.dataset.max = 3
+
+    
+        // Update the span tag with the new quantity and size
+        document.getElementById('selectedSize').value = size;
+        document.getElementById('quantity').textContent = quantity + " Items In Stock for size " + size;
+        document.getElementById('max').value = parseInt(quantity);
+
+        // Check if the quantity for the selected size is 0
+        if (parseInt(quantity) === 0) {
+            // Show "Out of Stock" message
+
+            Toastify({
+                text: 'Out of Stock!',
+                duration: 3000,
+                close: true,
+                gravity: 'bottom',
+                position: 'center',
+                backgroundColor: 'orange', // Customize background color
+            }).showToast();
+            
+
+        } else {
+            // If quantity is not 0, reset the quantity to 1
+            const quantitySpan = document.querySelector('.qty-val');
+            quantitySpan.textContent = '1';
+            quantitySpan.dataset.max = 3; // You can set the maximum quantity here
+        }
+    }
+
 
                                    </script>
 
@@ -712,21 +788,76 @@
     <!-- Template  JS -->
     <script src="assets/js/maind134.js?v=3.4"></script>
     <script src="assets/js/shopd134.js?v=3.4"></script>
+    
 
-    <script>
  
+  <script>
+    function addToCart(productId, selectedSize, quantity) {
+        console.log('Product ID:', productId);
+        console.log('Selected Size:', selectedSize);
+        console.log('Quantity:', quantity);
 
- function addToCart(productId, selectedSize, quantity) {
-    console.log('Product ID:', productId);
-    console.log('Selected Size:', selectedSize);
-    console.log('Quantity:', quantity);
+        // Check if size and quantity are selected
+        if (!selectedSize || !quantity) {
+           
+            Toastify({
+                text: 'Please select size and quantity!',
+                duration: 3000,
+                close: true,
+                gravity: 'bottom',
+                position: 'center',
+                backgroundColor: 'orange',
+            }).showToast();
+            return; 
+        }
 
-    // Redirect to the cart page
-    window.location.href = `/addtocart?id=${productId}&size=${selectedSize}&qty=${quantity}`;
-}
+        // Make the request to add the item to the cart
+        fetch(`/addtocart?id=${productId}&size=${selectedSize}&qty=${quantity}`)
+            .then(response => {
+                if (response.ok) {
+                   
+                    Toastify({
+                        text: 'Item added to cart successfully!',
+                        duration: 3000,  
+                        close: true,     
+                        gravity: 'bottom', 
+                        position: 'center', 
+                    }).showToast();
 
-       
-        </script>
+                   
+                    setTimeout(() => {
+                        window.location.href = '/cart';
+                    }, 3000); 
+                } else {
+                   
+                    Toastify({
+                        text: 'Error: Failed to add item to cart!',
+                        duration: 3000,
+                        close: true,
+                        gravity: 'bottom',
+                        position: 'center',
+                        backgroundColor: 'red', 
+                    }).showToast();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                Toastify({
+                    text: 'Error: Failed to add item to cart!',
+                    duration: 3000,
+                    close: true,
+                    gravity: 'bottom',
+                    position: 'center',
+                    backgroundColor: 'red',
+                }).showToast();
+            });
+    }
+</script>
+
+    
+    
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 

@@ -172,6 +172,21 @@
 
         // Call startOTPTimer when the page loads or when the OTP is initially sent
         startOTPTimer();
+        function validateOTP() {
+            // Your OTP validation code here
+
+            // Assuming OTP validation is successful, show SweetAlert notification
+            Swal.fire({
+                icon: 'success',
+                title: 'Successfully Registered!',
+                text: 'Your registration is complete.',
+                showConfirmButton: false,
+                timer: 2000 // Set the timer to automatically close the alert after 2 seconds
+            });
+
+            // Return false to prevent the form from submitting
+            return true;
+        }
     </script>
 
 </body>

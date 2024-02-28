@@ -32,21 +32,6 @@ const userSchema = new mongoose.Schema({
   wallet:{
     type:Number
   },
-  adress:[{
-    adressName:{type:String},
-    house:{type:String},
-    city:{type:String},
-    landmark:{type:String},
-    state:{type:String},
-    country:{type:String},
-    pincode:{type:Number},
-    adressType:{type:String},
-    phone:{type:String},
-    email:{type:String},
-    altPhone:{type:String},
-    fname:{type:String},
-    lname:{type:String},
-  }],
   date:{
     type:Date,
     default:Date.now()

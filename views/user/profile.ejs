@@ -1,0 +1,618 @@
+<%- include('../layouts/userHeader.ejs') %>
+
+
+    <main class="main">
+        
+        <section class="pt-150 pb-150">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 m-auto">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="dashboard-menu">
+                                    <ul class="nav flex-column" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false"><i class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="tab-content dashboard-content">
+                                    <% if(user){ %>
+                                    <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Username : <%= user.firstName %></h5>
+                                                <br>
+                                                <h5>Email : <%= user.email %></h5>
+                                                <br>
+                                                <h5>Mobile : <%= user.phone %></h5>
+                                                <br>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>From your account dashboard. you can easily check &amp; view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">edit your password and account details.</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                        
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Your Orders</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Order</th>
+                                                                <th>Date</th>
+                                                                <th>Status</th>
+                                                                <th>Total</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% if(orders){ %>
+                                                                <% for(let i=0;i<orders.length;i++) {%>
+                                                                <tr>
+                                                                    <td>#<%= orders[i].orderId %></td>
+                                                                    <td><%= orders[i].orderDate %></td>
+                                                                    <td><%= orders[i].paymentStatus %></td>
+                                                                    <td><%= orders[i].totalAmount %> for <%= orders[i].products.length%> item</td>
+                                                                    <td><a href="#" class="btn-small d-block">View</a></td>
+                                                                </tr>
+                                                                <% } %>
+                                                                <% } %>
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Orders tracking</h5>
+                                            </div>
+                                            <div class="card-body contact-from-area">
+                                                <p>To track your order please enter your OrderID in the box below and press "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <form class="contact-form-style mt-30 mb-50" action="#" method="post">
+                                                            <div class="input-style mb-20">
+                                                                <label>Order ID</label>
+                                                                <input name="order-id" placeholder="Found in your order confirmation email" type="text" class="square">
+                                                            </div>
+                                                            <div class="input-style mb-20">
+                                                                <label>Billing email</label>
+                                                                <input name="billing-email" placeholder="Email you used during checkout" type="email" class="square">
+                                                            </div>
+                                                            <button class="submit submit-auto-width" type="submit">Track</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                        <style>
+                                            #addAddressDiv {
+background-color: #007bff; /* Blue color */
+color: #fff; /* White text color */
+border-radius: 5px;
+padding: 5px 10px; /* Adjusted padding */
+text-align: center;
+cursor: pointer;
+}
+
+#addAddressDiv:hover {
+background-color: #0056b3; /* Darker blue color on hover */
+}
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.address-type-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-block;
+}
+
+.address-type-container button {
+    margin-right: 5px;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.address-type-container button:hover {
+    background-color: #f0f0f0;
+}
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px; /* Adjust the distance from the top and right as needed */
+        cursor: pointer;
+        font-size: 24px;
+    }
+
+
+
+
+                                        </style>
+                                       
+                                     
+
+                                        <button id="openModalBtn">Add Address</button>
+
+<!-- The modal -->
+<div id="addAddressModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Add New Address</h3>
+        <form id="addAddressForm" action="/createaddress" method="post">
+            <div class="form-group">
+                <label for="addressType">Address Type:</label>
+                <div id="addressTypeButtons">
+                    <button type="button" class="address-type-btn" value="Home">Home</button>
+                    <button type="button" class="address-type-btn" value="Work">Work</button>
+                </div>
+                <input type="hidden" id="addressType" name="addressType" >
+                <div id="addressType_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+                <div id="name_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="houseName">House Name:</label>
+                <input type="text" id="houseName" name="houseName">
+                <div id="houseName_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="landmark">Landmark:</label>
+                <input type="text" id="landmark" name="landmark">
+                <div id="landmark_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city">
+                <div id="city_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state">
+                <div id="state_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pincode">Pincode:</label>
+                <input type="text" id="pincode" name="pincode">
+                <div id="pincode_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone">
+                <div id="phone_error" class="error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="altPhone">Alternate Phone:</label>
+                <input type="text" id="altPhone" name="altPhone">
+                <div id="altPhone_error" class="error"></div>
+            </div>
+            <input type="text" id="editID" name="editID" hidden>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('addAddressForm');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission for now
+
+        // Validation for each field
+        const addressType = document.getElementById('addressType');
+        const name = document.getElementById('name');
+        const houseName = document.getElementById('houseName');
+        const landmark = document.getElementById('landmark');
+        const city = document.getElementById('city');
+        const state = document.getElementById('state');
+        const pincode = document.getElementById('pincode');
+        const phone = document.getElementById('phone');
+        const altPhone = document.getElementById('altPhone');
+
+        // Clear all previous error messages
+        const errors = document.querySelectorAll('.error');
+        errors.forEach(error => {
+            error.textContent = '';
+        });
+
+        // Check if each field is filled
+        let isValid = true;
+        if (!addressType.value) {
+            document.getElementById('addressType_error').style.color ='red'
+            document.getElementById('addressType_error').textContent = 'Please select an address type.';
+            isValid = false;
+            addressType.addEventListener('input', function() {
+    document.getElementById('addressType_error').textContent = '';
+});
+        }
+        if (!name.value) {
+            document.getElementById('name_error').style.color ='red'
+            document.getElementById('name_error').textContent = 'Name is required.';
+            isValid = false;
+            name.addEventListener('input', function() {
+    document.getElementById('name_error').textContent = '';
+});
+        }
+        if (!houseName.value) {
+            document.getElementById('houseName_error').style.color ='red'
+            document.getElementById('houseName_error').textContent = 'House Name is required.';
+            isValid = false;
+            houseName.addEventListener('input', function() {
+    document.getElementById('houseName_error').textContent = '';
+});
+        }
+        if (!landmark.value) {
+            document.getElementById('landmark_error').style.color ='red'
+            document.getElementById('landmark_error').textContent = 'Landmark is required.';
+            isValid = false;
+            landmark.addEventListener('input', function() {
+    document.getElementById('landmark_error').textContent = '';
+});
+        }
+        if (!city.value) {
+            document.getElementById('city_error').style.color ='red'
+            document.getElementById('city_error').textContent = 'City is required.';
+            isValid = false;
+            city.addEventListener('input', function() {
+    document.getElementById('city_error').textContent = '';
+});
+        }
+        if (!state.value) {
+            document.getElementById('state_error').style.color ='red'
+            document.getElementById('state_error').textContent = 'State is required.';
+            isValid = false;
+            state.addEventListener('input', function() {
+    document.getElementById('state_error').textContent = '';
+});
+        }
+       
+        if (!/^\d{6}$/.test(pincode.value)) {
+            document.getElementById('pincode_error').style.color = 'red';
+            document.getElementById('pincode_error').textContent = 'Pincode should be 6 digits.';
+            isValid = false;
+            pincode.addEventListener('input', function() {
+    document.getElementById('pincode_error').textContent = '';
+});
+        }
+
+        // Phone and Alt Phone should not be the same
+        if (phone.value === altPhone.value) {
+            document.getElementById('phone_error').style.color = 'red';
+            document.getElementById('altPhone_error').style.color = 'red';
+            document.getElementById('phone_error').textContent = 'Phone and Alternate Phone should not be the same.';
+            document.getElementById('altPhone_error').textContent = 'Phone and Alternate Phone should not be the same.';
+            isValid = false;
+            phone.addEventListener('input', function() {
+    document.getElementById('phone_error').textContent = '';
+});
+        }
+
+        // Phone and Alt Phone should be at least 10 digits
+        if (phone.value.length < 10) {
+            document.getElementById('phone_error').style.color = 'red';
+            document.getElementById('phone_error').textContent = 'Phone number should be at least 10 digits.';
+            isValid = false;
+            phone.addEventListener('input', function() {
+    document.getElementById('phone_error').textContent = '';
+});
+        }
+        if (altPhone.value.length < 10) {
+            document.getElementById('altPhone_error').style.color = 'red';
+            document.getElementById('altPhone_error').textContent = 'Alternate Phone number should be at least 10 digits.';
+            isValid = false;
+            altPhone.addEventListener('input', function() {
+    document.getElementById('altPhone_error').textContent = '';
+});
+        }
+
+        // If all validations pass, submit the form
+        if (isValid) {
+            form.submit();
+        }
+    });
+</script>
+
+
+<script>
+    // Get the modal element
+const modal = document.getElementById('addAddressModal');
+
+// Get the button that opens the modal
+const openModalBtn = document.getElementById('openModalBtn');
+
+// Get the <span> element that closes the modal
+const closeBtn = modal.querySelector('.close');
+
+// When the user clicks the button, open the modal
+openModalBtn.addEventListener('click', () => {
+    modal.style.display = 'block';
+});
+
+// When the user clicks on <span> (x), close the modal
+closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+// When the user clicks anywhere outside of the modal, close it
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+</script>
+
+
+
+                                        <div class="row">
+                                            <% if(locals.address && address.length>0){ %>
+                                                <% for(let i=0;i<address.length;i++){ %>
+                                            <div class="col-lg-6">
+                                               <div class="card mb-3 mb-lg-0">
+                                                    <div class="card-header">
+                                                        <h5 class="mb-0">Address Type: <%= address[i].addresstype%> Address</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <address> Name: <%= address[i].name%><br>House Name: <%= address[i].housename%>
+                                                            <br>Landmark: <%= address[i].landmark%>
+                                                            <br> City: <%= address[i].city%>
+                                                            <br>State:<%= address[i].state%>
+                                                            <br>Pincode: <%= address[i].pincode%>
+                                                            <br>Phone: <%= address[i].phone%>
+                                                            <br>Alternate Phone: <%= address[i].altphone%>
+                                                        </address>
+                                                       
+                                                                <a href="#" class="btn-small edit-address-btn" data-address-id="<%= address[i]._id %>">Edit</a>
+
+                                                                
+                                                                
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }} %>
+
+                                            <script>
+                                                // Function to fetch address data and populate the form fields
+                                                async function populateAddressForm(addressID) {
+                                                    try {
+                                                        console.log('jaaagh');
+                                                        const response = await fetch(`/getAddress/${addressID}`); // Assuming you have an endpoint to fetch address data by ID
+                                                        const addressData = await response.json();
+
+                                                        console.log(addressData);
+                                            
+                                                        // Populate the form fields with the fetched address data
+                                                        document.getElementById('addressType').value = addressData.addressType;
+                                                        document.getElementById('name').value = addressData.name;
+                                                        document.getElementById('houseName').value = addressData.housename;
+                                                        document.getElementById('landmark').value = addressData.landmark;
+                                                        document.getElementById('city').value = addressData.city;
+                                                        document.getElementById('state').value = addressData.state;
+                                                        document.getElementById('pincode').value = addressData.pincode;
+                                                        document.getElementById('phone').value = addressData.phone;
+                                                        document.getElementById('altPhone').value = addressData.altphone;
+                                                        document.getElementById('editID').value = addressData._id
+                                            
+                                                        // Show the modal
+                                                        const modal = document.getElementById('addAddressModal');
+                                                        modal.style.display = 'block';
+                                                    } catch (error) {
+                                                        console.error('Error fetching address data:', error);
+                                                        // Handle error
+                                                    }
+                                                }
+                                            
+                                                // Get all the "Edit" buttons
+                                                const editButtons = document.querySelectorAll('.edit-address-btn');
+                                            
+                                                // Attach click event listener to each "Edit" button
+                                                editButtons.forEach(button => {
+                                                    button.addEventListener('click', () => {
+                                                        const addressID = button.dataset.addressId; // Assuming you have data attribute to store address ID
+                                                        populateAddressForm(addressID);
+                                                    });
+                                                });
+                                            </script>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Account Details</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>Already have an account? <a href="page-login-register.html">Log in instead!</a></p>
+                                                <form method="post" name="enq">
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label>First Name <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="name" type="text">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label>Last Name <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="phone">
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label>Display Name <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="dname" type="text">
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label>Email Address <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="email" type="email">
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label>Current Password <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="password" type="password">
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label>New Password <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="npassword" type="password">
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label>Confirm Password <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="cpassword" type="password">
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+      
+    document.getElementById("addAddressForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the form from being submitted by default
+
+        // Perform validation for each input field
+        const inputs = document.querySelectorAll("#addAddressForm input[type='text'], #addAddressForm input[type='number']");
+        let isValid = true;
+
+        inputs.forEach(function(input) {
+            // Check if the input value is empty
+            if (!input.value.trim()) {
+                isValid = false;
+                // Add error class or display error message
+                input.classList.add("error");
+                // Optionally display error message
+                // const errorMessage = input.previousElementSibling.textContent + " is required";
+                // input.nextElementSibling.textContent = errorMessage;
+            } else {
+                // Remove error class or error message if input is filled
+                input.classList.remove("error");
+                // input.nextElementSibling.textContent = "";
+            }
+        });
+
+        // Submit the form if all fields are valid
+        if (isValid) {
+            this.submit();
+        } 
+    });
+
+
+    </script>
+    <script>
+        const addressTypeButtons = document.querySelectorAll('.address-type-btn');
+    
+        addressTypeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                addressTypeButtons.forEach(btn => {
+                    btn.classList.remove('selected'); // Remove 'selected' class from all buttons
+                });
+                button.classList.add('selected'); // Add 'selected' class to the clicked button
+                document.getElementById('addressType').value = button.value; // Set the hidden input value
+            });
+        });
+    
+        document.getElementById("addAddressForm").addEventListener("submit", function(event) {
+            if (!document.getElementById('addressType').value) {
+                alert("Please select an address type.");
+                event.preventDefault(); // Prevent form submission if no address type is selected
+            }
+        });
+    </script>
+    
+    <style>
+        .address-type-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+    
+        .address-type-btn.selected {
+            background-color: #0056b3;
+        }
+    </style>
+    
+   <%- include('../layouts/userFooter.ejs') %>

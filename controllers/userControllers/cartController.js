@@ -33,15 +33,28 @@ const addToCart=async (req,res)=>{
             const productId=req.query.id
             const size     =req.query.size
             const quantity =parseInt(req.query.qty)
+            const userId=req.session.user_id;
+      
+            let userCart = await Cart.findOne({ userId:userId });
+
+            const product = await Product.findById(productId);
             
-            console.log(productId,size,quantity);
-        const userId=req.session.user_id;
-       
-        const userCart = await Cart.findOne({ userId });
+        const selectedSize = product.sizes.find(s => s.size === size);
+        if (!selectedSize || selectedSize.quantity === 0) {
+            return res.send('Out of stock');
+        }
+        // Add the product to the cart
+        if (!userCart) {
+            userCart = new Cart({ userId: userId, products: [] });
+        }
 
         // Add the product to the cart
         userCart.products.push({ productId, quantity, size });
         await userCart.save();
+
+       
+
+        
         
         res.redirect('/cart')
     } catch (error) {

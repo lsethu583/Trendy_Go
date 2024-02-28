@@ -8,6 +8,7 @@ const session=require("express-session")
 const path=require("path")
 const userRoute=require("./routes/userRoute")
 const admin_route = require("./routes/adminRoute")
+require('dotenv').config();
 const nocache = require("nocache")
 app.use(nocache())
 app.use(
@@ -31,7 +32,9 @@ app.use("/admin",admin_route)
 
 
 
-app.listen(4004,()=>{
-    console.log("Listening to the server on http://localhost:4004");
-})
+const port = process.env.PORT; // Use port 4004 if PORT variable is not defined in .env
+
+app.listen(port, () => {
+    console.log(`Listening to the server on http://localhost:${port}`);
+});
 

@@ -175,6 +175,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
+                    <%if(locals.cart.products){%>
                     <% if (cart.products.length > 0){ %>
                         <% var totalAmount = 0; %>
                     <div class="table-responsive">
@@ -227,25 +228,36 @@
                                        <%}%>
                             </tbody>
                         </table>
+                        <%}else{%>
+                            <h4>Your cart is empty!</h4>
+                            <%}%>
                         <script>
     
-                            function increaseQuantity(element, i,total1,cartId,PID) {
-                                console.log('hiihih');
-                                const quantityElement = element.parentElement.querySelector('.qty-val');
-                                console.log(quantityElement,"quantityElement")
-                                const currentQuantity = parseInt(quantityElement.innerText, 10);
-                                console.log(currentQuantity,"currentQuantity")
-                                const newQuantity = currentQuantity<1 ?1: currentQuantity+1;
-                                quantityElement.innerText = newQuantity;
-                               
-                                const priceElement    = document.getElementById(`price-${i}`)
-                                const price           = parseInt(priceElement.innerText, 10);
-                                const subtotalElement = document.getElementById(`subtotal-${i}`);
-                                subtotalElement.innerText = price*newQuantity 
-                               
-                                updateQuantity(cartId, newQuantity,PID);
-                            }
-                            
+    function increaseQuantity(element, i, total1, cartId, PID, maxQuantity) {
+    const quantityElement = element.parentElement.querySelector('.qty-val');
+    const currentQuantity = parseInt(quantityElement.innerText, 10);
+    const newQuantity = currentQuantity < maxQuantity ? currentQuantity + 1 : currentQuantity;
+    
+    // If the new quantity exceeds the available stock, show a sweet alert
+    if (newQuantity === maxQuantity) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Product for this quantity is out of stock!',
+        });
+    } else {
+        quantityElement.innerText = newQuantity;
+        
+        const priceElement = document.getElementById(`price-${i}`);
+        const price = parseInt(priceElement.innerText, 10);
+        const subtotalElement = document.getElementById(`subtotal-${i}`);
+        subtotalElement.innerText = price * newQuantity;
+        
+        updateQuantity(cartId, newQuantity, PID);
+    }
+}
+
+
 
                             function decreaseQuantity(element, i, total1,cartId,PID) {
                                
@@ -305,10 +317,16 @@
 
 
                     </div>
-                    <div class="cart-action text-end">
-                        <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
-                        <a class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
-                    </div>
+                   <div class="cart-action text-end">
+    <a id="checkoutLink" href="/checkout" class="btn proceed-to-checkout">
+        <i class="fi-rs-box-alt mr-10"></i> Proceed To Checkout
+    </a>
+    <a class="btn continue-shopping"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+</div>
+    
+                    
+                    
+                    
                     <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
                     <div class="row mb-50">
                         <% if (cart && cart.length > 0) { %>
@@ -335,10 +353,11 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <a href="/checkout" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                               
                             </div>
                         </div>
                         <% } %>
+                        
                     </div>
                 </div>
             </div>
@@ -380,6 +399,8 @@
     
 
 </script>
+
+
 
     
 <%- include('../layouts/userFooter') %>

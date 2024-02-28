@@ -5,6 +5,7 @@ const adminController = require('../controllers/adminController/adminController'
 const categoryController = require('../controllers/adminController/categoryController');
 const productController=require('../controllers/adminController/productController')
 const adminAuth = require('../middleware/adminAuth');
+const adminOrderController=require('../controllers/adminController/adminOrderController')
 
 //storage of images of category
 const storage = multer.diskStorage({
@@ -67,5 +68,9 @@ admin_route.get('/deleteProduct/:id',adminAuth.isLogin,productController.deleteP
 admin_route.get('/editProduct',adminAuth.isLogin,productController.loadEditProductForm)
 admin_route.post('/editProduct',uploadProduct.array('image'),productController.storeEditProduct)
 admin_route.get('/listUnlist',productController.isListedUnlisted)
+
+
+admin_route.get('/orderlist',adminAuth.isLogin,adminOrderController.loadOrderList)
+admin_route.get('/orderdetail',adminAuth.isLogin,adminOrderController.loadOrderDetails)
 
 module.exports = admin_route;

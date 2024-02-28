@@ -1,0 +1,294 @@
+<%- include('../layouts/userHeader') %>
+
+<main class="main">
+    
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 m-auto">
+                    <div class="tab-pane fade show" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Address Details</h5>
+                            </div>
+                            <div class="card-body">
+                                
+                                <form method="post" action="/createaddress">
+                                    <div class="row">
+                                        <div class="form-group col-md-10">
+                                            <label>Address type <span class="required">*</span></label>
+                                            <select required class="form-control square" id="address_type" name="address_type" onchange="validateAddressType()">
+                                                <option value="">Select Address Type</option>
+                                                <option value="home">Home</option>
+                                                <option value="company">Company</option>
+                                            </select>
+                                            <div id="address_type_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        
+                                        
+                                        
+
+                                        <div class="form-group col-md-10">
+                                            <label>Username <span class="required">*</span></label>
+                                            <input required="" class="form-control square" id="name" name="name" type="text" onkeyup="validateName()">
+                                            <div id="name_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                       
+                                        <div class="form-group col-md-10">
+                                            <label>House Name <span class="required">*</span></label>
+                                            <input required="" class="form-control square" id="housename" name="housename" type="text" onkeyup="validateHouseName()">
+                                            <div id="housename_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>Landmark <span class="required">*</span></label>
+                                            <input required="" class="form-control square" id="landmark" name="landmark" type="" onkeyup="validateLandmark()">
+                                            <div id="landmark_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>City <span class="required">*</span></label>
+                                            <input required="" class="form-control square" id="city" name="city" type="" onkeyup="validateCity()">
+                                            <div id="city_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>State <span class="required">*</span></label>
+                                            <input required="" class="form-control square" id="state" name="state" type="" onkeyup="validateState()">
+                                            <div id="state_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="form-group col-md-10">
+                                            <label>Pincode <span class="required">*</span></label>
+                                            <input required="" class="form-control square" id="pincode" name="pincode" type="" onkeyup="validatePincode()">
+                                            <div id="pincode_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+
+
+                                     <div class="form-group col-md-6">
+                                      <label>Phone <span class="required">*</span></label>
+                                        <input required="" class="form-control square" id="phone" name="phone" type="" onkeyup="validatePhone()">
+                                     <div id="phone_error" class="alert alert-danger" style="display: none;"></div>
+                                      </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label>Alternate Phone <span class="required">*</span></label>
+                                            <input required="" class="form-control square" id="altphone" name="altphone" type="" onkeyup="validateAltPhone()" >
+                                            <div id="altphone_error" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+</main>
+
+<script>
+    const addressInput = document.getElementById("address_type");
+    const adddressError = document.getElementById("address_type_error");
+    const nameInput = document.getElementById("name");
+    const nameError = document.getElementById("name_error");
+    const housenameInput = document.getElementById("housename");
+    const houenameError = document.getElementById("housename_error");
+    const landmarkInput = document.getElementById("landmark");
+    const landmarkError = document.getElementById("landmark_error");
+    const cityInput = document.getElementById("city");
+    const cityError = document.getElementById("city_error");
+    const stateInput =document.getElementById("state");
+    const stateError = document.getElementById("state_error");
+    const pincodeInput = document.getElementById("pincode");
+    const pincodeError = document.getElementById("pincode_error");
+    const phoneInput = document.getElementById("phone");
+    const phoneError = document.getElementById("phone_error");
+    const altphoneInput = document.getElementById("altphone");
+    const altphoneError = document.getElementById("altphone_error");
+    const alphabet =   /^[A-Za-z\s]+$/;
+    const digits = /^[0-9]+$/;
+
+
+
+    function validateAddressType(){
+        const address = addressInput.value.trim();
+        if(address === "Home" || address === "Company"){
+            adddressError.style.display = "block";
+            adddressError.style.color = "red";
+            adddressError.textContent = "address type must be home or company";
+        }else{
+            nameError .style.display = "none";
+
+        }
+    }
+
+
+    function validateName(){
+        const name = nameInput.value.trim();
+        if(name === ""){
+            nameError .style.display = "block";
+            nameError.style.color = "red";
+            nameError.textContent = "Enter a Valid Username"
+        }
+        else if(!alphabet.test(name)){
+            nameError .style.display = "block";
+            nameError.style.color = "red";
+            nameError.textContent = "Username can only contain alphabets"
+
+        }
+        else if(name.length > 25){
+            nameError .style.display = "block";
+            nameError.style.color = "red";
+            nameError.textContent = "Username  cannot be more than 25 characters"
+
+        }
+        else{
+            nameError .style.display = "none";
+        }
+        
+    }
+
+    function validateHouseName(){
+        const housename = housenameInput.value.trim();
+        if(housename === ""){
+            houenameError.style.display = "block";
+            houenameError.style.color = "red";
+            houenameError.textContent = "Enter valid House name"
+
+        }
+        else if(!alphabet.test(housename)){
+            houenameError.style.display = "block";
+            houenameError.style.color = "red";
+            houenameError.textContent = "Enter can only contain alphabets"
+
+        }
+        else{
+            houenameError.style.display = "none";
+        }
+    }
+
+    function validateLandmark(){
+        const landmark = landmarkInput.value.trim();
+        if(landmark === ""){
+            landmarkError.style.display = "block";
+            landmarkError.style.color = "red";
+            landmarkError.textContent = "Enter a valid landmark";
+        }
+        else{
+            landmarkError.style.display = "none";
+        }
+    }
+
+
+    function validateCity(){
+        const city = cityInput.value.trim();
+        if(city === ""){
+            cityError.style.display = "block";
+            cityError.style.color = "red";
+            cityError.textContent = "Enter a Valid city name";
+        }
+        else if(!alphabet.test(city)){
+            cityError.style.display = "block";
+            cityError.style.color = "red";
+            cityError.textContent = "city must be an alphabet";
+
+        }else{
+            cityError.style.display = "none";
+        }
+    }
+
+
+    function validateState(){
+        const state = stateInput.value.trim();
+        if(state === ""){
+            stateError.style.display = "block";
+            stateError.style.color = "red";
+            stateError.textContent = "Enter a vaild state"
+        }
+        else if(!alphabet.test(state)){
+            stateError.style.display = "block";
+            stateError.style.color = "red";
+            stateError.textContent = "State must be an alphabet"
+
+        }
+        else{
+            stateError.style.display = "none";
+        }
+    }
+
+
+    function validatePincode(){
+
+        const pincode = pincodeInput.value.trim();
+        if(pincode === ""){
+            pincodeError.style.display = "block";
+            pincodeError.style.color = "red";
+            pincodeError.textContent = "Enter valid pincode";
+        }
+        else if(pincode.length != 6){
+            pincodeError.style.display = "block";
+            pincodeError.style.color = "red";
+            pincodeError.textContent = "pincode must be 6 digit";
+
+        }
+        else if(!digits.test(pincode)){
+            pincodeError.style.display = "block";
+            pincodeError.style.color = "red";
+            pincodeError.textContent = "pincode must be  digit";
+
+        }
+        else{
+            pincodeError.style.display = "none";
+        }
+    }
+
+
+    
+    function validatePhone() {
+    const phone = phoneInput.value.trim();
+    if(phone === ""){
+        phoneError.style.display = "block";
+        phoneError.style.color = "red";
+        phoneError.textContent = "Enter valid number";
+    }
+    else if(phone.length > 12){
+        phoneError.style.display = "block";
+        phoneError.style.color = "red";
+        phoneError.textContent = "phone number limit exceeds";
+    }
+    else if(!digits.test(phone)){
+        phoneError.style.display = "block";
+        phoneError.style.color = "red";
+        phoneError.textContent = "phone number must be digits";
+    }
+    else{
+        phoneError.style.display = "none";
+    }
+}
+
+
+function validateAltPhone() {
+    const altphone = altphoneInput.value.trim();
+    if(altphone === ""){
+        altphoneError.style.display = "block";
+        altphoneError.style.color = "red";
+        altphoneError.textContent = "Enter valid number";
+    }
+    else if(altphone.length > 12){
+        altphoneError.style.display = "block";
+        altphoneError.style.color = "red";
+        altphoneError.textContent = "phone number limit exceeds";
+    }
+    else if(!digits.test(altphone)){
+        altphoneError.style.display = "block";
+        altphoneError.style.color = "red";
+        altphoneError.textContent = "phone number must be digits";
+    }
+    else{
+        altphoneError.style.display = "none";
+    }
+}
+
+
+</script>
+
+<%- include('../layouts/userFooter') %>

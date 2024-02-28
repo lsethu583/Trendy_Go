@@ -1,0 +1,60 @@
+<%- include('../layouts/adminHeader') %>
+<%if(orders.length){%>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col" class="text-end"> Action </th>
+                                </tr>
+                            </thead>
+                          
+                            <% for(let i=0;i<orders.length;i++) { %>
+                                <% const date = new Date(orders[i].orderDate) %>
+                                <tr>
+                                    <td><%= orders[i]._id%></td>
+                                    
+                                    <td><%= orders[i].userId.firstName %></td>
+                                    <td><%= orders[i].userId.email %></td>
+                                    <td>&#8377;<%= orders[i].totalAmount %></td>
+                                    
+                                    <td><%= orders[i].orderStatus %></td>
+                                    <td><%= date.toLocaleDateString('en-GB') %></td>
+                                    <td class="text-end">
+                                        <a href="#" class="btn btn-md rounded font-sm">Detail</a>
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="/admin/orderdetail?id=<%= orders[i]._id %>">View detail</a>
+                                                <a class="dropdown-item" href="#">Edit info</a>
+                                                <a class="dropdown-item text-danger" href="#">Delete</a>
+                                            </div>
+                                        </div> <!-- dropdown //end -->
+                                    </td>
+                                </tr>
+                                
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive //end -->
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-15 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        
+                    </ul>
+                </nav>
+            </div>
+        </section> <!-- content-main end// -->
+        <%}else{%>
+<h1>There are no Orders to list</h1>
+            <%}%>
+        <%- include('../Layouts/adminFooter') %>
