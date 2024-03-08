@@ -73,9 +73,6 @@ const orderSchema = new mongoose.Schema({
     returnReason:{
         type:String
     },
-    orderID:{
-        type:String
-    },
     razoID:{
         type:String
     },

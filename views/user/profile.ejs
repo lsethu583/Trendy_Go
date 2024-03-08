@@ -2,8 +2,7 @@
 
 
     <main class="main">
-        
-        <section class="pt-150 pb-150">
+    <section class="pt-150 pb-150">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-10 m-auto">
@@ -18,13 +17,16 @@
                                             <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
+                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>My Wallet</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="password-change-tab" data-bs-toggle="tab" href="#password-change" role="tab" aria-controls="password-change" aria-selected="true"><i class="fi-rs-user mr-10"></i>Change Password</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
@@ -77,7 +79,7 @@
                                                                     <td><%= orders[i].orderDate %></td>
                                                                     <td><%= orders[i].paymentStatus %></td>
                                                                     <td><%= orders[i].totalAmount %> for <%= orders[i].products.length%> item</td>
-                                                                    <td><a href="#" class="btn-small d-block">View</a></td>
+                                                                    <td><a href="/getorderdetails?OID=<%= orders[i].orderId %>" class="btn-small d-block">View</a></td>
                                                                 </tr>
                                                                 <% } %>
                                                                 <% } %>
@@ -90,24 +92,15 @@
                                     </div>
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
                                         <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Orders tracking</h5>
-                                            </div>
-                                            <div class="card-body contact-from-area">
-                                                <p>To track your order please enter your OrderID in the box below and press "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
-                                                <div class="row">
-                                                    <div class="col-lg-8">
-                                                        <form class="contact-form-style mt-30 mb-50" action="#" method="post">
-                                                            <div class="input-style mb-20">
-                                                                <label>Order ID</label>
-                                                                <input name="order-id" placeholder="Found in your order confirmation email" type="text" class="square">
-                                                            </div>
-                                                            <div class="input-style mb-20">
-                                                                <label>Billing email</label>
-                                                                <input name="billing-email" placeholder="Email you used during checkout" type="email" class="square">
-                                                            </div>
-                                                            <button class="submit submit-auto-width" type="submit">Track</button>
-                                                        </form>
+                                            <div class="card-body">
+                                                <div class="user-wallet">
+                                                    <h5 class="card-title mb-4">Your Wallet</h5>
+                                                    <div class="wallet-info">
+                                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                                            <p class="mb-0">Current Balance:</p>
+                                                            <p class="mb-0">&#8377;<span id="wallet-balance"><%= user.wallet %></span></p>
+                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -493,51 +486,205 @@ window.addEventListener('click', (event) => {
                                             
                                         </div>
                                     </div>
+                                    
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h5>Account Details</h5>
                                             </div>
                                             <div class="card-body">
-                                                <p>Already have an account? <a href="page-login-register.html">Log in instead!</a></p>
-                                                <form method="post" name="enq">
+                                                
+                                                <form method="post" action="/updateuser" id="updateUserForm">
                                                     <div class="row">
-                                                        <div class="form-group col-md-6">
-                                                            <label>First Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name" type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Last Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="phone">
+                                                        <div class="form-group col-md-12">
+                                                            <label for="firstName">First Name <span class="required">*</span></label>
+                                                            <input required="" value="<%= user.firstName %>" class="form-control square" id="firstName" name="name" type="text">
+                                                            <span id="nameError" class="error-message"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
-                                                            <label>Display Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="dname" type="text">
+                                                            <label for="phone">Phone <span class="required">*</span></label>
+                                                            <input required="" value="<%= user.phone %>" class="form-control square" id="phone" name="phone">
+                                                            <span id="phoneError" class="error-message"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
-                                                            <label>Email Address <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="email" type="email">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Current Password <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="password" type="password">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>New Password <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="npassword" type="password">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Confirm Password <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="cpassword" type="password">
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                                                            <label for="email">Email Address <span class="required">*</span></label>
+                                                            <input required="" value="<%= user.email %>" class="form-control square" id="email" name="email" type="email">
+                                                            <span id="emailError" class="error-message"></span>
                                                         </div>
                                                     </div>
+                                                    <button type="submit" class="btn-brand ">Save Changes</button>
                                                 </form>
+                                                <script>
+                                                    const form1 = document.getElementById('updateUserForm');
+                                                
+                                                    form1.addEventListener('submit', function(event) {
+                                                        let isValid = true;
+                                                
+                                                        const nameInput = document.getElementById('firstName').value.trim();
+                                                        const phoneInput = document.getElementById('phone').value.trim();
+                                                        const emailInput = document.getElementById('email').value.trim();
+                                                
+                                                        const nameError = document.getElementById('nameError');
+                                                        const phoneError = document.getElementById('phoneError');
+                                                        const emailError = document.getElementById('emailError');
+                                                
+                                                        // Name validation
+                                                        // if (nameInput === '') {
+                                                        //     nameError.innerText = 'Please enter your name';
+                                                        //     nameError.style.color = 'red';
+                                                        //     isValid = false;
+                                                        // } else {
+                                                        //     nameError.innerText = '';
+                                                        // }
+                                                
+                                                        // Phone number validation
+                                                        // if (phoneInput === '' || !isValidPhoneNumber(phoneInput)) {
+                                                        //     phoneError.innerText = 'Please enter a valid phone number';
+                                                        //     phoneError.style.color = 'red';
+                                                        //     isValid = false;
+                                                        // } else {
+                                                        //     phoneError.innerText = '';
+                                                        // }
+                                                
+                                                        // Email validation
+                                                        // if (emailInput === '' || !isValidEmail(emailInput)) {
+                                                        //     emailError.innerText = 'Please enter a valid email address';
+                                                        //     emailError.style.color = 'red';
+                                                        //     isValid = false;
+                                                        // } else {
+                                                        //     emailError.innerText = '';
+                                                        // }
+                                                
+                                                        if (!isValid) {
+                                                            event.preventDefault(); // Prevent form submission if validation fails
+                                                        }
+                                                    });
+                                                
+                                                    function isValidPhoneNumber(phone) {
+                                                        // You can implement more sophisticated phone number validation here
+                                                        return /^\d{10}$/.test(phone); // Validates if phone number has exactly 10 digits
+                                                    }
+                                                
+                                                    function isValidEmail(email) {
+                                                        // You can implement more sophisticated email validation here
+                                                        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); // Validates basic email format
+                                                    }
+                                                </script>
+                                                
+                                                
+
                                             </div>
+                                            <div class="row" style="max-width:920px">
+                                                <div class="col-md">
+                                                    <article class="box mb-3 bg-light">
+                                                        <!-- Add data-bs-toggle and data-bs-target attributes to trigger the modal -->
+                                                        <!-- <a class="btn float-end btn-light btn-sm rounded font-md" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change</a>
+                                                        <h6>Password</h6>
+                                                        <small class="text-muted d-block" style="width:70%">You can reset or change your password by clicking here</small> -->
+                                                    </article>
+                                                    
+                                                    <!-- Modal -->
+                                                   
+                                               
+                                                    
+                                                    
+                                                </div>
+                                               
+                                            </div> <!-- row.// -->
                                         </div>
+                                       
                                     </div>
+
+
+<!-- //password change -->
+
+<div class="tab-pane fade" id="password-change" role="tabpanel" aria-labelledby="password-change-tab">
+    <div class="card">
+        <div class="card-header">
+            <h5>Change Password</h5>
+        </div>
+        <div class="card-body">
+            <form id="passwordChangeForm" action="/changeuserpass" method="post">
+                <div class="mb-3">
+                    <label for="currentPassword" class="form-label">Current Password</label>
+                    <input name="oldpass" type="password" class="form-control" id="currentPassword" placeholder="Enter current password" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input name="newpass" type="password" class="form-control" id="newPassword" placeholder="Enter new password" required>
+                    <small id="passwordHelp" class="form-text text-muted">Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.</small>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmNewPassword" placeholder="Confirm new password" required>
+                    <div id="passwordMismatch" class="text-danger" style="display: none;">Passwords do not match!</div>
+                </div>
+        
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+        
+        <script>
+            document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+        
+                // Get password values
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+        
+                // Password strength regex pattern
+                const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{"':;?/>.<,])[A-Za-z\d!@#$%^&*()_+}{"':;?/>.<,]{6,}$/;
+        
+                // Validate new password strength
+                if (!passwordPattern.test(newPassword)) {
+                    alert('Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+                    return;
+                }
+        
+                // Validate if new password matches confirm password
+                if (newPassword !== confirmNewPassword) {
+                    document.getElementById('passwordMismatch').style.display = 'block';
+                    return;
+                }
+        
+                // Validate if old password is different from new password
+                if (currentPassword === newPassword) {
+                    alert('New password should be different from the old password.');
+                    return;
+                }
+        
+                // Passwords match and meet strength criteria - Proceed with your password change logic here
+                // ...
+                this.submit();
+            });
+        </script>
+        
+        <div class="row" style="max-width:920px">
+            <div class="col-md">
+                <article class="box mb-3 bg-light">
+                    <!-- Add data-bs-toggle and data-bs-target attributes to trigger the modal -->
+                    <!-- <a class="btn float-end btn-light btn-sm rounded font-md" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change</a>
+                    <h6>Password</h6> -->
+                    <!-- <small class="text-muted d-block" style="width:70%">You can reset or change your password by clicking here</small> -->
+                </article>
+                
+                <!-- Modal -->
+               
+           
+                
+                
+            </div>
+           
+        </div> <!-- row.// -->
+    </div>
+   
+</div>
+
+
+                                    
                                 </div>
                             </div>
                         </div>
@@ -614,5 +761,7 @@ window.addEventListener('click', (event) => {
             background-color: #0056b3;
         }
     </style>
+
+    
     
    <%- include('../layouts/userFooter.ejs') %>

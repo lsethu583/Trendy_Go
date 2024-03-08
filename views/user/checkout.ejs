@@ -308,8 +308,8 @@ addAddressLink();
                                     </div>
                                     <div class="custome-radio">
                                         <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="">
-                                        <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Paypal</label>
-                                        <div class="form-group collapse in" id="paypal">
+                                        <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal" onclick="createRazorpayOrder">online payment</label>
+                                        <div class="form-group collapse in" id="payment_method">
                                             <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
                                         </div>
                                     </div>
@@ -390,6 +390,37 @@ addAddressLink();
                                         }
                                     });
                                 });
+                            </script>
+                            <script>
+                             function createRazorpayOrder(addressId, totalAmount, paymentMethod) {
+       const data = {
+        addressId: addressId,
+        totalAmount: totalAmount,
+        paymentMethod: paymentMethod
+    };
+
+    fetch('/razorpayorder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Razorpay order created:', data);
+        // Handle the response data as needed
+    })
+    .catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+    });
+}
+   
                             </script>
                             
                             

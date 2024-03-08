@@ -1,6 +1,34 @@
 <%- include('../layouts/adminHeader') %>
                 <%if(orders) { %>
-                    
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Order detail</h2>
+                            <p>Details for Order ID: <%=orders.orderId%></p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <header class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                                    <span>
+                                        <i class="material-icons md-calendar_today"></i> <b><%=orders.orderDate%></b>
+                                    </span> <br>
+                                    <small class="text-muted">Order ID: <%=orders.orderId%></small>
+                                </div>
+                                <form action="/admin/updateorderstatus?OID=<%=orders._id%>" method="post">
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                    <select value="<%=orders.orderStatus%>" class="form-select d-inline-block mb-lg-0 mb-15 mw-200" name="orderStatus">
+                                        <option>Order Placed</option>
+                                        <option>Shipped</option>
+                                        <option>Delivered</option>
+                                        <option>Cancelled</option>
+                                        <option>Returned</option>
+                                    </select>
+                                    <button class="btn btn-primary" type="submit">Save</button>
+                                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                                </div>
+                            </form>
+                            </div>   
                 <div class="card-body">
                     <div class="row mb-50 mt-20 order-info-wrap">
                         <div class="col-md-4">
@@ -117,22 +145,57 @@
                             <div class="box shadow-sm bg-light">
                                 <h6 class="mb-15">Payment info</h6>
                                 <p>
-                                    <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
-                                    Business name: Grand Market LLC <br>
-                                    Phone: +1 (800) 555-154-52
+                                    <!-- <img src="/assetsb/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br> -->
+                                    Payment: <h6><%=orders.paymentMethod%></h6>
+                                    Business name: <%=orders.userId.firstName%><br>
+                                    Phone: +91 <%=orders.userId.phone%>
                                 </p>
                             </div>
                             <div class="h-25 pt-4">
-                                <div class="mb-3">
-                                    <label>Notes</label>
-                                    <textarea class="form-control" name="notes" id="notes" placeholder="Type some note"></textarea>
-                                </div>
-                                <button class="btn btn-primary">Save note</button>
+                                <% if (orders.orderStatus == 'Order Placed' || orders.orderStatus == 'Shipped') { %>
+                                    <button class="btn btn-danger" onclick="confirmCancelOrder('<%= orders._id %>')">Cancel Order</button>
+                                <% } %>
                             </div>
-                        </div> <!-- col// -->
+                            
+                        </div>  <!-- col// -->
                     </div>
                     <% } %>
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
         </section> <!-- content-main end// -->
+        <script>
+            function confirmCancelOrder(orderId) {
+    // Use SweetAlert to confirm cancellation
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Once cancelled, you will not be able to recover this order!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, cancel it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If confirmed, call the cancelorder route
+            fetch(`/admin/cancelorder?OID=${orderId}`, {
+                method: "GET",
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Reload the page or update UI if needed
+                location.reload();
+            })
+            .catch((error) => {
+                console.error("There was a problem with your fetch operation:", error);
+            });
+        }
+    });
+}
+
+        </script>
        <%- include('../layouts/adminFooter') %>

@@ -18,7 +18,7 @@
                             <% for(let i=0;i<orders.length;i++) { %>
                                 <% const date = new Date(orders[i].orderDate) %>
                                 <tr>
-                                    <td><%= orders[i]._id%></td>
+                                    <td><%= orders[i].orderId%></td>
                                     
                                     <td><%= orders[i].userId.firstName %></td>
                                     <td><%= orders[i].userId.email %></td>
@@ -31,7 +31,7 @@
                                         <div class="dropdown">
                                             <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="/admin/orderdetail?id=<%= orders[i]._id %>">View detail</a>
+                                                <a class="dropdown-item" href="/admin/orderdetail?orderId=<%= orders[i]._id %>">View detail</a>
                                                 <a class="dropdown-item" href="#">Edit info</a>
                                                 <a class="dropdown-item text-danger" href="#">Delete</a>
                                             </div>

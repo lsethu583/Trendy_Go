@@ -37,16 +37,16 @@ const insertUser = async (req, res) => {
       confirmPassword,
       phoneNumber,
     } = req.body;
-    // to check whether the registering user is existing using mail and phone number
+    // Check whether the registering user already exists using email and phone number
 
     const existingUser = await User.findOne({
-      $or: [{ email }, { number: phoneNumber }],
+      $or: [{ email }, { phoneNumber }],
     });
     if (existingUser) {
       const message = "Email or phone number already exists";
-      res.render('user/register',{message})
+      res.render('user/register', { message });
     } else {
-      // if,the user is not existing
+      // If the user does not exist
       const hashedPassword = await securePassword(password);
 
       const currentDate = new Date();
@@ -57,21 +57,22 @@ const insertUser = async (req, res) => {
         phoneNumber,
         email,
         password: hashedPassword,
-        confirmPassword: confirmPassword,
+        confirmPassword,
         date: currentDate,
       };
       req.session.obj = obj;
       req.session.email = email;
 
+      // Set a success message for successful registration
+      req.session.success_msg = "Registration successful!";
       res.redirect("/otp");
     }
   } catch (error) {
     console.log(error.message);
-    res
-      .status(500)
-      .render("register", { message: "An error occured during registration" });
+    res.status(500).render("register", { message: "An error occurred during registration" });
   }
 };
+
 const loadLogin = async(req,res)=>{
   try {
     res.render('user/login',{ message: req.session.err_msg })

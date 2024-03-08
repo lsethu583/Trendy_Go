@@ -5,7 +5,11 @@ const Category=require("../../models/categoryModel")
 const Address=require('../../models/adress')
 const Orders=require('../../models/orderSchema')
 const {orderIdGenerate}=require('../../helper/idgenerate')
-
+const Razorpay=require('razorpay')
+const razorpay = new Razorpay({
+    key_id: "rzp_test_XnSWcDHvXwMKdf",
+    key_secret: "NehtVXa3MOzjSmg29peiBR9S",
+});
 
 
 const loadCheckoutPage=async(req,res)=>{
@@ -27,6 +31,35 @@ const loadCheckoutPage=async(req,res)=>{
        console.log(error.message); 
     }
 }
+
+const razorpayOrder = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const { addressId, totalAmount, paymentMethod } = req.body;
+        const options = {
+            amount: Math.round(totalAmount * 100), // Amount in paisa
+            currency: "INR",
+            receipt: `order_${Date.now()}`,
+            payment_capture: 1,
+        };
+        razorpay.orders.create(options, async (err, razorpayOrder) => {
+            if (err) {
+                console.error("Error creating Razorpay order:", err);
+                return res.status(400).json({ success: false, error: "Payment Failed" });
+            } else {
+                res.status(201).json({
+                    success: true,
+                    message: "Order placed successfully.",
+                    order: razorpayOrder,
+                });
+            }
+        });
+    } catch (error) {
+        console.error("An error occurred while placing the order: ", error);
+        return res.status(400).json({ success: false, error: "Payment Failed" });
+    }
+};
+
 const placeorder = async (req, res) => {
     try {
         const userId = req.session.user_id;
@@ -84,7 +117,20 @@ const placeorder = async (req, res) => {
     }
 }
 
+const loadorderdetails=async(req,res)=>{
+    try {
+        const orderId=req.query.OID;
+        const userId=req.session.user_id
+        const user=await User.findById(req.session.user_id)
+        const cart = await Cart.find({ userId: userId }).populate('products.productId');
+        const orders=await Orders.find({userId:userId}).populate('products.productId').populate('userId');
 
+       
+        res.render('user/getorderdetails',{orderId,userId,user,cart,orders})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 
 
@@ -92,5 +138,7 @@ const placeorder = async (req, res) => {
 module.exports={
 loadCheckoutPage,
 placeorder,
+loadorderdetails,
+razorpayOrder,
 
 }

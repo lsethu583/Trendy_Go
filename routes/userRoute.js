@@ -45,9 +45,14 @@ user_route.put('/updateQuantity',auth.isLogin,cartController.updateQuantity)
 user_route.get('/profile',auth.isLogin,userProfileController.getProfilePage);
 user_route.post('/createaddress',auth.isLogin,userProfileController.addaddress)
 user_route.get('/getAddress/:addressID',userProfileController.getAddress)
+user_route.post('/updateuser',auth.isLogin,userProfileController.updateuserdetails)
+user_route.post('/changeuserpass',auth.isLogin,userProfileController.changeuserpassword)
+
 
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckoutPage)
 user_route.post('/placeorder',auth.isLogin,orderController.placeorder)
+user_route.get('/getorderdetails',auth.isLogin,orderController.loadorderdetails)
+user_route.post('/razorpayorder',auth.isLogin,orderController.razorpayOrder)
 
 
 

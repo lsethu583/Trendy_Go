@@ -134,14 +134,53 @@ const getAddress = async (req, res) => {
     }
 }
 
+const updateuserdetails=async(req,res)=>{
+    try {
+        const userId=req.session.user_id;
+        const name = req.body.firstName;
+        const email = req.body.email;
+        const phone = req.body.phone;
+        const user=await User.findById(userId)
+     
+        user.name = req.body.firstName;
+        user.email = req.body.email;
+        user.phone = req.body.phone;
 
+        
+        await user.save();
 
+        
+        res.redirect("/profile");
+    } catch (error) {
+       console.log(error.message); 
+    }
+}
 
+const changeuserpassword=async(req,res)=>{
+    try {
+        const userId = req.session.user_id;
+        const oldPass = req.body.password;
+        const newPass = req.body.newpass;
+        const user = await User.findById(userId);
+
+        if (user.password === oldPass) {
+            user.password = newPass;
+            await user.save();
+            res.redirect("/profile");
+        } else {
+            // If the old password is incorrect, redirect with an error message
+            res.redirect('/error?msg=IncorrectOldPassword');
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 
   module.exports={
     getProfilePage,
     addaddress,
-    getAddress
-   
+    getAddress,
+    updateuserdetails,
+    changeuserpassword,
   }
