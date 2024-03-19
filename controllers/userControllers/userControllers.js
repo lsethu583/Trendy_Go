@@ -4,6 +4,8 @@ const nodemailer = require("nodemailer");
 const Products=require('../../models/productModel')
 const Category=require('../../models/categoryModel')
 const Cart=require('../../models/cartModel')
+const wishlist=require('../../models/wishlistSchema')
+const Banner=require('../../models/bannerSchema')
 
 
 
@@ -120,22 +122,32 @@ const verifyLogin = async (req, res) => {
 
 
 
-const loadHome=async(req,res)=>{
-  try {
-    let products = [];
-    let category = [];
-    if(req.session.user_id){
-     products=await Products.find({}).populate('productCategory')
-     category=await Category.find({})
-    
+const loadHome = async (req, res) => {
+    try {
+        let products = [];
+        let category = [];
+        let banner = [];
+
+        // Check if the user is logged in
+        if (req.session.user_id) {
+            // If user is logged in, fetch products, categories, and banners
+            products = await Products.find({ is_Listed: true }).populate('productCategory');
+            category = await Category.find({});
+            banner = await Banner.find({});
+            res.render('user/home', { products, category, banner });
+        } else{
+          let products = [];
+          products=await Products.find({}).populate('productCategory')
+          res.render('user/home',{products})
+        }
+
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send("Internal Server Error");
     }
-    res.render('user/home',{products,category})
-      
-    
-  } catch (error) {
-    console.log(error.message);
-  }
 }
+
 
 const userLogout = async(req,res)=>{
   try {
@@ -156,8 +168,8 @@ const loadVerifyOtp = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "trendygosite@gmail.com",
-        pass: "qeup vubt ylss npvi",
+        user: process.env.EMAIL,
+        pass:process.env.PASS,
       },
     });
   
@@ -224,7 +236,7 @@ const verifyOtp = async (req, res) => {
     // Save the cart to the database
     await newCart.save();
 
-      console.log(userData);
+    
     //   res.send("OTP verification successful");
     res.redirect("/login")//loginpage
 
@@ -395,7 +407,7 @@ const loadShop=async(req,res)=>{
     const userId = req.session.user_id;
     const userData = await User.findById(userId);
     const productData = await Products.find({is_Listed:true});
-    console.log(productData);
+    
     const categories = await Category.find();
     res.render("user/shop", { products: productData });
   } catch (error) {
@@ -422,7 +434,7 @@ const loadProductDetail=async(req,res)=>{
     const productId=req.query.id;
     
     const Product = await Products.findById(productId).populate('productCategory')
-    console.log("product : ",Product);
+    
   
     res.render('user/singleProductDetails',{Product})
   } catch (error) {

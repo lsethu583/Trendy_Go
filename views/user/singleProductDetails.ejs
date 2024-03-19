@@ -262,6 +262,7 @@
                                                 const max = document.getElementById('max').value
                                                 const newQuantity = max <= currentQuantity ?max : currentQuantity + 1
                                                 const maxQuantity = parseInt(document.querySelector('.detail-qty').getAttribute('data-max'));
+                                               
                                         
                                                 if (newQuantity <= maxQuantity) {
                                                     quantityElement.innerText = newQuantity;
@@ -285,14 +286,13 @@
                                         
                                             
                                             <div class="product-extra-link2">
-                                                <button class="button button-add-to-cart" id="addToCartButton" onclick="addToCart('<%= Product._id %>', document.getElementById('selectedSize').value, document.querySelector('.qty-val').textContent)">Add To Cart</button>
-
-
-
-
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
+                                                <button class="button button-add-to-cart" id="addToCartButton" onclick="addToCart('<%= Product._id %>', document.getElementById('selectedSize').value, document.querySelector('.qty-val').textContent,)">Add To Cart</button>
+                                                
+                                         </div>
+                                         <!-- <div class="product-extra-link2">
+                                            <button class="button button-add-to-cart" id="addToWishListButton" onclick="addToWishlist('',)">Add To Wishlist</button>
+                                            
+                                     </div> -->
                                         </div>
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             
@@ -300,12 +300,12 @@
                                         </ul>
                                     </div>
                                     <input type="hidden" name="selectedSize"
-                                    id="selectedSize" value="">
+                                    id="selectedSize" value="">
                                    <script>
                                   
                                     function showQuantity(quantity, size) {
     // Update the span tag with the new quantity and size
-    document.getElementById('selectedSize').value =size
+    document.getElementById('selectedSize').value =size 
     document.getElementById('quantity').textContent = quantity + " Items In Stock for size " + size;
     document.getElementById('max').value = parseInt(quantity)
     var addToCartButton = document.getElementById('addToCartButton');
@@ -350,6 +350,39 @@
 
 
                                    </script>
+
+<style>
+    /* Style the wishlist button */
+    .wishlist-btn {
+        display: inline-block;
+        padding: 10px 15px;
+        /* Adjust the padding as needed */
+        background-color: #ff3366;
+        /* Set your desired background color */
+        color: #fff;
+        /* Set your desired text color */
+        text-decoration: none;
+        border-radius: 5px;
+        /* Add rounded corners if desired */
+        transition: background-color 0.3s ease;
+        /* Add a smooth transition effect */
+    }
+
+    /* Style the heart icon */
+    .fi-rs-heart {
+        color: #ff3366;
+        /* Match the background color or set your desired color */
+        margin-right: 5px;
+        /* Add some space between the heart icon and text */
+    }
+
+    /* Hover effect for the wishlist button */
+    .wishlist-btn:hover {
+        background-color: #e6295b;
+        /* Change the background color on hover */
+    }
+</style>
+
 
 
                                     <!-- Detail Info -->
@@ -771,7 +804,7 @@
     <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
     <script src="assets/js/plugins/slick.js"></script>
     <script src="assets/js/plugins/jquery.syotimer.min.js"></script>
-    <script src="assets/js/plugins/wow.js"></script>
+    <script src="assets/js/plugins/wow.js"></script>                        
     <script src="assets/js/plugins/jquery-ui.js"></script>
     <script src="assets/js/plugins/perfect-scrollbar.js"></script>
     <script src="assets/js/plugins/magnific-popup.js"></script>
@@ -855,7 +888,66 @@
     }
 </script>
 
-    
+<!-- <script>
+    function addToWishlist(productId, selectedSize, quantity) {
+        if (!selectedSize || !quantity) {
+            // Show a Toastify notification to select size and quantity
+            Toastify({
+                text: 'Please select size and quantity!',
+                duration: 3000,
+                close: true,
+                gravity: 'bottom',
+                position: 'center',
+                backgroundColor: 'orange',
+            }).showToast();
+            return;
+        }
+
+        // Send a POST request to the server
+        fetch('/addtowishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: productId, size: selectedSize, quantity: quantity }) // Pass productId, size, and quantity in the request body
+        })
+        .then(response => {
+            // Check if the response is successful
+            if (response.ok) {
+                // Show success message using SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product added to wishlist successfully!',
+                    timer: 3000, // Close after 3 seconds
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            } else {
+                // Show error message using SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add product to wishlist. Please try again later.'
+                });
+            }
+        })
+        .catch(error => {
+            // Log any errors to the console
+            console.error('Error:', error);
+            // Show error message using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while processing your request. Please try again later.'
+            });
+        });
+    }
+</script> -->
+
+
+
+  
     
 
 

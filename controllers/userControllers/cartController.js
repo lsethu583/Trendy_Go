@@ -8,17 +8,17 @@ const loadCartPage=async(req,res)=>{
         const userId=req.session.user_id;
         const userData = await User.findById(userId);
         const categoryData = await Category.find({});
+        const products = await Product.find({})
 
         if(req.session.user_id){
   
        // Assuming you have a function to fetch the cart for a specific user
-       const userCart = await Cart.findOne({ userId: userId })
-       .populate('products.productId');
-   
- 
-   
+      
+       const userCart = await Cart.findOne({ userId: userId }).populate('products.productId')
        
-   res.render('user/cart', { user: userData, category: categoryData, cart: userCart });
+       
+    
+   res.render('user/cart', { user: userData, category: categoryData, cart: userCart,product:products });
         }else{
            
             res.redirect('/login');
@@ -48,8 +48,12 @@ const addToCart=async (req,res)=>{
             userCart = new Cart({ userId: userId, products: [] });
         }
 
+        
+            userCart.products.push({ productId, quantity, size });
+        
+
         // Add the product to the cart
-        userCart.products.push({ productId, quantity, size });
+       
         await userCart.save();
 
        
@@ -62,12 +66,16 @@ const addToCart=async (req,res)=>{
     }
 }
 
-const removeCartProduct =  async (req, res) => {
+const removeFromCart = async (req, res) => {
     try {
-        const userId = req.session.user_id;
-        const productId = req.query.product_id; // Assuming you pass productId as a query parameter
-        const cartId = req.query.cartId; // Assuming you pass productId as a query parameter
+        const { cartId, productId } = req.query;
 
+        // Validate inputs
+        if (!cartId || !productId) {
+            return res.status(400).json({ success: false, error: "Missing cartId or productId" });
+        }
+
+        // Find the cart by its ID
         const cart = await Cart.findById(cartId);
         if (!cart) {
             return res.status(404).json({ success: false, error: "Cart not found" });
@@ -75,7 +83,6 @@ const removeCartProduct =  async (req, res) => {
 
         // Find the index of the product to be removed
         const productIndex = cart.products.findIndex(product => product._id.toString() === productId);
-
         if (productIndex === -1) {
             return res.status(404).json({ success: false, error: "Product not found in cart" });
         }
@@ -90,6 +97,7 @@ const removeCartProduct =  async (req, res) => {
         return res.status(500).json({ success: false, error: "Internal server error" });
     }
 };
+
 
 
   
@@ -123,4 +131,4 @@ const updateQuantity = async (req, res) => {
 }
 
 
-module.exports = { loadCartPage, addToCart,removeCartProduct,updateQuantity};
+module.exports = { loadCartPage, addToCart,removeFromCart,updateQuantity};

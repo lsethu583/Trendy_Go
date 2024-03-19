@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('../../models/userModel');
 const Category = require('../../models/categoryModel');
+const Banner=require('../../models/bannerSchema')
+const path = require('path');
 
 const securePassword = async (password) => {
     try {
@@ -127,7 +129,77 @@ const listUser = async (req, res) => {
     }
 };
 
+const loadBanner=async(req,res)=>{
+    try {
+        const banner = await Banner.find({})
+        res.render('banner',{banner})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
+const addbanner = async(req,res)=>{
+    try {
+       
+        const name = req.body.name;
+        const image = req.files.map(file => path.basename(file.path));
+        const title1= req.body.title1;
+        const title2 = req.body.title2;
+        const title3 = req.body.title3;
+        const title4 = req.body.title4;
+        const newBanner = new Banner({
+            name: name,
+            image: image, // Assigning the images array to the 'images' property
+            title1:title1,
+            title2:title2,
+            title3:title3,
+            title4:title4
+        });
+
+        // Save the Brand document to the database
+        const savedBanner = await newBanner.save()
+        console.log("banner added ",savedBanner);
+        res.redirect('/admin/banner')
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const loadEditBannerPage = async(req,res)=>{
+    try{
+        const bannerId=req.query.bannerId
+        const banner = await Banner.findOne({_id:bannerId})
+        console.log("hiiiiiii",banner)
+        res.render('editbanner',{banner})
+    }catch(err){
+        console.log(err.message);
+    }
+}
+const updateBanner = async(req,res)=>{
+    try {
+        const bannerId = req.body.Id
+        const name = req.body.name;
+        const image = req.files.map(file => path.basename(file.path));
+        const title1= req.body.title1;
+        const title2 = req.body.title2;
+        const title3 = req.body.title3;
+        const title4 = req.body.title4;
+        const updatedBannerData = {
+            name: name,
+            title1: title1,
+            title2: title2,
+            title3: title3,
+            title4: title4,
+            image: image, // Update image path if needed
+        };
+        await Banner.findByIdAndUpdate(bannerId,updatedBannerData)
+        res.redirect('/admin/banner')
+    } catch (error) {
+       
+       console.log(error.message);
+    }
+}
 
 module.exports = {
     loadLogin,
@@ -135,5 +207,9 @@ module.exports = {
     loadDashboard,
     loadUserDashboard,
     listUser,
-    logout
+    logout,
+    loadBanner,
+    addbanner,
+    updateBanner,
+    loadEditBannerPage
 };

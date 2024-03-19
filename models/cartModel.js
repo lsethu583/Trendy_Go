@@ -12,18 +12,17 @@ const addCartSchema = new mongoose.Schema({
         },
         quantity: {
             type: Number,
-            required:true,
-            default:1
+            required: true,
+            default: 1
         },
         size: {
             type: String,
-            default:'S' 
-            
             
         }
-    }]
+    }],
     // Other cart item details except price
 });
+
 
 const Cart = mongoose.model("Cart", addCartSchema);
 module.exports = Cart;

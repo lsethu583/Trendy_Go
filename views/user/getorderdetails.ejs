@@ -180,9 +180,15 @@
 
 
                     <div class="h-25 pt-4">
-                        
-                        <a href="/" class="btn btn-sm">Continue Shoping</a>
-                        <button id="print" class="btn btn-brand" >Download Invoice</button>
+                                
+                        <%if(orders.orderStatus=='Order Placed'|| orders.orderStatus=='Shipped'){%>
+                            <button onclick="userCancelOrder(`<%=orders._id%>`)" class="btn btn-danger" style="background-color: rgb(153, 11, 11);" >Cancel Order</button>
+                        <%}else if(orders.orderStatus=='Delivered'){%>
+                            <button class="btn btn-warning" onclick="userReturnOrder(`<%=orders._id%>`)" style="background-color: rgb(226, 128, 43);" >Return Order</button>
+                        <%}else{%>
+                             <a href="/" class="btn btn-sm">Continue Shoping</a>
+                            <%}%>
+                   <button id="print" class="btn btn-brand" >Download Invoice</button>
                     </div>
                 </div> <!-- col// -->
             </div>

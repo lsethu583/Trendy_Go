@@ -5,7 +5,8 @@ const adminController = require('../controllers/adminController/adminController'
 const categoryController = require('../controllers/adminController/categoryController');
 const productController=require('../controllers/adminController/productController')
 const adminAuth = require('../middleware/adminAuth');
-const adminOrderController=require('../controllers/adminController/adminOrderController')
+const adminOrderController=require('../controllers/adminController/adminOrderController');
+const couponController = require('../controllers/adminController/couponController')
 
 //storage of images of category
 const storage = multer.diskStorage({
@@ -30,6 +31,16 @@ const Storage=multer.diskStorage({
 })
 const uploadProduct=multer({storage:Storage})
 
+//storage of images of banner
+const storages = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, './public/assetsb/banner') // Destination folder for uploaded files
+  },
+  filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname) // File naming strategy
+  }
+});
+const uploadBanner=multer({storage:storages})
 
 const session = require('express-session');
 const config = require('../config/config');
@@ -73,8 +84,18 @@ admin_route.get('/listUnlist',productController.isListedUnlisted)
 admin_route.get('/orderlist',adminAuth.isLogin,adminOrderController.loadOrderList)
 admin_route.get('/orderdetail',adminAuth.isLogin,adminOrderController.loadOrderDetails)
 admin_route.post('/updateorderstatus',adminAuth.isLogin,adminOrderController.orderstatusupdate)
-admin_route.get('/cancelorder',adminAuth.isLogin,adminOrderController.cancelorder)
+admin_route.get('/cancelorder',adminAuth.isLogin,adminOrderController.cancelorder);
 
+
+
+admin_route.get('/coupon',couponController.getcouponpage);
+admin_route.post('/coupon',couponController.postcoupondata);
+admin_route.post('/deletecoupon',couponController.deletecoupon)
+
+admin_route.get('/banner', adminController.loadBanner)
+admin_route.post('/banner',uploadBanner.array('image'),adminController.addbanner)
+admin_route.get('/editbanner',adminController.loadEditBannerPage)
+admin_route.post('/editbanner',uploadBanner.array('image'),adminController.updateBanner)
 
 
 

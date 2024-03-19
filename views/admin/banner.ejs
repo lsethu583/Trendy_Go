@@ -1,0 +1,105 @@
+<%- include('../layouts/adminHeader') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Banners</h2>
+            <p>Change Banners</p>
+        </div>
+        
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <form id="bannerForm" method="post" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Name</label>
+                            <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Title-1</label>
+                            <input type="text" name="title1" placeholder="Type here" class="form-control" id="title1" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Title-2</label>
+                            <input type="text" name="title2" placeholder="Type here" class="form-control" id="title2" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Title-3</label>
+                            <input type="text" name="title3" placeholder="Type here" class="form-control" id="title3" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Title-4</label>
+                            <input type="text" name="title4" placeholder="Type here" class="form-control" id="title4" />
+                        </div>
+                        <label for="product_name" class="form-label">Add Banner Image</label>
+                        <div class="input-upload">
+                           
+                            <img src="/assetsb/imgs/theme/upload.svg" alt="">
+                            <div id="imagePreview" class="image-preview"></div>
+                            <input required name="image" id="imageInput" class="form-control" type="file" accept="image/*" multiple>
+                        </div>
+                        <div class="d-grid" style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary">Add Banner</button>
+                        </div>
+                        
+                    </form>
+                </div>
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="example">
+                            <thead>
+                                <tr>
+                                   
+                                    <th>SLNO:</th>
+                                    <th>Banner</th>
+                                    <th>Name</th>
+                                    <th>Title1</th>
+                                    
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                                <%for(let i=0;i<banner.length;i++){%>
+                                <tr>
+                                    <td><%=i+1%></td>
+                                    <td>
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                                <a class="itemside" href="#">
+                                                    <div class="left">
+                                                        
+                                                        <img src="/assetsb/banner/<%=banner[i].image[0]%>" class="img-sm img-thumbnail" alt="Item">
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                    </td>
+                                    <td><b><%=banner[i].name%></b></td>
+                                    <td><%=banner[i].title1%></td>
+                                   
+                                    <td class="text-end">
+
+                                                <a class="" href="/admin/editbanner?bannerId=<%=banner[i]._id%>">Edit</a>
+                                                
+                                                    
+                                            
+                                            </div>
+                                        </div> <!-- dropdown //end -->
+                                    </td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div> <!-- .col// -->
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section>
+
+<%- include('../layouts/adminFooter') %>

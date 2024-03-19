@@ -6,6 +6,7 @@ const cartController=require("../controllers/userControllers/cartController")
 const userController=require("../controllers/userControllers/userControllers")
 const userProfileController=require('../controllers/userControllers/userProfileController')
 const orderController=require('../controllers/userControllers/orderController')
+const wishlistController=require('../controllers/userControllers/wishlistController')
 
 user_route.set("view engine","ejs")
 user_route.set("views","./views")
@@ -38,21 +39,33 @@ user_route.get('/productdetail',auth.isLogin,userController.loadProductDetail)
 
 user_route.get('/cart',auth.isLogin,auth.isBlocked,cartController.loadCartPage );
 user_route.get('/addtocart',auth.isLogin,cartController.addToCart)
-user_route.delete('/removeitem-cart',auth.isLogin,cartController.removeCartProduct)
+user_route.delete('/removeFromCart',auth.isLogin,cartController.removeFromCart)
 user_route.put('/updateQuantity',auth.isLogin,cartController.updateQuantity)
 
 
 user_route.get('/profile',auth.isLogin,userProfileController.getProfilePage);
 user_route.post('/createaddress',auth.isLogin,userProfileController.addaddress)
+user_route.post('/createaddressfromcheckout',auth.isLogin,userProfileController.createAddressFromCheckout)
 user_route.get('/getAddress/:addressID',userProfileController.getAddress)
+
 user_route.post('/updateuser',auth.isLogin,userProfileController.updateuserdetails)
 user_route.post('/changeuserpass',auth.isLogin,userProfileController.changeuserpassword)
 
+user_route.get('/wishlist',auth.isLogin,wishlistController.loadwishlist)
+user_route.post('/wishlist/delete', auth.isLogin, wishlistController.removeFromWishlist);
+user_route.post('/wishlist/addtocart',wishlistController.addcartfromwishlist)
+user_route.post('/addtowishlistfromhome',auth.isLogin,wishlistController.addtowishlistfromhome)
 
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckoutPage)
 user_route.post('/placeorder',auth.isLogin,orderController.placeorder)
+user_route.post('/placeorder/online',auth.isLogin,orderController.placeorderonline)
 user_route.get('/getorderdetails',auth.isLogin,orderController.loadorderdetails)
-user_route.post('/razorpayorder',auth.isLogin,orderController.razorpayOrder)
+user_route.get('/usercancelorder',auth.isLogin,orderController.userCancel)
+user_route.get('/userreturnorder',auth.isLogin,orderController.userReturnOrder)
+user_route.post('/applycoupon',auth.isLogin,orderController.applyCoupon);
+user_route.post('/verifypayment',auth.isLogin,orderController.verifyRazorpay);
+
+
 
 
 

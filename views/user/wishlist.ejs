@@ -1,0 +1,203 @@
+<%- include('../layouts/userHeader') %>
+
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html" rel="nofollow">Home</a>
+                <span></span> Shop
+                <span></span> Wishlist
+            </div>
+        </div>
+    </div>
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table shopping-summery text-center">
+                            <thead>
+                                <tr class="main-heading">
+                                    <th scope="col" colspan="2">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Size</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Stock Status</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(locals.wishlist){ %>
+                               <% for(i=0;i<wishlist.length;i++){%>
+                                <% let inStock = false; %>
+        <% for(j=0;j<wishlist[i].products.sizes[0].size.length;j++){ %>
+            <% if(wishlist[i].products.sizes[j].quantity > 0) { %>
+                <% inStock = true; %>
+            <% } %>
+        <% } %>
+        <% if(inStock) { %>
+                                <tr>
+                                    
+                                    <td class="image product-thumbnail"><img src="/assetsb/productImages/<%= wishlist[i].products.image[0] %>" alt="#"></td>
+                                    <td class="product-des product-name">
+                                        <h5 class="product-name"><a href="shop-product-right.html"> <% if(wishlist[i].products && wishlist[i].products.product_name) { %>
+        <%= wishlist[i].products.product_name %>
+    <% } %></a></h5>
+                                        <p class="font-xs">
+                                        </p>
+                                    </td>
+                                    <td class="price" data-title="Price"><span><%= wishlist[i].products.discount_price %></span></td>
+                                    <td class="price" data-title="Price"><span><%= wishlist[i].size %></span></td>
+                                    <td class="price" data-title="Price"><span><%= wishlist[i].quantity %></span></td>
+                                    <td class="text-center" data-title="Stock">
+                                        <span class="color3 font-weight-bold">In Stock</span>
+                                    </td>
+                                    <td class="text-right" data-title="Cart">
+                                        <button id="addtocart" class="addtocart btn btn-sm" data-wishlist-id="<%= wishlist[i]._id %>"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
+                                    </td>
+                                    <td class="action" data-title="Remove">
+                                        <a href="#" class="remove-wishlist-item" data-product-id="<%= wishlist[i]._id %>">
+                                            <i class="fi-rs-trash"></i>
+                                        </a>
+                                    </td>
+                                    
+                                </tr>
+
+                                <% } else { %>
+                                    <!-- If all sizes are out of stock -->
+                                    <tr>
+                                        <td class="image"><img src="/assetsb/productImages/<%= wishlist[i].products.image[0] %>" alt="#"></td>
+                                        <td class="product-des">
+                                            <h5 class="product-name"><a href="shop-product-right.html"><% if(wishlist[i].products && wishlist[i].products.product_name) { %>
+                                                <%= wishlist[i].products.product_name %>
+                                            <% } %></a></h5>
+                                            <p class="font-xs"></p>
+                                        </td>
+                                        <td class="price" data-title="Price"><span><%= wishlist[i].products.discount_price %></span></td>
+                                    <td class="price" data-title="Price"><span><%= wishlist[i].size %></span></td>
+                                    <td class="price" data-title="Price"><span><%= wishlist[i].quantity %></span></td>
+                                        <td class="text-center" data-title="Stock">
+                                            <span class="text-danger font-weight-bold">Out of stock</span>
+                                        </td>
+                                        <td class="text-right" data-title="Cart">
+                                            <button class="btn btn-sm btn-secondary"><i class="fi-rs-headset mr-5"></i>Contact Us</button>
+                                        </td>
+                                        <td class="action" data-title="Remove">
+                                            <a href="#" class="remove-wishlist-item" data-product-id="<%= wishlist[i]._id %>">
+                                                <i class="fi-rs-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            <% } %>
+                        <% } %>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Add an event listener to the delete icon
+document.querySelectorAll('.remove-wishlist-item').forEach(item => {
+    item.addEventListener('click', async function(event) {
+        event.preventDefault();
+        const productId = this.getAttribute('data-product-id');
+        
+        $.ajax({
+            url:"/wishlist/delete",
+            method:"POST",
+            data:{
+                id:productId
+            },
+            success:function(response){
+                console.log(response);
+                if(response){
+                
+const Toast = Swal.mixin({
+  toast: true,
+ 
+  showConfirmButton: false,
+  timer: 1000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
+Toast.fire({
+  icon: "success",
+  title: "Successfully removed"
+}).then(result=>{
+    window.location.href="/wishlist"
+});
+                }
+
+            },
+            error:function(xhr){
+                console.log(xhr);
+            }
+        })
+
+     
+    });
+});
+
+
+
+document.querySelectorAll('.addtocart').forEach(item => {
+    item.addEventListener('click', async function(event) {
+        event.preventDefault();
+        const productId = this.getAttribute('data-wishlist-id');
+ 
+        
+        $.ajax({
+            url:"/wishlist/addtocart",
+            method:"POST",
+            data:{
+                id:productId
+            },
+            success:function(response){
+                console.log(response);
+                if(response){
+                
+const Toast = Swal.mixin({
+  toast: true,
+ 
+  showConfirmButton: false,
+  timer: 1000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
+Toast.fire({
+  icon: "success",
+  title: "Successfully removed"
+}).then(result=>{
+    window.location.href="/wishlist"
+});
+                }
+
+            },
+            error:function(xhr){
+                console.log(xhr);
+            }
+        })
+
+     
+    });
+});
+
+
+
+
+</script>
+
+<%- include('../layouts/userFooter') %>

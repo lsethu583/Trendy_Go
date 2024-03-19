@@ -29,6 +29,9 @@
                                             <a class="nav-link" id="password-change-tab" data-bs-toggle="tab" href="#password-change" role="tab" aria-controls="password-change" aria-selected="true"><i class="fi-rs-user mr-10"></i>Change Password</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link" id="coupon-tab" data-bs-toggle="tab" href="#coupon-change" role="tab" aria-controls="coupon-change" aria-selected="true"><i class="fi-rs-user mr-10"></i>Coupon</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
                                     </ul>
@@ -520,40 +523,14 @@ window.addEventListener('click', (event) => {
                                                     form1.addEventListener('submit', function(event) {
                                                         let isValid = true;
                                                 
-                                                        const nameInput = document.getElementById('firstName').value.trim();
+                                                        const nameInput = document.getElementById('name').value.trim();
                                                         const phoneInput = document.getElementById('phone').value.trim();
                                                         const emailInput = document.getElementById('email').value.trim();
                                                 
                                                         const nameError = document.getElementById('nameError');
                                                         const phoneError = document.getElementById('phoneError');
                                                         const emailError = document.getElementById('emailError');
-                                                
-                                                        // Name validation
-                                                        // if (nameInput === '') {
-                                                        //     nameError.innerText = 'Please enter your name';
-                                                        //     nameError.style.color = 'red';
-                                                        //     isValid = false;
-                                                        // } else {
-                                                        //     nameError.innerText = '';
-                                                        // }
-                                                
-                                                        // Phone number validation
-                                                        // if (phoneInput === '' || !isValidPhoneNumber(phoneInput)) {
-                                                        //     phoneError.innerText = 'Please enter a valid phone number';
-                                                        //     phoneError.style.color = 'red';
-                                                        //     isValid = false;
-                                                        // } else {
-                                                        //     phoneError.innerText = '';
-                                                        // }
-                                                
-                                                        // Email validation
-                                                        // if (emailInput === '' || !isValidEmail(emailInput)) {
-                                                        //     emailError.innerText = 'Please enter a valid email address';
-                                                        //     emailError.style.color = 'red';
-                                                        //     isValid = false;
-                                                        // } else {
-                                                        //     emailError.innerText = '';
-                                                        // }
+                                            
                                                 
                                                         if (!isValid) {
                                                             event.preventDefault(); // Prevent form submission if validation fails
@@ -613,15 +590,13 @@ window.addEventListener('click', (event) => {
                 <div class="mb-3">
                     <label for="newPassword" class="form-label">New Password</label>
                     <input name="newpass" type="password" class="form-control" id="newPassword" placeholder="Enter new password" required>
-                    <small id="passwordHelp" class="form-text text-muted">Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.</small>
                 </div>
-        
+            
                 <div class="mb-3">
                     <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
-                    <input type="password" class="form-control" id="confirmNewPassword" placeholder="Confirm new password" required>
+                    <input name="confirmNewPassword" type="password" class="form-control" id="confirmNewPassword" placeholder="Confirm new password" required>
                     <div id="passwordMismatch" class="text-danger" style="display: none;">Passwords do not match!</div>
                 </div>
-        
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </form>
         </div>
@@ -629,6 +604,129 @@ window.addEventListener('click', (event) => {
         <script>
             document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent default form submission
+        
+                // Get password values
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+        
+                // Password strength regex pattern
+                const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{"':;?/>.<,])[A-Za-z\d!@#$%^&*()_+}{"':;?/>.<,]{6,}$/;
+        
+                // Validate new password strength
+                if (!passwordPattern.test(newPassword)) {
+                    alert('Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+                    return;
+                }
+        
+                // Validate if new password matches confirm password
+                if (newPassword !== confirmNewPassword) {
+                    document.getElementById('passwordMismatch').style.display = 'block';
+                    return;
+                }
+        
+                // Validate if old password is different from new password
+                if (currentPassword === newPassword) {
+                    alert('New password should be different from the old password.');
+                    return;
+                }
+        
+                // Passwords match and meet strength criteria - Proceed with your password change logic here
+                // ...
+                this.submit();
+            });
+        </script>
+        
+        <div class="row" style="max-width:920px">
+            <div class="col-md">
+                <article class="box mb-3 bg-light">
+                    <!-- Add data-bs-toggle and data-bs-target attributes to trigger the modal -->
+                    <!-- <a class="btn float-end btn-light btn-sm rounded font-md" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change</a>
+                    <h6>Password</h6> -->
+                    <!-- <small class="text-muted d-block" style="width:70%">You can reset or change your password by clicking here</small> -->
+                </article>
+                
+                <!-- Modal -->
+               
+           
+                
+                
+            </div>
+           
+        </div> <!-- row.// -->
+    </div>
+   
+</div>
+
+
+
+
+
+
+
+<!-- //coupon  -->
+<div class="tab-pane fade" id="coupon-change" role="tabpanel" aria-labelledby="coupon-tab">
+    <div class="card">
+        <div class="card-header">
+            <h5>Coupon</h5>
+        </div>
+        <div class="card-body">
+            <% if(locals.coupon){ %>
+
+                <% for(i=0;i<coupon.length;i++) {%>
+                    <h5>coupon code : <%= coupon[i].name %></h5> <br>
+                    <h6>Discount : <%= coupon[i].discount %> </h6>
+                    <h6>Purchase Amount : <%= coupon[i].purchaseamount %></h6>
+                    <h6>Start Date : <%= coupon[i].start %></h6>
+                    <h6>End Date : <%= coupon[i].end %></h6>
+                    <br><br>
+                    <button class="btn btn-primary" onclick="copyCouponCode('<%= coupon[i].name %>')">Copy Coupon Code</button>
+
+
+                <% } %>
+                <% } %>
+          
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+        <script>
+             function copyCouponCode(couponCode) {
+        // Create a temporary input element
+        var tempInput = document.createElement("input");
+
+        // Set the value of the input element to the coupon code
+        tempInput.value = couponCode;
+
+        // Append the input element to the body
+        document.body.appendChild(tempInput);
+
+        // Select the coupon code text
+        tempInput.select();
+
+        // Copy the selected text to the clipboard
+        document.execCommand("copy");
+
+        // Remove the temporary input element
+        document.body.removeChild(tempInput);
+
+        // Provide feedback to the user
+        Toastify({
+        text: "Coupon code copied to clipboard: " + couponCode,
+        duration: 3000,  // Duration in milliseconds
+        close: true,     // Whether to show a close button
+        gravity: "top",  // Toast position: 'top', 'bottom', 'left', 'right'
+        position: "right", // Toast position
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Background color
+    }).showToast();
+    
+    }
+        </script>
+        
+        <script>
+            document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
+                event.preventDefault(); 
+                
+                // Prevent default form submission
         
                 // Get password values
                 const currentPassword = document.getElementById('currentPassword').value;

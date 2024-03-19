@@ -4,6 +4,8 @@ const User=require('../../models/userModel')
 const path=require('path')
 const sharp=require('sharp')
 
+const mongoose = require('mongoose')
+
 
 //loading the products page and thereby products
 const loadProducts=async(req,res)=>{
@@ -113,8 +115,8 @@ const deleteProduct=async(req,res)=>{
 const loadEditProductForm=async(req,res)=>{
     try {
         const id = req.query.id;
-    const product = await Products.findOne({ _id: id });
-    let categories = await Category.find({});
+    const product = await Products.findOne({ _id: id }).populate('productCategory');
+    let categories = await Category.find({})
     if (product) {
       res.render("editProduct", { categories, product });
     } else {
@@ -129,6 +131,7 @@ const loadEditProductForm=async(req,res)=>{
 const storeEditProduct=async(req,res)=>{
     try {
         const product = await Products.findOne({ _id: req.body.product_id  });
+        
     let images=[],deleteData=[]
     const {name,category,price,description,fullDescription,image,discount_price}=req.body;
 
@@ -183,8 +186,10 @@ const storeEditProduct=async(req,res)=>{
         }
     }
 
-    await Products.findByIdAndUpdate(
-        {_id:req.body.product_id},
+    const productId = req.body.product_id;
+
+    await Products.updateMany(
+        {_id: new mongoose.Types.ObjectId(productId)},
         {
             $set:{
             product_name:name,

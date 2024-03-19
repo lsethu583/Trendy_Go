@@ -51,7 +51,7 @@ const addingNewCategory = async (req, res) => {
             await category.save();
             res.redirect('/admin/addCategory');
         }
-        console.log();
+        
     } catch (error) {
         console.log(error.message);
         res.status(500).send("Internal Server Error");

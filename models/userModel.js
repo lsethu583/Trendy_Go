@@ -29,9 +29,7 @@ const userSchema = new mongoose.Schema({
     type:Boolean,
     default:true
   },
-  wallet:{
-    type:Number
-  },
+ 
   date:{
     type:Date,
     default:Date.now()

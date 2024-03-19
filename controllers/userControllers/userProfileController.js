@@ -4,18 +4,21 @@ const Products=require('../../models/productModel')
 const Category=require('../../models/categoryModel')
 const Cart=require('../../models/cartModel')
 const Address=require('../../models/adress')
-const Orders=require('../../models/orderSchema')
+const Orders=require('../../models/orderSchema');
+const Coupon = require('../../models/couponSchema')
+
 
 const getProfilePage= async(req,res)=>{
     try{
         const id = req.session.user_id;
+        const coupon = await Coupon.find({isList:true })
         const userDetails = await User.findById(id);
         let address=await Address.findOne({userID:id})
         const orders=await Orders.find({userId:id})
         if(address){
             address = address.address
         }
-       res.render('user/profile',{user:userDetails,address:address,orders})
+       res.render('user/profile',{user:userDetails,address:address,orders,coupon})
         ;
   
     }
@@ -32,9 +35,9 @@ const getProfilePage= async(req,res)=>{
         
 
         // Check if all required fields are provided
-        if (!addressType || !name || !houseName || !landmark || !city || !state || !pincode || !phone || !altPhone) {
-            return res.status(400).json({ message: 'All address fields are required' });
-        }
+        // if (!addressType || !name || !houseName || !landmark || !city || !state || !pincode || !phone || !altPhone) {
+        //     return res.status(400).json({ message: 'All address fields are required' });
+        // }
 
         let existingAddress = await Address.findOne({ userID: userID });
            
@@ -136,8 +139,9 @@ const getAddress = async (req, res) => {
 
 const updateuserdetails=async(req,res)=>{
     try {
+       
         const userId=req.session.user_id;
-        const name = req.body.firstName;
+        const firstName = req.body.name;
         const email = req.body.email;
         const phone = req.body.phone;
         const user=await User.findById(userId)
@@ -156,25 +160,94 @@ const updateuserdetails=async(req,res)=>{
     }
 }
 
-const changeuserpassword=async(req,res)=>{
-    try {
-        const userId = req.session.user_id;
-        const oldPass = req.body.password;
-        const newPass = req.body.newpass;
-        const user = await User.findById(userId);
 
-        if (user.password === oldPass) {
-            user.password = newPass;
-            await user.save();
-            res.redirect("/profile");
-        } else {
-            // If the old password is incorrect, redirect with an error message
-            res.redirect('/error?msg=IncorrectOldPassword');
+
+
+
+const changeuserpassword = async (req, res) => {
+    try {
+        const { oldpass, newpass, confirmNewPassword } = req.body;
+        
+        // Retrieve user ID from session
+        const userId = req.session.user_id;
+
+        // Check if user ID exists in session
+        if (!userId) {
+            return res.status(400).json({ status: false, message: "User session not found" });
         }
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        
+
+        // Check if user exists
+        if (!user) {
+            return res.status(400).json({ status: false, message: "User not found" });
+        }
+
+        // Validate if new password matches confirm password
+        if (newpass !== confirmNewPassword) {
+            return res.status(400).json({ status: false, message: "Passwords do not match" });
+        }
+
+        // Validate if old password matches the one stored
+        const isOldPasswordCorrect = await bcrypt.compare(oldpass, user.password);
+        if (!isOldPasswordCorrect) {
+            return res.status(400).json({ status: false, message: "Your current password is wrong" });
+        }
+
+        // Hash the new password
+        const newHashedPassword = await bcrypt.hash(newpass, 10); // Increase the number of rounds for better security
+
+        // Update user password
+        user.password = newHashedPassword;
+
+        // Save the updated user object
+        await user.save();
+
+        return res.status(200).json({ status: true, message: "Password changed successfully" });
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
+        return res.status(500).json({ status: false, message: "Internal server error" });
     }
-}
+};
+
+
+
+const createAddressFromCheckout = async (req, res) => {
+    try {
+        const userID = req.session.user_id;
+        const { address_type, name, housename, landmark, city, state, pincode, phone, altphone } = req.body;
+
+        // Create a new address object
+        const newAddress = {
+                addresstype: address_type,
+                name,
+                housename,
+                landmark,
+                city,
+                state,
+                pincode,
+                phone,
+                altphone
+            }
+       
+            const userAdress = await Address.findOne({userID:userID})
+            userAdress.address.push(newAddress)
+
+            userAdress.save()
+       
+
+        res.status(201).json({ success: true, message: 'Address created successfully', address: newAddress });
+        res.redirect("/checkout");
+    } catch (error) {
+        console.error('Error creating address:', error);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+};
+
+
+
 
 
   module.exports={
@@ -183,4 +256,5 @@ const changeuserpassword=async(req,res)=>{
     getAddress,
     updateuserdetails,
     changeuserpassword,
+    createAddressFromCheckout
   }
