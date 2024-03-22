@@ -7,6 +7,7 @@ const userController=require("../controllers/userControllers/userControllers")
 const userProfileController=require('../controllers/userControllers/userProfileController')
 const orderController=require('../controllers/userControllers/orderController')
 const wishlistController=require('../controllers/userControllers/wishlistController')
+const sortController=require('../controllers/userControllers/sortController')
 
 user_route.set("view engine","ejs")
 user_route.set("views","./views")
@@ -55,6 +56,14 @@ user_route.get('/wishlist',auth.isLogin,wishlistController.loadwishlist)
 user_route.post('/wishlist/delete', auth.isLogin, wishlistController.removeFromWishlist);
 user_route.post('/wishlist/addtocart',wishlistController.addcartfromwishlist)
 user_route.post('/addtowishlistfromhome',auth.isLogin,wishlistController.addtowishlistfromhome)
+
+
+user_route.get("/categorysort",auth.isLogin,sortController.categorySort);
+user_route.get("/categorysort/lowtohigh",auth.isLogin,sortController.lowToHigh);
+user_route.get("/categorysort/hightolow",auth.isLogin,sortController.HighToLow);
+user_route.get("/categorysort/A-Z",auth.isLogin,sortController.AtoZ);
+user_route.get("/categorysort/Z-A",auth.isLogin,sortController.ZtoA);
+user_route.post("/searchproduct",auth.isLogin,sortController.searchedData)
 
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckoutPage)
 user_route.post('/placeorder',auth.isLogin,orderController.placeorder)

@@ -80,7 +80,7 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
-    appliedcoupon:{
+    coupon:{
         type:String
     },
     discountedAmount:{

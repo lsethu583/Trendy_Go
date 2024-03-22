@@ -31,13 +31,15 @@ const loadCartPage=async(req,res)=>{
 const addToCart=async (req,res)=>{
     try {
             const productId=req.query.id
+            
             const size     =req.query.size
             const quantity =parseInt(req.query.qty)
             const userId=req.session.user_id;
       
             let userCart = await Cart.findOne({ userId:userId });
 
-            const product = await Product.findById(productId);
+            const product = await Product.findById(productId)
+            
             
         const selectedSize = product.sizes.find(s => s.size === size);
         if (!selectedSize || selectedSize.quantity === 0) {

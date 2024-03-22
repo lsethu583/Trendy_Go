@@ -28,14 +28,7 @@
                         <div class="categori-dropdown-wrap categori-dropdown-active-small">
                             <ul>
                                 <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's Clothing</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's Clothing</a></li>
-                                <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i> Cellphones</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer & Office</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer Electronics</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother & Kids</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a></li>
+                             
                             </ul>
                         </div>
                     </div>
@@ -274,6 +267,138 @@
                 </div>
                 <!--End nav-tabs-->
 
+
+
+
+                <section class="product-tabs pt-25 pb-20 wow fadeIn animated">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <div class="widget-category mb-30"  id="category-filter">
+                                    <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category </h5>
+                                    <ul class="categories">
+                                        <% if (typeof category !== 'undefined' && category) { %>
+                                            <% for (let i = 0; i < category.length; i++) { %>
+                                                <li><a href="/categorysort/?category=<%= category[i]._id %>"><%= category[i].name %></a></li>
+                                              
+                                                
+                                                <% } %>
+                                                <% } else { %>
+                                            <li><a href="#">Default Category 1</a></li>
+                                            <li><a href="#">Default Category 2</a></li>
+                                            <!-- Add more default categories if needed -->
+                                            <% } %>
+                                    </ul>
+                                </div>
+                                
+            
+                                <div class="widget-category mb-30" id="sort-filter">
+                                    <h5 class="section-title style-1 mb-30 wow fadeIn animated">Sort by</h5>
+                                    <ul class="categories">
+                                       
+                                        <li><a href="/categorysort/lowtohigh">Price: Low to High</a></li>
+                                        <li><a href="/categorysort/hightolow">Price: High to Low</a></li>
+                                        <li><a href="/categorysort/A-Z">Aa - Zz</a></li>
+                                        <li><a href="/categorysort/Z-A">Zz - Aa</a></li>
+                                    </ul>
+                                </div>
+            
+                               
+                               
+                                
+                                
+                               
+                                
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="tab-header">
+                                    
+                                    <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
+                                </div>
+                                <!--End nav-tabs-->
+                                <div class="tab-content wow fadeIn animated" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
+                                        <div class="row product-grid-4">
+                                            <% if (typeof category !== 'undefined' && category) { %>
+            
+                                            <% for (let i = 0; i < products.length; i++) { %>
+                                            <div class="col-lg-4 col-md-4 col-12 col-sm-6">
+                                                <div class="product-cart-wrap mb-30">
+                                                    <div class="product-img-action-wrap">
+                                                        <a href="/singleProductDetails/<%= products[i]._id %>"><div class="left">
+                                                            <% if (products[i].image && products[i].image.length > 0) { %>
+                                                                <img src="assetsb/productImages/<%=products[i].image[0]%>" class="img-thumbnail custom-img-size" style="object-fit: contain;"  alt="<%= products[i].name %>">
+                                                            
+                                                        </div></a>
+                                                        <div class="product-action-1">
+                                                            
+                                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" onclick="addToWishlist('<%= products[i]._id %>')"  ><i class="fi-rs-heart"></i></a>
+                                                          
+                                                        </div>
+                                                        <!-- <div class="product-badges product-badges-position product-badges-mrg">
+                                                            <span class="hot">Hot</span>
+                                                        </div> -->
+                                                    </div>
+                                                    <div class="product-content-wrap">
+                                                        <!-- <div class="product-category">
+                                                            <a href=""><h2>//brand name</h2></a>
+                                                        </div> -->
+                                                        <h6><a href=""><%= products[i].name  %></a></h6>
+                                                     
+                                                     
+                                                       
+                                                        <div class="product-price">
+                                                            <span>&#8377;</span>
+            
+                                                            <span><%= products[i].discount_price %> </span>
+                                                            <span class="old-price"><%= products[i].price %></span>
+                                                            <span id="offer" ></span>
+                                                        </div>
+                                                        <div class="product-action-1 show">
+                                                          
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% } else { %>
+                                                            
+                                                <img src="default-image.jpg" class="img-thumbnail custom-img-size" alt="Default Item">
+                                            <% } %>
+                                            <% } %>
+                                        <!--End product-grid-4-->
+                                    </div>
+                                    <% } else { %>
+            
+            
+                                        <% } %>
+                                    <!--En tab one (Featured)-->
+                                    
+                                    <!--En tab three (New added)-->
+                                </div>
+                                <!--End tab-content-->
+                                <% if(locals.totalPages){ %>
+                                    <div class="pagination-area mt-30 mb-50">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-start">
+                                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                                    <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                                                        <a class="page-link" href="/?page=<%= i %>"><%= i %></a>
+                                                    </li>
+                                                <% } %>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <% } %>
+                
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+
+
+
+
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
                         <div class="row product-grid-4">
@@ -293,9 +418,9 @@
                                             <a aria-label="Add To Wishlist" data-product-id="<%= products[i]._id %>" class="wishlist action-btn hover-up" ><i class="fi-rs-heart"></i></a>
                                          
                                         </div>
-                                        <div class="product-badges product-badges-position product-badges-mrg">
+                                        <!-- <div class="product-badges product-badges-position product-badges-mrg">
                                             <span class="hot">Hot</span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="product-content-wrap">
                                         <div class="product-category">
@@ -347,15 +472,15 @@ Array.from(wishlistButtons).forEach(button => {
         const productId = this.getAttribute('data-product-id');
 
         // Now you can use the productId in your JavaScript logic
-        console.log('Product ID:', productId);
+        
 
         // Your remaining logic...
         const inputOptions = new Promise((resolve) => {
             setTimeout(() => {
                 resolve({
-                    "Small": "S",
-                    "Medium": "M",
-                    "Large": "L"
+                    "S": "S",
+                    "M": "M",
+                    "L": "L"
                 });
             }, 1000);
         });

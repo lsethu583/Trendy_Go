@@ -221,30 +221,37 @@ const createAddressFromCheckout = async (req, res) => {
 
         // Create a new address object
         const newAddress = {
-                addresstype: address_type,
-                name,
-                housename,
-                landmark,
-                city,
-                state,
-                pincode,
-                phone,
-                altphone
-            }
-       
-            const userAdress = await Address.findOne({userID:userID})
-            userAdress.address.push(newAddress)
+            addresstype: address_type,
+            name,
+            housename,
+            landmark,
+            city,
+            state,
+            pincode,
+            phone,
+            altphone
+        }
 
-            userAdress.save()
-       
+        // Find the user's address
+        let userAddress = await Address.findOne({ userID: userID });
 
-        res.status(201).json({ success: true, message: 'Address created successfully', address: newAddress });
+        // If user's address not found, create a new one
+        if (!userAddress) {
+            userAddress = new Address({ userID: userID, address: [] });
+        }
+
+        // Push the new address to the address array and save
+        userAddress.address.push(newAddress);
+        await userAddress.save();
+
+        // Send success response
         res.redirect("/checkout");
     } catch (error) {
         console.error('Error creating address:', error);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
 };
+
 
 
 
