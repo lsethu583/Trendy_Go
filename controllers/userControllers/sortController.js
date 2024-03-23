@@ -6,12 +6,19 @@ const categorySort=async(req,res)=>{
     try {
         console.log("i am here");
         const userId=req.session.user_id;
-        console.log(userId);
+        console.log("userId: " + userId);
         const category=req.query.category;
         console.log(category);
-        const categories = await Product.distinct('category');
-        const products=await Product.find({category:category}).populate('productCategory')
-        res.render("user/categorysort",{user:userId,categories: categories,category:category,products:products});
+        const myCategory = await Category.findById(category);
+        console.log("myCategory: " +myCategory);
+      
+        const products=await Product.find({}).populate('productCategory');
+        console.log("products : " + products);
+        const selectedProduct = products.filter(product => product.productCategory.categoryName === myCategory.categoryName);
+        console.log("selectedProduct: " + selectedProduct);
+        
+       
+        res.render("user/categorysort",{user:userId,category:category,products:selectedProduct});
     } catch (error) {
         console.log(error.message);
     }

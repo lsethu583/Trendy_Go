@@ -6,6 +6,7 @@ const Cart=require('../../models/cartModel')
 const Address=require('../../models/adress')
 const Orders=require('../../models/orderSchema');
 const Coupon = require('../../models/couponSchema')
+const Referal=require('../../models/referalSchema')
 
 
 const getProfilePage= async(req,res)=>{
@@ -15,10 +16,12 @@ const getProfilePage= async(req,res)=>{
         const userDetails = await User.findById(id);
         let address=await Address.findOne({userID:id})
         const orders=await Orders.find({userId:id})
+        const referalData = await Referal.findOne({owner:id})
+        console.log("referalData",referalData);
         if(address){
             address = address.address
         }
-       res.render('user/profile',{user:userDetails,address:address,orders,coupon})
+       res.render('user/profile',{user:userDetails,address:address,orders,coupon,referal:referalData})
         ;
   
     }

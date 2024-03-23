@@ -32,6 +32,9 @@
                                             <a class="nav-link" id="coupon-tab" data-bs-toggle="tab" href="#coupon-change" role="tab" aria-controls="coupon-change" aria-selected="true"><i class="fi-rs-user mr-10"></i>Coupon</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link" id="referal-tab" data-bs-toggle="tab" href="#referal-change" role="tab" aria-controls="referal-change" aria-selected="true"><i class="fi-rs-user mr-10"></i>Referal</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
                                     </ul>
@@ -109,6 +112,8 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                   
                                     
                                     <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                                         <style>
@@ -263,165 +268,13 @@ background-color: #0056b3; /* Darker blue color on hover */
     </div>
 </div>
 
-<script>
-    const form = document.getElementById('addAddressForm');
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent form submission for now
-
-        // Validation for each field
-        const addressType = document.getElementById('addressType');
-        const name = document.getElementById('name');
-        const houseName = document.getElementById('houseName');
-        const landmark = document.getElementById('landmark');
-        const city = document.getElementById('city');
-        const state = document.getElementById('state');
-        const pincode = document.getElementById('pincode');
-        const phone = document.getElementById('phone');
-        const altPhone = document.getElementById('altPhone');
-
-        // Clear all previous error messages
-        const errors = document.querySelectorAll('.error');
-        errors.forEach(error => {
-            error.textContent = '';
-        });
-
-        // Check if each field is filled
-        let isValid = true;
-        if (!addressType.value) {
-            document.getElementById('addressType_error').style.color ='red'
-            document.getElementById('addressType_error').textContent = 'Please select an address type.';
-            isValid = false;
-            addressType.addEventListener('input', function() {
-    document.getElementById('addressType_error').textContent = '';
-});
-        }
-        if (!name.value) {
-            document.getElementById('name_error').style.color ='red'
-            document.getElementById('name_error').textContent = 'Name is required.';
-            isValid = false;
-            name.addEventListener('input', function() {
-    document.getElementById('name_error').textContent = '';
-});
-        }
-        if (!houseName.value) {
-            document.getElementById('houseName_error').style.color ='red'
-            document.getElementById('houseName_error').textContent = 'House Name is required.';
-            isValid = false;
-            houseName.addEventListener('input', function() {
-    document.getElementById('houseName_error').textContent = '';
-});
-        }
-        if (!landmark.value) {
-            document.getElementById('landmark_error').style.color ='red'
-            document.getElementById('landmark_error').textContent = 'Landmark is required.';
-            isValid = false;
-            landmark.addEventListener('input', function() {
-    document.getElementById('landmark_error').textContent = '';
-});
-        }
-        if (!city.value) {
-            document.getElementById('city_error').style.color ='red'
-            document.getElementById('city_error').textContent = 'City is required.';
-            isValid = false;
-            city.addEventListener('input', function() {
-    document.getElementById('city_error').textContent = '';
-});
-        }
-        if (!state.value) {
-            document.getElementById('state_error').style.color ='red'
-            document.getElementById('state_error').textContent = 'State is required.';
-            isValid = false;
-            state.addEventListener('input', function() {
-    document.getElementById('state_error').textContent = '';
-});
-        }
-       
-        if (!/^\d{6}$/.test(pincode.value)) {
-            document.getElementById('pincode_error').style.color = 'red';
-            document.getElementById('pincode_error').textContent = 'Pincode should be 6 digits.';
-            isValid = false;
-            pincode.addEventListener('input', function() {
-    document.getElementById('pincode_error').textContent = '';
-});
-        }
-
-        // Phone and Alt Phone should not be the same
-        if (phone.value === altPhone.value) {
-            document.getElementById('phone_error').style.color = 'red';
-            document.getElementById('altPhone_error').style.color = 'red';
-            document.getElementById('phone_error').textContent = 'Phone and Alternate Phone should not be the same.';
-            document.getElementById('altPhone_error').textContent = 'Phone and Alternate Phone should not be the same.';
-            isValid = false;
-            phone.addEventListener('input', function() {
-    document.getElementById('phone_error').textContent = '';
-});
-        }
-
-        // Phone and Alt Phone should be at least 10 digits
-        if (phone.value.length < 10) {
-            document.getElementById('phone_error').style.color = 'red';
-            document.getElementById('phone_error').textContent = 'Phone number should be at least 10 digits.';
-            isValid = false;
-            phone.addEventListener('input', function() {
-    document.getElementById('phone_error').textContent = '';
-});
-        }
-        if (altPhone.value.length < 10) {
-            document.getElementById('altPhone_error').style.color = 'red';
-            document.getElementById('altPhone_error').textContent = 'Alternate Phone number should be at least 10 digits.';
-            isValid = false;
-            altPhone.addEventListener('input', function() {
-    document.getElementById('altPhone_error').textContent = '';
-});
-        }
-
-        // If all validations pass, submit the form
-        if (isValid) {
-            form.submit();
-        }
-    });
-</script>
-
-
-<script>
-    // Get the modal element
-const modal = document.getElementById('addAddressModal');
-
-// Get the button that opens the modal
-const openModalBtn = document.getElementById('openModalBtn');
-
-// Get the <span> element that closes the modal
-const closeBtn = modal.querySelector('.close');
-
-// When the user clicks the button, open the modal
-openModalBtn.addEventListener('click', () => {
-    modal.style.display = 'block';
-});
-
-// When the user clicks on <span> (x), close the modal
-closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-// When the user clicks anywhere outside of the modal, close it
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-</script>
-
-
-
-                                        <div class="row">
-                                            <% if(locals.address && address.length>0){ %>
-                                                <% for(let i=0;i<address.length;i++){ %>
+<div class="row">
+<% if(locals.address && address.length>0){ %>
+                                            <% for(let i=0;i<address.length;i++){ %>
                                             <div class="col-lg-6">
                                                <div class="card mb-3 mb-lg-0">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Address Type: <%= address[i].addresstype%> Address</h5>
+                                                  <div class="card-header">
+                                                     <h5 class="mb-0">Address Type: <%= address[i].addresstype%> Address</h5>
                                                     </div>
                                                     <div class="card-body">
                                                         <address> Name: <%= address[i].name%><br>House Name: <%= address[i].housename%>
@@ -658,8 +511,68 @@ window.addEventListener('click', (event) => {
    
 </div>
 
+<!-- referal -->
+<div class="tab-pane fade" id="referal-change" role="tabpanel" aria-labelledby="referal-tab">
+    <div class="card">
+        <div class="card-header">
+            <h5>Referal</h5>
+        </div>
+        <div class="card-body">
+            <% if(locals.referal){ %>
+               
+                <div class="card-body">
+                                                            
+                                                               
+                    <h4>Your Referal code</h4>
+                    <div class="total-amount-container2">
+                        <h2 style="align-items: center;"><%= referal.code %></h2><br>
+                        <button class="btn btn-primary" onclick="copyReferalCode('<%= referal.code %>')">Copy Referal Code</button>
+                    </div>
+                    
+              
+                </div>
+               <% }else{ %>
+                <div class="card-body">
+                    <p>No Referal code available.</p>
+                    <br><br>
+                    
+                </div>
+                <% } %>
+              
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-
+        <script>
+            function copyReferalCode(referralCode) {
+                // Create a temporary input element
+                const input = document.createElement("input");
+                input.value = referralCode;
+                document.body.appendChild(input);
+                
+                // Select the text inside the input element
+                input.select();
+                input.setSelectionRange(0, 99999); // For mobile devices
+                
+                // Copy the text to the clipboard
+                document.execCommand("copy");
+                
+                // Remove the input element
+                document.body.removeChild(input);
+                
+                // Show a toast notification
+                Toastify({
+                    text: "Referral code copied to clipboard: " + referralCode,
+                    duration: 3000, // Duration in milliseconds
+                    close: true, // Whether to display a close button
+                    gravity: "bottom", // Notification position
+                    position: "left", // Notification alignment
+                    backgroundColor: "linear-gradient(to right, #4CAF50, #56C68A)", // Notification background color
+                    stopOnFocus: true // Whether to stop timeout when notification is focused
+                }).showToast();
+            }
+        </script>
+        
 
 
 
@@ -859,7 +772,186 @@ window.addEventListener('click', (event) => {
             background-color: #0056b3;
         }
     </style>
-
+    <script>
+        function copyReferalCode() {
+            // Select the referral code text
+            const referralCode = document.querySelector("#referal h2").innerText;
     
+            // Create a temporary textarea element
+            const textarea = document.createElement("textarea");
+            textarea.value = referralCode;
+    
+            // Append the textarea to the body
+            document.body.appendChild(textarea);
+    
+            // Select the text inside the textarea
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile devices
+    
+            // Copy the text to the clipboard
+            document.execCommand("copy");
+    
+            // Remove the textarea
+            document.body.removeChild(textarea);
+    
+            // Alert the user that the text has been copied
+            Swal.fire({
+                position: "bottom",
+                title: "Referral code copied to clipboard: " + referralCode,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    </script>
+    
+    <script>
+        const form = document.getElementById('addAddressForm');
+    
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission for now
+    
+            // Validation for each field
+            const addressType = document.getElementById('addressType');
+            const name = document.getElementById('name');
+            const houseName = document.getElementById('houseName');
+            const landmark = document.getElementById('landmark');
+            const city = document.getElementById('city');
+            const state = document.getElementById('state');
+            const pincode = document.getElementById('pincode');
+            const phone = document.getElementById('phone');
+            const altPhone = document.getElementById('altPhone');
+    
+            // Clear all previous error messages
+            const errors = document.querySelectorAll('.error');
+            errors.forEach(error => {
+                error.textContent = '';
+            });
+    
+            // Check if each field is filled
+            let isValid = true;
+            if (!addressType.value) {
+                document.getElementById('addressType_error').style.color ='red'
+                document.getElementById('addressType_error').textContent = 'Please select an address type.';
+                isValid = false;
+                addressType.addEventListener('input', function() {
+        document.getElementById('addressType_error').textContent = '';
+    });
+            }
+            if (!name.value) {
+                document.getElementById('name_error').style.color ='red'
+                document.getElementById('name_error').textContent = 'Name is required.';
+                isValid = false;
+                name.addEventListener('input', function() {
+        document.getElementById('name_error').textContent = '';
+    });
+            }
+            if (!houseName.value) {
+                document.getElementById('houseName_error').style.color ='red'
+                document.getElementById('houseName_error').textContent = 'House Name is required.';
+                isValid = false;
+                houseName.addEventListener('input', function() {
+        document.getElementById('houseName_error').textContent = '';
+    });
+            }
+            if (!landmark.value) {
+                document.getElementById('landmark_error').style.color ='red'
+                document.getElementById('landmark_error').textContent = 'Landmark is required.';
+                isValid = false;
+                landmark.addEventListener('input', function() {
+        document.getElementById('landmark_error').textContent = '';
+    });
+            }
+            if (!city.value) {
+                document.getElementById('city_error').style.color ='red'
+                document.getElementById('city_error').textContent = 'City is required.';
+                isValid = false;
+                city.addEventListener('input', function() {
+        document.getElementById('city_error').textContent = '';
+    });
+            }
+            if (!state.value) {
+                document.getElementById('state_error').style.color ='red'
+                document.getElementById('state_error').textContent = 'State is required.';
+                isValid = false;
+                state.addEventListener('input', function() {
+        document.getElementById('state_error').textContent = '';
+    });
+            }
+           
+            if (!/^\d{6}$/.test(pincode.value)) {
+                document.getElementById('pincode_error').style.color = 'red';
+                document.getElementById('pincode_error').textContent = 'Pincode should be 6 digits.';
+                isValid = false;
+                pincode.addEventListener('input', function() {
+        document.getElementById('pincode_error').textContent = '';
+    });
+            }
+    
+            // Phone and Alt Phone should not be the same
+            if (phone.value === altPhone.value) {
+                document.getElementById('phone_error').style.color = 'red';
+                document.getElementById('altPhone_error').style.color = 'red';
+                document.getElementById('phone_error').textContent = 'Phone and Alternate Phone should not be the same.';
+                document.getElementById('altPhone_error').textContent = 'Phone and Alternate Phone should not be the same.';
+                isValid = false;
+                phone.addEventListener('input', function() {
+        document.getElementById('phone_error').textContent = '';
+    });
+            }
+    
+            // Phone and Alt Phone should be at least 10 digits
+            if (phone.value.length < 10) {
+                document.getElementById('phone_error').style.color = 'red';
+                document.getElementById('phone_error').textContent = 'Phone number should be at least 10 digits.';
+                isValid = false;
+                phone.addEventListener('input', function() {
+        document.getElementById('phone_error').textContent = '';
+    });
+            }
+            if (altPhone.value.length < 10) {
+                document.getElementById('altPhone_error').style.color = 'red';
+                document.getElementById('altPhone_error').textContent = 'Alternate Phone number should be at least 10 digits.';
+                isValid = false;
+                altPhone.addEventListener('input', function() {
+        document.getElementById('altPhone_error').textContent = '';
+    });
+            }
+    
+            // If all validations pass, submit the form
+            if (isValid) {
+                form.submit();
+            }
+        });
+    </script>
+    
+    
+    <script>
+        // Get the modal element
+    const modal = document.getElementById('addAddressModal');
+    
+    // Get the button that opens the modal
+    const openModalBtn = document.getElementById('openModalBtn');
+    
+    // Get the <span> element that closes the modal
+    const closeBtn = modal.querySelector('.close');
+    
+    // When the user clicks the button, open the modal
+    openModalBtn.addEventListener('click', () => {
+        modal.style.display = 'block';
+    });
+    
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    </script>
     
    <%- include('../layouts/userFooter.ejs') %>

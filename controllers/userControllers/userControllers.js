@@ -6,8 +6,10 @@ const Category=require('../../models/categoryModel')
 const Cart=require('../../models/cartModel')
 const wishlist=require('../../models/wishlistSchema')
 const Banner=require('../../models/bannerSchema')
+const Referal=require('../../models/referalSchema')
+const moment = require("moment-timezone")
 
-
+let referralCodeGenerator = require('referral-code-generator');
 
 
 const securePassword = async (password) => {
@@ -38,12 +40,38 @@ const insertUser = async (req, res) => {
       password,
       confirmPassword,
       phoneNumber,
+      referal
     } = req.body;
     // Check whether the registering user already exists using email and phone number
 
     const existingUser = await User.findOne({
       $or: [{ email }, { phoneNumber }],
     });
+
+    if(referal){
+      const referalData = await Referal.findOne({code:referal});
+     const referedUserWallet = await Wallet.findOne({userId:referalData.owner});
+      
+      
+
+  if (referedUserWallet) {
+      const newTransaction = {
+          amount: Number(500),
+          createdOn: moment().tz('Asia/Kolkata').format('DD/MM/YYYY hh:mm:ss A'),
+          source: "Referal Income"
+      };
+  
+      await Wallet.updateOne(
+          { _id: referedUserWallet._id }, // Assuming _id is the identifier for the wallet
+          { $push: { data: newTransaction } }
+      );
+  
+      
+  }
+  
+
+    }
+
     if (existingUser) {
       const message = "Email or phone number already exists";
       res.render('user/register', { message });
@@ -60,6 +88,7 @@ const insertUser = async (req, res) => {
         email,
         password: hashedPassword,
         confirmPassword,
+        referal,
         date: currentDate,
       };
       req.session.obj = obj;
@@ -133,6 +162,7 @@ const loadHome = async (req, res) => {
             // If user is logged in, fetch products, categories, and banners
             products = await Products.find({ is_Listed: true }).populate('productCategory');
             category = await Category.find({});
+            console.log("category: " + category);
             banner = await Banner.find({});
             res.render('user/home', { products, category, banner });
         } else{
@@ -228,6 +258,16 @@ const verifyOtp = async (req, res) => {
      
 
       const userData = await user.save();
+
+      //referal code part
+      let myReferalCode = referralCodeGenerator.custom('lowercase', 6, 6, 'trendygo');
+        console.log("my referal code : ",myReferalCode);
+        const referalData = await Referal.create({
+            owner:user._id,
+            code:myReferalCode,
+
+        })
+
       // Create a cart for the user
       const newCart = new Cart({
         userId: userData._id,

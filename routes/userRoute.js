@@ -58,7 +58,7 @@ user_route.post('/wishlist/addtocart',wishlistController.addcartfromwishlist)
 user_route.post('/addtowishlistfromhome',auth.isLogin,wishlistController.addtowishlistfromhome)
 
 
-user_route.get("/categorysort",auth.isLogin,sortController.categorySort);
+user_route.get("/categorysort",sortController.categorySort);
 user_route.get("/categorysort/lowtohigh",auth.isLogin,sortController.lowToHigh);
 user_route.get("/categorysort/hightolow",auth.isLogin,sortController.HighToLow);
 user_route.get("/categorysort/A-Z",auth.isLogin,sortController.AtoZ);

@@ -153,6 +153,7 @@
             </div>
         </div>
     </div>
+
     <main class="main">
         <% if(locals.banner){ %>
            <section class="home-slider position-relative pt-25 pb-20">
@@ -279,7 +280,7 @@
                                     <ul class="categories">
                                         <% if (typeof category !== 'undefined' && category) { %>
                                             <% for (let i = 0; i < category.length; i++) { %>
-                                                <li><a href="/categorysort/?category=<%= category[i]._id %>"><%= category[i].name %></a></li>
+                                                <li><a href="/categorysort/?category=<%= category[i]._id %>"><%= category[i].categoryName %></a></li>
                                               
                                                 
                                                 <% } %>
