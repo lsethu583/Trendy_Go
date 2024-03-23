@@ -1,0 +1,350 @@
+<%- include('../layouts/adminHeader') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Offers </h2>
+            <p>Add, edit or delete offers</p>
+        </div>
+        
+    </div>
+    <div class="card">
+        <div class="card-body">
+            
+            <div class="row">
+               
+                <div class="col-md-3">
+                   
+
+
+<div class="col-md-9  mb-3" >
+    <label for="inputPassword4" class="form-label"></label>
+    <select id="category" name="category"  class="form-control">
+        
+         <option value="">Select a Category
+         </option>
+         <% category.forEach(category => { %>
+            <option value="<%= category._id %>">
+                <%= category.categoryName %>
+            </option>
+        <% }); %>
+        
+        
+
+
+
+    </select>
+    <div class="error-message" style="color: red;" id="product_brand-error"></div>
+
+</div>
+
+
+                   
+
+
+                     
+                        
+
+                        
+
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Discount Amount</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="discount"
+                                name="discount" />
+                                <div id="discount_error" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label>Minimum Purchase</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="purchase"
+                                id="purchase" />
+                            <div id="purchase_error" style="display: none;"></div>
+
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Starting Date</label>
+                            <input type="date" placeholder="Type here" class="form-control" name="start"
+                                id="start" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">End Date</label>
+                            <input type="date" placeholder="Type here" class="form-control" name="end" id="end" />
+                        </div>
+
+
+
+
+                        <!-- Add this div to display the error message -->
+
+
+                        <div class="d-grid">
+
+                            <button id="btn" class="btn btn-primary">Create category</button>
+                            <div id="errorMessage" class="text-danger">
+
+                            </div>
+
+
+                        </div>
+                        <div id="message"></div>
+
+                  
+                </div>
+            
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" />
+                                        </div>
+                                    </th>
+                                    
+                                    
+                                    <th>Category</th>
+                                    <th>Discount</th>
+                                    <th>Minimum purchase</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                               //strt
+                               <% if(offer){ %>
+                                   <% for(let i=0;i<offer.length;i++){ %>
+                                    <tr>
+                                                <td class="text-center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" />
+                                                    </div>
+                                                </td>
+                                               
+                                            <td><%= offer[i].category  %></td>
+                                            <td><%= offer[i].discount %></td>
+                                            <td><%= offer[i].purchaseamount %></td>
+                                            <td><%= offer[i].start %></td>
+                                            <td><%= offer[i].end %></td>
+                                                
+        
+        
+                                                <td class="text-end">
+        
+                                                    <a onclick="deleteCoupon('<%= offer[i]._id %>')" class="btn btn-info">Delete</a>
+                                                </td>
+                                                <% } %>
+                                            <% } %>
+                                    </tr>
+
+                                  //end
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    
+    
+    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+
+
+
+
+    const categoryOptions = document.getElementById('categoryOptions');
+
+
+
+
+const categoryDiv = document.getElementById("category-div");
+const brand = document.getElementById("brand")
+
+const discountInput = document.getElementById("discount");
+const purchaseInput = document.getElementById("purchase");
+const startDateInput = document.getElementById('start');
+const endDateInput = document.getElementById('end');
+const discountError = document.getElementById("discount_error");
+const purchaseError = document.getElementById("purchase_error");
+const button = document.getElementById("btn");
+
+let selectedCategoryId;
+ let selectedCategoryName
+let discount ;
+let purchaseAmount;
+let selectedStartDate;
+let selectedEndDate;
+
+const categorySelect = document.getElementById('category');
+
+categorySelect.addEventListener('change', function() {
+    selectedCategoryId = categorySelect.value;
+    selectedCategoryName = categorySelect.options[categorySelect.selectedIndex].text;
+
+    console.log("Selected Category ID:", selectedCategoryId);
+    console.log("Selected Category Name:", selectedCategoryName);
+});
+
+
+
+
+startDateInput.addEventListener("change", validateStartDate);
+endDateInput.addEventListener("change", validateEndDate);
+
+
+
+
+function validateStartDate() {
+    const today = new Date();
+     selectedStartDate = new Date(startDateInput.value);
+     today.setHours(0, 0, 0, 0);
+
+    if (selectedStartDate < today) {
+        Swal.fire({
+icon: "error",
+title: "Oops...",
+text: "Please select a date from today",
+
+});
+        
+        return true;
+        
+    }
+}
+
+function validateEndDate() {
+     selectedStartDate = new Date(startDateInput.value);
+     selectedEndDate = new Date(endDateInput.value);
+
+    if (selectedEndDate <= selectedStartDate) {
+        
+        Swal.fire({
+icon: "error",
+title: "Oops...",
+text: "Please select a date after start date",
+
+});
+        return true;
+        // Clear the input field
+    }
+}
+
+function validateDiscount() {
+     discount = discountInput.value.trim();
+    if (/^([1-9]\d{0,4}|100000)$/.test(discount)) {
+        discountError.style.display = "none";
+        return false;
+    } else {
+        discountError.style.display = "block";
+        discountError.style.color = "red";
+        discountError.textContent = "Please enter a valid discount amount";
+        return true;
+    }
+}
+
+function validatePurchaseAmount() {
+     purchaseAmount = purchaseInput.value.trim();
+    const discount = discountInput.value.trim();
+
+    if (/^([1-9]\d{0,4}|100000)$/.test(purchaseAmount) && Number(purchaseAmount) > Number(discount) * 2) {
+        purchaseError.style.display = "none";
+        return false;
+    } else {
+        purchaseError.style.display = "block";
+        purchaseError.style.color = "red";
+        purchaseError.textContent = "Please enter a valid purchase amount";
+        return true;
+    }
+}
+button.addEventListener("click",function(event){
+    if(validatePurchaseAmount() || validateDiscount() || validateEndDate() ||validateStartDate() ){
+        event.preventDefault();
+    }else{
+        
+
+     
+
+
+
+    
+    
+    console.log("category : ",selectedCategoryName);
+    console.log("discount : ",discount);
+    console.log("purchaseAmount : ",purchaseAmount);
+    console.log("selectedStartDate : ",selectedStartDate);
+  console.log("end : ",selectedEndDate);
+   
+
+         $.ajax({
+            
+             url: "/admin/offer",
+             method: "POST",
+             data:{
+                
+           
+           
+            category: selectedCategoryName,
+            discount:discount,
+            purchase:purchaseAmount,
+            start:selectedStartDate,
+            end:selectedEndDate
+        },
+        success: function(response) {
+if (response) {
+    Swal.fire({
+        icon: "success",
+        title: response.message,
+        showConfirmButton: false,
+        timer: 1500
+    }).then(result=>{
+        window.location.href ="/admin/offer"
+    })
+} else {
+    Swal.fire({
+        text: response.message,
+        icon: response.message.includes("already added") ? "info" : "question"
+    });
+}
+},
+error: function(xhr){
+    console.log(xhr);
+
+}
+
+         })
+    }
+
+})
+
+
+function deleteCoupon(offerid){
+Swal.fire({
+title: "Are you sure?",
+text: "You won't be able to revert this!",
+icon: "warning",
+showCancelButton: true,
+confirmButtonColor: "#3085d6",
+cancelButtonColor: "#d33",
+confirmButtonText: "Yes, delete it!"
+}).then((result) => {
+if (result.isConfirmed) {
+window.location.href = `/admin/offer/delete?id=${offerid}`;
+}
+});
+}
+
+
+
+
+</script>

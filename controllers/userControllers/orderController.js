@@ -116,6 +116,7 @@ const placeorder = async (req, res) => {
 
 const placeorderonline=async(req,res)=>{
     try {
+        console.log("here i am here")
         const userId = req.session.user_id;
       
         const { addressId, totalAmount, paymentMethod, productId, productsize, productqty } = req.body;
@@ -125,7 +126,7 @@ const placeorderonline=async(req,res)=>{
         const userCart = await Cart.findOne({ userId: userId });
         const product = await Product.findById(productId);
         const coupon =await Coupon.find({})
-
+        console.log("coupon:", coupon);
         if (!product) {
             console.error("Product not found.");
             return res.status(404).json({ error: "Product not found" });
@@ -188,7 +189,7 @@ const placeorderonline=async(req,res)=>{
 
                     
 
-                     res.json({ payment: false, method: "UPI", razorpayOrder: order,order:order});
+                     res.json({ payment: false, method: "UPI", razorpayOrder: order,order:order,coupon:coupon});
                 }
             });
 
@@ -215,7 +216,7 @@ const verifyRazorpay=async(req,res)=>{
         );
         hmac = hmac.digest("hex");
         if (hmac === payment.razorpay_signature) {
-            console.log("hllo");
+            
            
              
             res.status(200).json({ status: true,  })
@@ -368,6 +369,16 @@ const userReturnOrder = async (req, res) => {
                 return res.status(500).json({ success: false, message: "Internal server error" });
             }
         };
+
+
+        const orderSuccess=async(req,res)=>{
+            try {
+                res.render('user/orderSuccess')
+                
+            } catch (error) {
+                
+            }
+        }
         
 
 module.exports={
@@ -378,6 +389,7 @@ userCancel,
 userReturnOrder,
 applyCoupon,
 placeorderonline,
-verifyRazorpay
+verifyRazorpay,
+orderSuccess
 
 }

@@ -73,8 +73,9 @@
                                             <td><%= coupons[i].name %></td>
                                             <td><b><%= coupons[i].discount %></b></td>
                                             <td><%= coupons[i].purchaseamount %></td>
-                                            <td><%= coupons[i].start %></td>
-                                            <td><%= coupons[i].end %></td>
+                                            <td><%= new Date(coupons[i].start).toLocaleDateString() %></td>
+
+                                            <td><%= new Date(coupons[i].end).toLocaleDateString() %></td>
                                             <td class="text-end">
                                                 <div class="dropdown">
                                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>

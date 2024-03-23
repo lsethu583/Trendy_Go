@@ -64,9 +64,9 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="shop-grid-right.html"><h2><%= products[i].brand %></h2></a>
+                                                <a href="shop-grid-right.html"><h2><%= products[i].product_name %></h2></a>
                                             </div>
-                                            <h6><a href="shop-product-right.html"><%= products[i].name  %></a></h6>
+                                            <h6><a href="shop-product-right.html"><%= products[i].productCategory.categoryName %></a></h6>
                                          
                                             <div class="rating-result" title="90%">
                                                 <span>
@@ -74,7 +74,7 @@
                                                 </span>
                                             </div>
                                             <div class="product-price">
-                                                <span><%= products[i].offerprice %> </span>
+                                                <span><%= products[i].discount_price %> </span>
                                                 <span class="old-price"><%= products[i].price %></span>
                                             </div>
                                             <div class="product-action-1 show">

@@ -30,7 +30,11 @@ app.use(express.static(path.join(__dirname,"public/assetsb")))
 app.use("/",userRoute)
 app.use("/admin",admin_route)
 
+// app.use('*',(req,res)=>{
 
+//   res.render('user/error');
+
+// })
 
 const port = process.env.PORT; // Use port 4004 if PORT variable is not defined in .env
 

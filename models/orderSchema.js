@@ -80,9 +80,10 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
-    coupon:{
-        type:String
-    },
+    coupon: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "coupons"
+    }],
     discountedAmount:{
         type:Number,
         default:0

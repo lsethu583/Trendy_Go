@@ -7,6 +7,7 @@ const productController=require('../controllers/adminController/productControlle
 const adminAuth = require('../middleware/adminAuth');
 const adminOrderController=require('../controllers/adminController/adminOrderController');
 const couponController = require('../controllers/adminController/couponController')
+const offerController=require('../controllers/adminController/offerController')
 
 //storage of images of category
 const storage = multer.diskStorage({
@@ -96,6 +97,10 @@ admin_route.get('/banner', adminController.loadBanner)
 admin_route.post('/banner',uploadBanner.array('image'),adminController.addbanner)
 admin_route.get('/editbanner',adminController.loadEditBannerPage)
 admin_route.post('/editbanner',uploadBanner.array('image'),adminController.updateBanner)
+
+admin_route.get('/offer',offerController.loadOfferPage);
+admin_route.post('/offer',offerController.postofferdetails)
+admin_route.get('/offer/delete',offerController.deleteOffer)
 
 
 

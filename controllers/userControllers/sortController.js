@@ -4,18 +4,18 @@ const Category=require('../../models/categoryModel')
 
 const categorySort=async(req,res)=>{
     try {
-        console.log("i am here");
+     
         const userId=req.session.user_id;
-        console.log("userId: " + userId);
+        
         const category=req.query.category;
-        console.log(category);
+        
         const myCategory = await Category.findById(category);
-        console.log("myCategory: " +myCategory);
+       
       
         const products=await Product.find({}).populate('productCategory');
-        console.log("products : " + products);
+     
         const selectedProduct = products.filter(product => product.productCategory.categoryName === myCategory.categoryName);
-        console.log("selectedProduct: " + selectedProduct);
+        
         
        
         res.render("user/categorysort",{user:userId,category:category,products:selectedProduct});
@@ -48,7 +48,7 @@ const HighToLow =  async(req,res)=>{
         
        
         const userId = req.session.user_id;
-        const products = await Product.find({}).sort({offerprice: -1});
+        const products = await Product.find({}).sort({discount_price: -1});
         const categoryData = await Category.find({is_Listed:true});
        
             res.render("user/categorysort",{user:userId,category:categoryData,products:products});
@@ -65,7 +65,7 @@ const AtoZ =  async(req,res)=>{
         
        
         const userId = req.session.user_id;
-        const products = await Product.find({}).sort({brand: 1});
+        const products = await Product.find({}).sort({product_name: 1}).populate("productCategory")
         const categoryData = await Category.find({is_Listed:true});
        
             res.render("user/categorysort",{user:userId,category:categoryData,products:products});
@@ -83,7 +83,7 @@ const ZtoA =  async(req,res)=>{
         
        
         const userId = req.session.user_id;
-        const products = await Product.find({}).sort({brand: -1});
+        const products = await Product.find({}).sort({product_name: -1});
         const categoryData = await Category.find({is_Listed:true});
        
             res.render("user/categorysort",{user:userId,category:categoryData,products:products});

@@ -447,7 +447,7 @@
                                         
                                         const totalAmountinput=document.getElementById('totalAmount');
                                         const totalAmountText = totalAmountinput.textContent; // Assuming totalAmountinput is the element containing the text content
-const numericValue = parseFloat(totalAmountText.replace('₹', ''));
+                                         const numericValue = parseFloat(totalAmountText.replace('₹', ''));
                                          $.ajax({
                                             url:'/applycoupon',
                                             method:"POST",
@@ -545,21 +545,16 @@ const numericValue = parseFloat(totalAmountText.replace('₹', ''));
                                     // Event listener for clicking the "Place Order" button
                                     document.getElementById('placeOrderButton').addEventListener('click', function () {
                                         // Check if the cart is empty
-                                        if (isCartEmpty()) {
-                                            // If cart is empty, display SweetAlert
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Oops...',
-                                                text: 'Your cart is empty!',
-                                            });
-                                        } else {
+                                        
                                             // Get the selected address ID
                                             var selectedAddressId = document.querySelector('input[name="selectedAddress"]:checked').value;
+                                            alert("selectedAddressId" + selectedAddressId)
                                             // Get the total amount
-                                            var totalAmount = parseFloat(document.querySelector('.product-subtotal span').innerText.replace(/[^0-9.-]+/g, ""));
+                                            var totalAmount = parseFloat(document.getElementById('totalAmount').innerText.replace(/[^0-9.-]+/g, ""));
+                                            alert("totalAmount" + totalAmount)
                                             // Get the selected payment method
                                             var selectedPaymentMethod = document.querySelector('input[name="payment_option"]:checked').nextElementSibling.textContent.trim();
-                            
+                                            alert("selectedPaymentMethod" + selectedPaymentMethod)
                                             // Check if all required fields are filled
                                             if (!selectedAddressId) {
                                                 alert("Please select an address.");
@@ -574,7 +569,7 @@ const numericValue = parseFloat(totalAmountText.replace('₹', ''));
                                                 }
                                                 
                                             }
-                                        }
+                                        
                                     });
                                 });
                             </script>
@@ -604,7 +599,7 @@ const numericValue = parseFloat(totalAmountText.replace('₹', ''));
 
         },
         success:function(response){
-            console.log(response);
+            console.log("response : " + response);
             var options = {
                                     "key": "rzp_test_XnSWcDHvXwMKdf",
                                     "amount": response.razorpayOrder.amount,
@@ -656,27 +651,28 @@ function verifyPayment(order, payment) {
                         payment
                     },
                     success: function (response) {
-                        console.log("response 1 : ", response);
-                        if (response) {
-                            Swal.fire({
-                                title: "Order success",
-                                text: "Order placed successfully",
-                                icon: "success",
+    console.log("response 1 : ", response);
+    if (response) {
+        Swal.fire({
+            title: "Order success",
+            text: "Order placed successfully",
+            icon: "success",
+            reverseButtons: true
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                // Redirect to the orderSuccess page upon clicking "OK" in the Swal.fire dialog
+                window.location.href = "/orderSuccess";
+            } else {
+                // Redirect to the profile page if the user cancels the dialog
+                window.location.href = "/profile";
+            }
+        });
+    } else {
+        // If the response indicates a payment failure, display an error message
+        Swal.fire("Payment Failed !!!");
+    }
+}
 
-                                reverseButtons: true
-                            }).then(function (result) {
-
-
-                                window.location.href = "/profile";
-
-                            });
-
-
-                        }else if(response.status == false){
-                            Swal.fire("Payment Failed !!!");
-                            
-                        }
-                    }
 
                 })
 

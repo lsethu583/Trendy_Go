@@ -96,6 +96,7 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
                                         <div class="card">
                                             <div class="card-body">
@@ -106,12 +107,82 @@
                                                             <p class="mb-0">Current Balance:</p>
                                                             <p class="mb-0">&#8377;<span id="wallet-balance"><%= user.wallet %></span></p>
                                                         </div>
+                                                        <button id="walletButton">Add Money</button>
                                                         
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+                                    <script>
+                                           document.getElementById("walletButton").addEventListener("click", function(e) {
+                e.preventDefault();
+                Swal.fire({
+                title: "Wallet",
+                text: "Enter the Amount",
+                input: 'text',
+                showCancelButton: true
+            }).then((result) => {
+                if (result.value) {
+                    alert("result.value" +result.value);
+                    $.ajax({
+                        url: "/addToWallet",
+                        method: "POST",
+                        data: {
+                            amount: result.value
+                        }, success: function (response) {
+                            if (response) {
+                                console.log("response : ", response);
+                                var options = {
+                                    "key": "rzp_test_XnSWcDHvXwMKdf",
+                                    "amount": response.order.amount,
+                                    "currency": "INR",
+                                    "name": "Trendy_go",
+                                    "description": "Test Transaction",
+                                    "image": "https://example.com/your_logo",
+                                    "order_id": response.id,
+                                    "handler": function (status) {
+                                        console.log("hello everyone");
+
+                                        verifyPayment(response, status);
+
+                                    },
+                                    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                                        "name": "customer name", //your customer's name
+                                        "email": "gaurav.kumar@example.com",
+                                        "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+                                    },
+                                    "notes": {
+                                        "address": "Razorpay Corporate Office"
+                                    },
+                                    "theme": {
+                                        "color": "#3399cc"
+                                    }
+                                };
+                                var rzp1 = new Razorpay(options);
+                                rzp1.on('payment.failed', function (response) {
+
+                                    console.log("error : ", respnse);
+
+                                });
+
+                                rzp1.open();
+
+                            }
+
+                        },
+                        error: function (error) {
+                            console.log("error");
+                        }
+                    })
+                }
+            });
+                
+            })
+                                    </script>
                                     
                                    
                                     
@@ -603,6 +674,13 @@ background-color: #0056b3; /* Darker blue color on hover */
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
         <script>
+
+         
+
+
+
+
+
              function copyCouponCode(couponCode) {
         // Create a temporary input element
         var tempInput = document.createElement("input");

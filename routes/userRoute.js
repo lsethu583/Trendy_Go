@@ -8,6 +8,7 @@ const userProfileController=require('../controllers/userControllers/userProfileC
 const orderController=require('../controllers/userControllers/orderController')
 const wishlistController=require('../controllers/userControllers/wishlistController')
 const sortController=require('../controllers/userControllers/sortController')
+const walletController=require('../controllers/userControllers/walletController')
 
 user_route.set("view engine","ejs")
 user_route.set("views","./views")
@@ -73,6 +74,12 @@ user_route.get('/usercancelorder',auth.isLogin,orderController.userCancel)
 user_route.get('/userreturnorder',auth.isLogin,orderController.userReturnOrder)
 user_route.post('/applycoupon',auth.isLogin,orderController.applyCoupon);
 user_route.post('/verifypayment',auth.isLogin,orderController.verifyRazorpay);
+
+
+
+user_route.get('/orderSuccess',orderController.orderSuccess);
+
+user_route.post('/addToWallet',walletController.addToWallet);
 
 
 
