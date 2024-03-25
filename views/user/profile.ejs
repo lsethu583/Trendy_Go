@@ -60,7 +60,6 @@
                                     </div>
                                     <% } %>
                                     <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                        
                                         <div class="card">
                                             <div class="card-header">
                                                 <h5 class="mb-0">Your Orders</h5>
@@ -78,47 +77,131 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <% if(orders){ %>
-                                                                <% for(let i=0;i<orders.length;i++) {%>
+                                                            <% if(orders && orders.length > 0) { %>
+                                                                <% for(let i=0; i < orders.length; i++) { %>
+                                                                    <tr>
+                                                                        <td>#<%= orders[i].orderId %></td>
+                                                                        <td><%= orders[i].orderDate %></td>
+                                                                        <td><%= orders[i].paymentStatus %></td>
+                                                                        <td><%= orders[i].totalAmount %> for <%= orders[i].products.length %> item</td>
+                                                                        <td><a href="/getorderdetails?OID=<%= orders[i].orderId %>" class="btn-small d-block">View</a></td>
+                                                                    </tr>
+                                                                <% } %>
+                                                            <% } else { %>
                                                                 <tr>
-                                                                    <td>#<%= orders[i].orderId %></td>
-                                                                    <td><%= orders[i].orderDate %></td>
-                                                                    <td><%= orders[i].paymentStatus %></td>
-                                                                    <td><%= orders[i].totalAmount %> for <%= orders[i].products.length%> item</td>
-                                                                    <td><a href="/getorderdetails?OID=<%= orders[i].orderId %>" class="btn-small d-block">View</a></td>
+                                                                    <td colspan="5">No orders yet</td>
                                                                 </tr>
-                                                                <% } %>
-                                                                <% } %>
-                                                            
+                                                            <% } %>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    
 
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="user-wallet">
-                                                    <h5 class="card-title mb-4">Your Wallet</h5>
-                                                    <div class="wallet-info">
-                                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                                            <p class="mb-0">Current Balance:</p>
-                                                            <p class="mb-0">&#8377;<span id="wallet-balance"><%= user.wallet %></span></p>
+                                        <% if (wallet) { %>
+                                         
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="user-wallet">
+                                                        <h5 class="card-title mb-4">Your Wallet</h5>
+                                                        <div class="wallet-info">
+                                                            <h3>balance : <%= wallet.walletAmount %></h3> <br>
+                                                            <h5>Transactions</h5>
+                                                            <% if (wallet.transactions.length===0) { %>
+                                                                
+                                                                <p>No transaction found out</p>
+                                                            <% } else { %>
+                                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                    <table class="table">
+                                                                        <thead >
+                                                                            <tr>
+                                                                                <th>Transaction Id</th>
+                                                                                <th>Transaction Amount</th>
+                                                                                <th>Transaction date</th>
+                                                                                
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <% for(let i=0;i<wallet.transactions.length;i++){ %>
+                                                                                <tr>
+                                                                                    <td><%= wallet.transactions[i].tid %></td>
+                                                                                    <td><%= wallet.transactions[i].tamount %></td>
+                                                                                    <% const date=new Date(wallet.transactions[i].tdate).toLocaleString() %>
+                                                                                    <td><%= date %></td>
+                                                                                    
+                                                                                   
+                                                                                </tr>
+                                                                                <% } %>
+                                                                                    
+                                                                                
+                                                                                
+                                                                            
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <!-- <p class="mb-0">Current Balance:</p>
+                                                                    <p class="mb-0">&#8377;<span id="wallet-balance"></span></p> -->
+                                                                </div>
+                                                             
+                                                            <% } %>
+                                                            
+                                                            <button id="walletButton">Add Money</button>
+                                                            
                                                         </div>
-                                                        <button id="walletButton">Add Money</button>
-                                                        
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                            <% } else { %>
+                                             amount 0
+                                        <% } %>
                                     </div>
                                     
                                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                                    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
                                     <script>
-                                           document.getElementById("walletButton").addEventListener("click", function(e) {
+                                        function verifyPayment(order, response , data) {
+                
+
+                $.ajax({
+                    url: "/verifypaymentwallet",
+                    method: "POST",
+                    data: {
+                        order,
+                        response,
+                        data
+                    },
+                    success: function (response) {
+    console.log("response 1 : ", response);
+    if (response.status === 'success') {
+        Swal.fire({
+            title: "Order success",
+            text: " successfully",
+            icon: "success",
+            reverseButtons: true
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                // Redirect to the orderSuccess page upon clicking "OK" in the Swal.fire dialog
+                window.location.href = "/profile";
+            } else {
+                // Redirect to the profile page if the user cancels the dialog
+                window.location.href = "/profile";
+            }
+        });
+    } else {
+        // If the response indicates a payment failure, display an error message
+        Swal.fire("Payment Failed !!!");
+    }
+}
+
+
+                })
+
+
+            }
+               document.getElementById("walletButton").addEventListener("click", function(e) {
                 e.preventDefault();
                 Swal.fire({
                 title: "Wallet",
@@ -127,7 +210,7 @@
                 showCancelButton: true
             }).then((result) => {
                 if (result.value) {
-                    alert("result.value" +result.value);
+                   
                     $.ajax({
                         url: "/addToWallet",
                         method: "POST",
@@ -135,7 +218,10 @@
                             amount: result.value
                         }, success: function (response) {
                             if (response) {
-                                console.log("response : ", response);
+                                const data = response.data;
+                                console.log(data);
+                                alert("hhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+                                // console.log("response : ", response);
                                 var options = {
                                     "key": "rzp_test_XnSWcDHvXwMKdf",
                                     "amount": response.order.amount,
@@ -143,11 +229,11 @@
                                     "name": "Trendy_go",
                                     "description": "Test Transaction",
                                     "image": "https://example.com/your_logo",
-                                    "order_id": response.id,
+                                    "order_id": response.order.id,
                                     "handler": function (status) {
                                         console.log("hello everyone");
-
-                                        verifyPayment(response, status);
+                                        console.log(response)
+                                        verifyPayment(response, status , data);
 
                                     },
                                     "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
@@ -182,6 +268,7 @@
             });
                 
             })
+
                                     </script>
                                     
                                    

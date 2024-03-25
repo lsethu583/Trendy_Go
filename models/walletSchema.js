@@ -20,9 +20,6 @@ const walletSchema = new mongoose.Schema({
             type:Date,
             default:Date.now()
         },
-        tstatus:{
-            type:String
-        }
     }]
 },{versionKey:false})
 

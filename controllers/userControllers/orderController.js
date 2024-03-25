@@ -6,6 +6,7 @@ const Address=require('../../models/adress')
 const Orders=require('../../models/orderSchema')
 const wishlist=require('../../models/wishlistSchema')
 const Coupon=require('../../models/couponSchema')
+const Wallet=require('../../models/walletSchema')
 const {orderIdGenerate}=require('../../helper/idgenerate')
 require('dotenv').config();
 
@@ -87,7 +88,7 @@ const placeorder = async (req, res) => {
       
         await order.save();
 
-        console.log("order : ", order);
+        
 
         for (const product of userCart.products) {
             const selectedProduct = await Product.findById(product.productId);
@@ -242,88 +243,150 @@ const loadorderdetails=async(req,res)=>{
         const userId=req.session.user_id
         const user=await User.findById(req.session.user_id)
         const cart = await Cart.find({ userId: userId }).populate('products.productId');
-        const orders=await Orders.find({userId:userId}).populate('products.productId').populate('userId');
-
+        const orders=await Orders.find({orderId}).populate('products.productId').populate('userId');
+        const coupon=await Coupon.find({})
        
-        res.render('user/getorderdetails',{orderId,userId,user,cart,orders})
+        res.render('user/getorderdetails',{orderId,userId,user,cart,orders,coupon})
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const userCancel = async (req, res) => {
-    try {
-        const orderId = req.query.OID
-        const userId = req.session.user_id
-        const newStatus = 'Cancelled'
-        const result = await Orders.updateOne(
-            { _id: orderId, orderStatus: { $in: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"] } },
-            { $set: { orderStatus: newStatus } }
-        )
-        const user = await User.findById(req.session.userId)
-        const category = await Category.find({})
-        const cart = await Cart.find({ userId: userId }).populate('productId');
-        const orders = await Orders.findById(orderId)
-            .populate('products.productId')
-            .populate('userId');
-            if (orders.paymentStatus === 'Success' && (newStatus === 'Returned' || newStatus==='Cancelled')) {
-                await User.findByIdAndUpdate(
-                    orders.userId,
-                    { $inc: { wallet: orders.discountedAmount } },
-                    );
-               orders.paymentStatus = 'Refunded';
-               await orders.save()     
+
+
+// const deleteOrder = async (req, res) => {
+//     try {
+//         const orderId = req.body.orderId
+//         console.log("orderId", orderId);
+
+//         const orderDetails = await Orders.findById(orderId);
+//         console.log("orderDetails",orderDetails);
+//         for (let item of orderDetails.cart) {
+//             try {
+
+//                 const products = orderDetails.products.find(prod => prod._id.toString() === item.id);
+//                 if (products && products.status === 'confirmed') {
+//                     await Product.updateOne(
+//                         { _id: item.id },
+//                         { $inc: { quantity: item.quantity } }
+//                     )
+//                 }
+
+//             }
+//             catch (error) {
+//                 console.log(error);
+
+//             }
+//         }
+//         await Orders.findByIdAndDelete(orderId);
+//         res.status(200).json({ success: true, message: "Your order has been deleted" });
+
+
+
+
+//     }
+//     catch (error) {
+//         console.log(error, "deleteOrder  page error");
+//     }
+// }
+
+const deleteOrder = async(req,res)=>{
+    try{
+    const userId = req.session.user_id;
+    const userCart = await Cart.findOne({ userId: userId });
+    const {id,size,quantity} = req.body;
+    console.log([id,size,quantity])
+    
+    const findOrder =  await Orders.findOne({_id:id})
+   
+        let updateOrder = await Orders.findOneAndUpdate({_id:id},{
+            $set:{
+                orderStatus:'Cancelled'
             }
-        res.render('user/getorderdetail', { user, category, cart, order })
-    } catch (error) {
-       console.log(error.message);
-    }
-}
+        })
+        console.log("updaeorder",updateOrder);
 
-const userReturnOrder = async (req, res) => {
-    try {
-        const orderId = req.query.OID
-        const userId = req.session.user_id
+        let productSet = []
 
-        const newStatus = 'Returned'
-        const result = await Orders.updateOne(
-            { _id: orderId, orderStatus: { $in: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"] } },
-            { $set: { orderStatus: newStatus } }
-        )
+        updateOrder.products.forEach(element =>{
+            let productStore = {
+                productId:element.productId,
+                quantity:element.quantity,
+                size:element.size
+            }
 
+            productSet.push(productStore)
+            console.log("productSet",productSet);
 
-        const order = await Orders.findById(orderId)
-        const user = await User.findById(req.session.userId)
-        const category = await Category.find({})
-        const cart = await Cart.find({ userId: userId }).populate('productId');
-        if (order.paymentStatus === 'Success' && (newStatus === 'Returned' || newStatus==='Cancelled')) {
-            const updatedUser = await User.findByIdAndUpdate(
-                order.userId,
-                {
-                    $inc: { wallet: order.discountedAmount },
-                   
-                }
-            );
-        
-            order.paymentStatus = 'Refunded';
-               await order.save()     
-        }
-        
-        const orders = await Orders.findById(orderId)
-            .populate('products.productId')
-            .populate('userId');
+            })
 
            
-        res.render('user/getorderdetail', { user, category, cart, order:orders})
-    } catch (error) {
-        console.log(error.message);
+            for (const product of updateOrder.products) {
+                const selectedProduct = await Product.findById(product.productId);
+                console.log("selectedProduct", selectedProduct);
+                const sizeIndex = selectedProduct.sizes.findIndex(size => size.size === product.size);
+    
+                if (sizeIndex !== -1) {
+                    selectedProduct.sizes[sizeIndex].quantity += product.quantity;
+                    await selectedProduct.save();
+                } else {
+                    console.log(`Size variant not found for product ID: ${product.productId} and size: ${product.size}`);
+                }
+            }
+
+            if(findOrder.orderStatus == 'online'){
+            const wallet=await Wallet.find({user:userId});
+            if(wallet){
+               
+                await Wallet.findOneAndUpdate({user:userId},{$push:{transactions:{tamount:updateOrder.totalAmount,tid:orderIdGenerate()}},$inc:{walletAmount:updateOrder.totalAmount}})
+            }
+        }
+           
+            res.status(200).json({ success:true});
+
+    
+      
+
+       
+        
+    
+        
+
+        
+    
+    }catch(err){
+        console.log(err.message);
+    }
+    }
+
+const returnOrder = async (req, res) => {
+    try {
+        const { orderId, reason } = req.body;
+        const userid = req.session.user;
+
+
+        const notification = await Notification.create({
+            sentbtuser: userid,
+            orderid : orderId.trim(),
+            message : reason.trim(),
+
+        })
+
+        console.log("notification : ",notification);
+
+        
+            res.status(200).json({message:"return order placed your money will credit to wallet after validation"})
+
+    }
+    catch (error) {
+        console.log("returnOrder page error : ", returnOrder);
     }
 }
 
 
         const applyCoupon = async (req, res) => {
             try {
-                const { user_id } = req.session; // Assuming userId is stored in session
+                const { user_id } = req.session; 
                 
                 const cart = await Cart.find({ userId: user_id })
                 const totalAmount=req.body.totalAmount
@@ -385,8 +448,8 @@ module.exports={
 loadCheckoutPage,
 placeorder,
 loadorderdetails,
-userCancel,
-userReturnOrder,
+deleteOrder,
+returnOrder,
 applyCoupon,
 placeorderonline,
 verifyRazorpay,

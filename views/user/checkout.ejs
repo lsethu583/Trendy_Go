@@ -332,7 +332,7 @@
                                                     <h5><a href="shop-product-full.html"><%= product.productId.product_name %></a></h5>
                                                     <span class="product-qty"><%= product.quantity %></span>
                                                 </td>
-                                                <% let price = product.productId.discount_price > 0 ? product.productId.discount_price : product.productId.price; %>
+                                                <% let price = product.productId.offerPrice > 0 ? product.productId.offerPrice : product.productId.discount_price; %>
                                                 <td>&#8377;<%= product.quantity * price %>.00</td>
                                             </tr>
                                             <% subtotal += product.quantity * price; %>

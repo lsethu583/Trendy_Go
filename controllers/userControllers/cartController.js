@@ -10,15 +10,22 @@ const loadCartPage=async(req,res)=>{
         const categoryData = await Category.find({});
         const products = await Product.find({})
 
+
         if(req.session.user_id){
   
        // Assuming you have a function to fetch the cart for a specific user
-      
+      let arr=[]
        const userCart = await Cart.findOne({ userId: userId }).populate('products.productId')
+       const modifiedProducts = userCart.products.map(item => {
+        const selectedSize = item.productId.sizes.find(s => s.size === item.size);
+        const cartItem = item.toObject();
+        cartItem.selectedSizeQuantity = selectedSize ? selectedSize.quantity : 0;
+      
+         arr.push(selectedSize.quantity)
+    });
        
-       
-    
-   res.render('user/cart', { user: userData, category: categoryData, cart: userCart,product:products });
+ 
+   res.render('user/cart', { user: userData, category: categoryData, cart: userCart,product:products,arr });
         }else{
            
             res.redirect('/login');
@@ -39,6 +46,7 @@ const addToCart=async (req,res)=>{
             let userCart = await Cart.findOne({ userId:userId });
 
             const product = await Product.findById(productId)
+            
             
             
         const selectedSize = product.sizes.find(s => s.size === size);
@@ -65,6 +73,21 @@ const addToCart=async (req,res)=>{
         res.redirect('/cart')
     } catch (error) {
        console.log(error.message); 
+    }
+}
+
+const updateCartQuantity=async(req,res)=>{
+    try{
+
+        const {index, newQuantity } = req.body;
+        const userId =req.session.user_id;
+        const userCart = await Cart.findOne({userId:userId})
+         userCart.products[index].quantity = newQuantity;
+         userCart.save()
+
+         res.redirect('/cart')
+    } catch (error) {
+        console.log(error.message);
     }
 }
 
@@ -103,34 +126,34 @@ const removeFromCart = async (req, res) => {
 
 
   
-const updateQuantity = async (req, res) => {
-    try {
-        const { cartId, PID, newQuantity } = req.body;
+// const updateQuantity = async (req, res) => {
+//     try {
+//         const { cartId, PID, newQuantity } = req.body;
         
-        // Update the quantity of the specific product in the cart
-        const updatedCart = await Cart.findOneAndUpdate(
-            { 
-                _id: cartId,
-                "products._id": PID // Find the cart with given ID and the specific product ID
-            },
-            { 
-                $set: { "products.$.quantity": newQuantity } // Update the quantity of the specific product in the cart
-            },
-            { new: true }
-        );
+//         // Update the quantity of the specific product in the cart
+//         const updatedCart = await Cart.findOneAndUpdate(
+//             { 
+//                 _id: cartId,
+//                 "products._id": PID // Find the cart with given ID and the specific product ID
+//             },
+//             { 
+//                 $set: { "products.$.quantity": newQuantity } // Update the quantity of the specific product in the cart
+//             },
+//             { new: true }
+//         );
         
-        if (!updatedCart) {
-            // If no cart was found with the given cartId or the product was not found in the cart
-            return res.status(404).json({ error: 'Cart or product not found' });
-        }
+//         if (!updatedCart) {
+//             // If no cart was found with the given cartId or the product was not found in the cart
+//             return res.status(404).json({ error: 'Cart or product not found' });
+//         }
 
-        // Cart updated successfully
-        res.redirect('/user/cart');
-    } catch (error) {
-        console.error('Error updating quantity:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
+//         // Cart updated successfully
+//         res.redirect('/user/cart');
+//     } catch (error) {
+//         console.error('Error updating quantity:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// }
 
 
-module.exports = { loadCartPage, addToCart,removeFromCart,updateQuantity};
+module.exports = { loadCartPage, addToCart,removeFromCart,updateCartQuantity};

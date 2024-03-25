@@ -42,21 +42,29 @@
                                         </p>
                                     </td> 
                                     
-                                        <% const price = cart.products[i].productId.discount_price > 0 ? cart.products[i].productId.discount_price: cart.products[i].productId.price; %>
+                                        <% const price = cart.products[i].productId.offerPrice > 0 ? cart.products[i].productId.offerPrice: cart.products[i].productId.discount_price; %>
                                         <% const subtotal = parseFloat(cart.products[i].quantity * price);%>
                                         <% var totalAmount = totalAmount + subtotal; %>
-                                    <td class="price" data-title="Price">₹<span id="price-" class="product-price"><%= cart.products[i].productId.discount_price %></span></td>
+                                    <td class="price" data-title="Price">₹<span id="price<%=i%>" class="product-price"><%= cart.products[i].productId.offerPrice > 0 ? cart.products[i].productId.offerPrice: cart.products[i].productId.discount_price; %></span></td>
                                     <td class="text-center" data-title="Stock">
                                         <div class="detail-qty border radius m-auto">
-                                            <a href="#" class="qty-down" onclick="decreaseQuantity(`<%= i %>`)"><i class="fi-rs-angle-small-down"></i></a>
+                                            <a href="" class="qty-down" onclick="decreaseQuantity('<%= i %>')"><i class="fi-rs-angle-small-down"></i></a>
                                             <span class="qty-val" id="quantity<%= i %>"><%= cart.products[i].quantity %></span>
-                                            <a href="#" class="qty-up" onclick="increaseQuantity(`<%= i %>`)"><i class="fi-rs-angle-small-up"></i></a>
+                                            <a href="" class="qty-up" onclick="increaseQuantity('<%= i %>')"><i class="fi-rs-angle-small-up"></i></a>
+                                            <div class="attr-detail attr-size"><%=cart.products[i].selectedSizeQuantity%>
+                                                  <input hidden type="text" id="qty<%=i%>" value="<%=arr[i]%>">
+                                                <strong class="mr-10">Size</strong>
+                                            </div>
                                         </div>
-                                        
-                                        
                                     </td>
+                                    
+        
+
+                                    
+                                    
                                     <td class="text-right" data-title="Cart">
-                                        ₹<span class="subtotal" ><%= cart.products[i].quantity  *  cart.products[i].productId.discount_price %></span>
+                                        <% let amount= cart.products[i].productId.offerPrice>0 ? cart.products[i].productId.offerPrice : cart.products[i].productId.discount_price %>
+                                        ₹<span class="subtotal<%=i%>" id="subtotal<%=i%>" ><%= cart.products[i].quantity  *  amount %></span>
                                         
                                     </td>
                                    
@@ -73,7 +81,71 @@
                             </tbody>
                         </table>
                       
-
+                        <script>
+                            // Function to decrease quantity
+                            function decreaseQuantity(index) {
+                                var quantityElement = document.getElementById('quantity' + index); // Get the quantity element
+                                var currentQuantity = parseInt(quantityElement.textContent); // Get the current quantity value
+                                var max = parseInt(document.getElementById('qty' + index).value); // Get the maximum allowed quantity
+                                var amount = parseFloat(document.getElementById('price' + index).textContent); // Get the product amount
+                                var subtotalElement = document.getElementById('subtotal' + index); // Get the subtotal element
+                                var subtotal = parseFloat(subtotalElement.textContent); // Get the current subtotal value
+                               
+                                 console.log(amount);
+                                 updateCartQuantity(index, currentQuantity - 1);
+                            }
+                        
+                            // Function to increase quantity
+                            function increaseQuantity(index) {
+                                var max = parseInt(document.getElementById('qty' + index).value); // Get the maximum allowed quantity
+                                var amount = parseFloat(document.getElementById('price' + index).textContent); // Get the product amount
+                                var quantityElement = document.getElementById('quantity' + index); // Get the quantity element
+                                var currentQuantity = parseInt(quantityElement.textContent); // Get the current quantity value
+                                var subtotalElement = document.getElementById('subtotal' + index); // Get the subtotal element
+                                var subtotal = parseFloat(subtotalElement.textContent); // Get the current subtotal value
+                                var wholeTotal =parseInt( document.getElementById('total').innerText);
+                               
+                                wholeTotal = wholeTotal+amount;
+                                console.log(wholeTotal);
+                                document.getElementById('total').innerText = wholeTotal;
+                                document.getElementById('wholeTotal').innerText=wholeTotal
+                                // Increase the quantity by 1 if it's less than the maximum allowed quantity
+                                if (currentQuantity < max) {
+                                    quantityElement.textContent = currentQuantity + 1; // Update the quantity element
+                                    subtotalElement.textContent = (subtotal + amount).toFixed(2); // Update the subtotal
+                                  
+                                }
+                                updateCartQuantity(index, currentQuantity + 1);
+                            }
+                        
+                            // Function to update the whole total
+                            
+        function updateCartQuantity(index, newQuantity) {
+        fetch('/update-cart-quantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                index: index,
+                newQuantity: newQuantity
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update cart quantity');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle the response, if needed
+        })
+        .catch(error => {
+            console.error('Error updating cart quantity:', error);
+        });
+    }
+                        </script>
+                        
                         
                     </div>
                     <div class="cart-action text-end">
@@ -169,7 +241,4 @@
     });
 </script>
 
-
-
-    
 <%- include('../layouts/userFooter') %>

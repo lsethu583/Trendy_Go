@@ -41,8 +41,9 @@ user_route.get('/productdetail',auth.isLogin,userController.loadProductDetail)
 
 user_route.get('/cart',auth.isLogin,auth.isBlocked,cartController.loadCartPage );
 user_route.get('/addtocart',auth.isLogin,cartController.addToCart)
+user_route.post('/update-cart-quantity',auth.isLogin,cartController.updateCartQuantity)
 user_route.delete('/removeFromCart',auth.isLogin,cartController.removeFromCart)
-user_route.put('/updateQuantity',auth.isLogin,cartController.updateQuantity)
+// user_route.put('/updateQuantity',auth.isLogin,cartController.updateQuantity)
 
 
 user_route.get('/profile',auth.isLogin,userProfileController.getProfilePage);
@@ -64,14 +65,18 @@ user_route.get("/categorysort/lowtohigh",auth.isLogin,sortController.lowToHigh);
 user_route.get("/categorysort/hightolow",auth.isLogin,sortController.HighToLow);
 user_route.get("/categorysort/A-Z",auth.isLogin,sortController.AtoZ);
 user_route.get("/categorysort/Z-A",auth.isLogin,sortController.ZtoA);
-user_route.post("/searchproduct",auth.isLogin,sortController.searchedData)
+user_route.get('/sorting',auth.isLogin,sortController.sorting)
+user_route.post("/search",auth.isLogin,sortController.searchProducts)
+user_route.get('/products',auth.isLogin,sortController.productList)
 
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckoutPage)
 user_route.post('/placeorder',auth.isLogin,orderController.placeorder)
 user_route.post('/placeorder/online',auth.isLogin,orderController.placeorderonline)
 user_route.get('/getorderdetails',auth.isLogin,orderController.loadorderdetails)
-user_route.get('/usercancelorder',auth.isLogin,orderController.userCancel)
-user_route.get('/userreturnorder',auth.isLogin,orderController.userReturnOrder)
+// user_route.get('/usercancelorder',auth.isLogin,orderController.userCancel)
+user_route.post("/deleteorder",auth.isLogin,orderController.deleteOrder);
+user_route.post("/returnorder",auth.isLogin,orderController.returnOrder);
+// user_route.get('/userreturnorder',auth.isLogin,orderController.userReturnOrder)
 user_route.post('/applycoupon',auth.isLogin,orderController.applyCoupon);
 user_route.post('/verifypayment',auth.isLogin,orderController.verifyRazorpay);
 
@@ -80,6 +85,7 @@ user_route.post('/verifypayment',auth.isLogin,orderController.verifyRazorpay);
 user_route.get('/orderSuccess',orderController.orderSuccess);
 
 user_route.post('/addToWallet',walletController.addToWallet);
+user_route.post('/verifypaymentwallet',walletController.verifyPaymentWallet)
 
 
 

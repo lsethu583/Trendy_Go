@@ -17,6 +17,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="assets/css/maind134.css?v=3.4">
+    
     <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -51,9 +52,9 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                     <span>
-                        <i class="material-icons md-calendar_today"></i>Date :  <b><%= orders[i].orderDate%></b>
+                        <i class="material-icons md-calendar_today"></i>Date :  <b> <%= new Date(orders[i].orderDate).toLocaleString()%></b>
                     </span> <br>
-                    <small class="text-muted">Order ID: <%=orders[i].orderId%></small>
+                    <span id="orderid">Order id: <%= orders[i].orderId %></span>
                 </div>
                 
             </div>
@@ -70,7 +71,7 @@
                             <p class="mb-1">
                               <%= orders[i].address.name %> <br> <%= orders[i].userId.email %> <br> +91 <%= orders[i].address.phone %>
                             </p>
-                            <a href="#">View profile</a>
+                            <!-- <a href="#">View profile</a> -->
                         </div>
                     </article>
                 </div> <!-- col// -->
@@ -82,11 +83,11 @@
                         <div class="text">
                             <h6 class="mb-1">Order info</h6>
                             <p class="mb-1">
-                                Shipping: Free Shipping <br> Pay method:<%= orders[i].paymentMethod %><br> Status:<%= orders[i].paymentStatus %>
+                                Shipping: Free Shipping <br> Pay method:<%= orders[i].paymentMethod %><br>Payment Status:<%= orders[i].paymentStatus %>
                                 
                                  
                             </p>
-                            <a href="#">Download info</a>
+                            <!-- <a href="#">Download info</a> -->
                         </div>
                     </article>
                 </div> <!-- col// -->
@@ -105,7 +106,7 @@
                                  Pincode:<%= orders[i].address.pincode %><br>
                                  Phone Number:<%= orders[i].address.phone %>
                             </p>
-                            <a href="#">View profile</a>
+                            <!-- <a href="#">View profile</a> -->
                         </div>
                     </article>
                 </div> <!-- col// -->
@@ -123,7 +124,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                           <% for(let j=0;j<orders[i].products.length;j++) {%>
+                           <% for(let j=0;j<orders[i].products.length && coupon;j++) {%>
                                 <tr>
                                     <td>
                                         <a class="itemside" href="#">
@@ -135,7 +136,7 @@
                                             <div class="info">product: <%= orders[i].products[j].productId.product_name %> , size: <%= orders[i].products[j].size %> </div>
                                         </a>
                                     </td>
-                                    <td> ₹ <%= orders[i].products[j].productId.discount_price %></td>
+                                    <td> ₹ <%= orders[i].products[j].productId.offerPrice>0 ? orders[i].products[j].productId.offerPrice : orders[i].products[j].productId.discount_price %></td>
                                     <td><%= orders[i].products[j].quantity %> </td>
                                     <td class="text-end"> ₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity %>  </td>
                                 </tr>
@@ -150,7 +151,7 @@
                                             
                                                 <span>Subtotal:</span>&nbsp&nbsp&nbsp&nbsp<span>₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity %>  </span><br>
                                                 <span>Shipping cost:</span>&nbsp&nbsp&nbsp&nbsp<span>₹0.00</span><br>
-                                                <!-- <span>Applied Coupon:</span>&nbsp&nbsp&nbsp&nbsp<span>//coupon</span><br> -->
+                                                <!-- <span>Applied Coupon:</span>&nbsp&nbsp&nbsp&nbsp<span>></span><br> -->
                                                 <!-- <span>Discount:</span>&nbsp&nbsp&nbsp&nbsp<span>₹//discount.00</span><br> -->
                                                
 
@@ -180,28 +181,226 @@
 
 
                     <div class="h-25 pt-4">
-                                
-                        <%if(orders.orderStatus=='Order Placed'|| orders.orderStatus=='Shipped'){%>
-                            <button onclick="userCancelOrder(`<%=orders._id%>`)" class="btn btn-danger" style="background-color: rgb(153, 11, 11);" >Cancel Order</button>
-                        <%}else if(orders.orderStatus=='Delivered'){%>
-                            <button class="btn btn-warning" onclick="userReturnOrder(`<%=orders._id%>`)" style="background-color: rgb(226, 128, 43);" >Return Order</button>
-                        <%}else{%>
-                             <a href="/" class="btn btn-sm">Continue Shoping</a>
-                            <%}%>
-                   <button id="print" class="btn btn-brand" >Download Invoice</button>
+                       <a href="/" class="btn btn-sm">Continue Shopping</a>
+                       <button id="print" class="btn btn-sm ">Download Invoice</button><br> <br>
+                       
+            
+
+            <!-- Hidden input field to store the order ID -->
+            <% if(orders[i].orderStatus==="Delivered" ){ %>
+                <button class="btn btn-sm" type="submit" id="returnorder" name="returnorder"
+                    value="Cancel Order">Return Order</button>
+
+                <% }else if(orders[i].orderStatus==="Returned"  ){ %>
+                    <a href="/shop">already returned go back to shop</a>
+                    
+
+                    <% }else if(orders[i].orderStatus==="Order Placed" || orders[i].orderStatus==="Shipped" ){ %>
+                        <button class="btn btn-sm" type="submit" id="cancelorder" name="cancelorder"
+                        value="Cancel Order" onclick="cancelOrder('<%= orders[i]._id %>','<%= orders[i].products[i].size %>','<%= orders[i].products[i].quantity %>')">Cancel Order</button>
+                   
+                    <% }else{ %>
+                        <a href="/profile"><button class="btn btn-sm" type="submit" id="pending-order" name="pending-order"
+                            value="Cancel Order">Back</button></a>
+                        <% } %>
+
+
+
+      
+
                     </div>
+                    
                 </div> <!-- col// -->
             </div>
         </div> <!-- card-body end// -->
         <% } %>
         <% } %>
+
+        
     </div> <!-- card end// -->
 </section>  <!-- content-main end// -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document
       .getElementById('print')
       .addEventListener('click', function() {
         window.print();
       });
+
+
+      function cancelOrder(id,size,quantity){
+           
+           $.ajax({
+    url:'/deleteorder',
+    method:'post',
+    data:{
+        id,
+        size,
+        quantity
+       
+    },
+    success:(response)=>{
+        alert("gahgahj")
+        if(response.success === true){
+            alert("nmsna,n")
+            
+            window.location.reload()
+    }
+    }
+    })
+}
+      
+
     </script>
 
+
+<script>
+   
+    // $(document).ready(function () {
+    //     let cancelButton = $("#cancelorder");
+    //     let returnButton = $('#returnorder');
+    //     let rePaymentCancelButton = $("#pending-order");
+    //     cancelButton.click(function () {
+            
+    //         event.preventDefault();
+    //         const orderId = $("#orderid").text();
+    //       console.log("orderId" + orderId);
+
+
+
+    //         Swal.fire({
+    //             title: 'Are you sure?',
+    //             text: 'Do you want to cancel this order?',
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             confirmButtonColor: '#3085d6',
+    //             cancelButtonColor: '#d33',
+    //             confirmButtonText: 'Yes, cancel it!'
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+
+    //                 $.ajax({
+    //                     url: "/deleteorder",
+    //                     method: "POST",
+    //                     data: {
+    //                         orderId: orderId
+    //                     },
+    //                     success: function (response) {
+    //                         Swal.fire({
+
+    //                             icon: "success",
+    //                             title: "Your order has been deleted",
+    //                             showConfirmButton: false,
+    //                             timer: 1500
+    //                         }).then(() => {
+    //                             window.location.href = "/profile";
+    //                         })
+    //                     },
+    //                     error: function (xhr, status, error) {
+    //                         console.error(error);
+    //                         Swal.fire({
+    //                             icon: 'error',
+    //                             title: 'Oops...',
+    //                             text: 'Something went wrong!'
+    //                         });
+    //                     }
+    //                 })
+    //             }
+    //         })
+
+    //     })
+
+
+        returnButton.click(function () {
+            event.preventDefault();
+            const orderId = $("#orderid").text();
+            
+            Swal.fire({
+                title: "Return Product !!!",
+                text: "Write reason for returning product",
+                input: 'text',
+                showCancelButton: true
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: "/returnorder",
+                        method: "POST",
+                        data: {
+                            orderId: orderId,
+                            reason: result.value.trim()
+                        },
+                        success: function (response) {
+                         
+                            
+                           if(response){
+                            Swal.fire({
+icon: "success",
+title: response.message,
+showConfirmButton: false,
+timer: 2000
+}).then((result)=>{
+window.location.href = "/profile"
+});
+
+                           }
+                        }
+                    })
+                }
+            });
+
+        })
+
+
+        rePaymentCancelButton.click(function(){
+            event.preventDefault();
+            const orderId = $("#orderid").text().trim();
+            
+            Swal.fire({
+title: "Are you sure?",
+text: "You won't be able to revert this!",
+icon: "warning",
+showCancelButton: true,
+confirmButtonColor: "#3085d6",
+cancelButtonColor: "#d33",
+confirmButtonText: "Yes, delete it!"
+}).then((result) => {
+if (result.isConfirmed) {
+$.ajax({
+url:"/cancelpendingorder",
+method:"POST",
+data:{
+    id:orderId
+},
+success : function(response){
+    console.log("response : ",response);
+    if(response){
+
+        Swal.fire({
+icon: "success",
+title: response.message,
+showConfirmButton: false,
+timer: 2000
+}).then((result)=>{
+window.location.href = "/profile"
+});
+    }
+
+},
+error:function(xhr){
+    console.log("error : ",xhr);
+}
+})
+}
+});
+
+
+        })
+
+
+
+  
+
+
+
+</script>

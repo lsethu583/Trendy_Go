@@ -147,9 +147,15 @@ function validateForm() {
         displayErrorMessage('confirmPassword_error', 'Passwords do not match');
         isValid = false;
     }
-
+    const referalCodeInput =  document.getElementById("referal");
+const referal = referalCodeInput.value.trim();
     return isValid;
 }
+
+
+
+    // Add referral code to formData if it's provided
+   
 
 // Add event listener to the form for form submission
 document.getElementById('registrationForm').addEventListener('submit', function(event) {

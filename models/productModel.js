@@ -13,6 +13,14 @@ const productSchema = mongoose.Schema({
         type:Number,
         required:true
     },
+    offerPrice:{
+        type:Number,
+        default: 0
+    },
+    discountApplied: {
+        type: Boolean,
+        default: false 
+    },
     stock : {
         type : Number,
         require : true
