@@ -16,17 +16,33 @@
                                     <small class="text-muted">Order ID: <%=orders.orderId%></small>
                                 </div>
                                 <form action="/admin/updateorderstatus?OID=<%=orders._id%>" method="post">
-                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                                    <select value="<%=orders.orderStatus%>" class="form-select d-inline-block mb-lg-0 mb-15 mw-200" name="orderStatus">
+
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end"> 
+                                    <% if(orders.orderStatus == "Cancelled" || orders.orderStatus == "Returned" || orders.orderStatus == "Delivered") {%>
+                                        <button class="btn btn-primary" onclick="back()" >Back</button>
+                                        <% } else if(orders.orderStatus == "Return Processing") { %>
+                                            <select id="select" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                                <option>Return Processing</option>
+                                                <option>Returned</option>
+                                                <option>Delivered</option>
+                                            </select>
+                                            <button class="btn btn-primary" onclick="changestatus('<%=orders._id %>','<%= orders.orderStatus %>')" >Save</button>
+                                        <%} else {%> 
+                                    <select id="select" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                        
                                         <option>Order Placed</option>
                                         <option>Shipped</option>
-                                        <option>Delivered</option>
                                         <option>Cancelled</option>
-                                        <option>Returned</option>
-                                    </select>
-                                    <button class="btn btn-primary" type="submit">Save</button>
+                                        <option>Delivered</option>
+                                    </select>   
+                                    <button class="btn btn-primary" onclick="changestatus('<%=orders._id%>','<%= orders.orderStatus%>')" >Save</button>
+                                    <% } %>
+                                    
                                     <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
                                 </div>
+
+
+
                             </form>
                             </div>   
                 <div class="card-body">
@@ -197,5 +213,78 @@
     });
 }
 
-        </script>
-       <%- include('../layouts/adminFooter') %>
+</script>
+
+<script>
+    function changestatus(orderID, currentStatus) {
+        console.log(orderID);
+        const selectedStatus = document.getElementById('select').value;
+        console.log(selectedStatus);
+        if (selectedStatus !== currentStatus) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Are you sure you want to change the status!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, change it!',
+                cancelButtonText: 'No, cancel!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log("its hereeeeeeeee");
+                    fetch('orderdetails', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderID: orderID,
+                            statusID: selectedStatus
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Status Changed!',
+                                text: 'The status has been successfully changed.',
+                                icon: 'success'
+                            }).then(() => {
+                                
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Failed to change the status.',
+                                icon: 'error'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An unexpected error occurred.',
+                            icon: 'error'
+                        });
+                    });
+                }
+            });
+        } else {
+            // Status not changed
+            Swal.fire({
+                title: 'Info',
+                text: 'The status is already set to ' + currentStatus + '. No changes made.',
+                icon: 'info'
+            });
+        }
+    }
+
+    function back(){
+        window.location.href = 'orderlist'
+    }
+
+</script>
+
+
+<%- include('../layouts/adminFooter') %>

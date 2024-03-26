@@ -4,6 +4,7 @@ const Category=require('../../models/categoryModel')
 const User=require('../../models/userModel')
 const Orders=require('../../models/orderSchema')
 const {orderIdGenerate}=require('../../helper/idgenerate')
+const Wallet=require('../../models/walletSchema')
 
 
 
@@ -97,10 +98,51 @@ const cancelorder = async (req, res) => {
     }
 };
 
+const adminchangestatus = async (req, res) => {
+    try {
+        const user = req.session.user_id
+        const orderID = req.body.orderID
+        const status = req.body.statusID
+        const order = await Orders.findOne({ _id: orderID })
+        if (order) {
+            const corder = await Orders.findByIdAndUpdate({ _id: orderID },
+                { $set: { orderStatus: status } }, { new: true })
+            res.status(200).json({ success: true })
+            if (corder.orderStatus == "Cancelled" || corder.orderStatus == "Returned") {
+                let productarray = []
+                corder.products.forEach((element) => {
+                    let productdata = {
+                        productid: element.productId,
+                        quantityid: element.quantity,
+                        size: element.size
+                    }
+                    productarray.push(productdata)
+                })
+
+                productarray.forEach(async (el) => {
+                    await Products.findByIdAndUpdate({ _id: el.productid }, { $inc: { [`size.${el.size}.quantity`]: el.quantityid } })
+                })
+            }
+            if (corder.paymentMethod = 'online') {
+                const userr = corder.user
+                const wallet = await Wallet.find({ user: userr })
+                if (wallet) {
+                    await Wallet.findOneAndUpdate({ user: userr }, { $push: { walletdata: { history: corder.totalamount, date: new Date(), paymentmethod: "razorpay" } } })
+                }
+            }
+            res.status(200).json({ success: true })
+        } else {
+            res.status(400).json({ success: false, message: 'Failed to update status.' });
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports={
     loadOrderList,
     loadOrderDetails,
     orderstatusupdate,
     cancelorder,
-
+    adminchangestatus
 }

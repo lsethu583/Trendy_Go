@@ -344,45 +344,78 @@ const deleteOrder = async(req,res)=>{
            
             res.status(200).json({ success:true});
 
-    
-      
-
-       
-        
-    
-        
-
-        
-    
     }catch(err){
         console.log(err.message);
     }
     }
 
-const returnOrder = async (req, res) => {
-    try {
-        const { orderId, reason } = req.body;
-        const userid = req.session.user;
+    const returnOrder = async(req,res)=>{
+        try {
+            
+            const orderID = req.body.orderID
+            const {size,quantity}=req.body;
+            const userId=req.session.user_id;
+           
+           
+            const order = await Orders.findByIdAndUpdate({_id:orderID},
+                {$set:{
+                    orderStatus:"Return Processing"
+                }})
+
+                console.log("return order",order);
+    
+            if(order.orderStatus =="Returned"){
+                let productArray = []
+                order.products.forEach(element =>{
+                    let productData = {
+                        productID:element.productId,
+                        quantity:element.quantity,
+                        size:element.size
+                    }
+                    productArray.push(productData)
+                })
+                console.log('the product array is ',productArray);
 
 
-        const notification = await Notification.create({
-            sentbtuser: userid,
-            orderid : orderId.trim(),
-            message : reason.trim(),
-
-        })
-
-        console.log("notification : ",notification);
-
+                for (const product of order.products) {
+                    const selectedProduct = await Product.findById(product.productId);
+                    console.log("selectedProduct", selectedProduct);
+                    const sizeIndex = selectedProduct.sizes.findIndex(size => size.size === product.size);
         
-            res.status(200).json({message:"return order placed your money will credit to wallet after validation"})
+                    if (sizeIndex !== -1) {
+                        selectedProduct.sizes[sizeIndex].quantity += product.quantity;
+                        await selectedProduct.save();
+                    } else {
+                        console.log(`Size variant not found for product ID: ${product.productId} and size: ${product.size}`);
+                    }
+                }
+                if(order.orderStatus == 'online'){
+                    const wallet=await Wallet.find({user:userId});
+                    if(wallet){
+                       
+                        await Wallet.findOneAndUpdate({user:userId},{$push:{transactions:{tamount:updateOrder.totalAmount,tid:orderIdGenerate()}},$inc:{walletAmount:updateOrder.totalAmount}})
+                   }
+            }
+        }
+           
+            res.status(200).json({ success:true});
 
+    }catch(err){
+        console.log(err.message);
     }
-    catch (error) {
-        console.log("returnOrder page error : ", returnOrder);
     }
-}
 
+
+    const cancelReturn = async(req,res)=>{
+        try {
+            const orderId = req.body.orderID
+           
+            const order = await Orders.findByIdAndUpdate({_id:orderId},{$set:{orderStatus:"Delivered"}})
+            res.status(200).json({success:true})
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 
         const applyCoupon = async (req, res) => {
             try {
@@ -450,6 +483,7 @@ placeorder,
 loadorderdetails,
 deleteOrder,
 returnOrder,
+cancelReturn,
 applyCoupon,
 placeorderonline,
 verifyRazorpay,

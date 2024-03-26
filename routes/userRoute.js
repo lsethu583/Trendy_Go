@@ -73,10 +73,9 @@ user_route.get('/checkout',auth.isLogin,orderController.loadCheckoutPage)
 user_route.post('/placeorder',auth.isLogin,orderController.placeorder)
 user_route.post('/placeorder/online',auth.isLogin,orderController.placeorderonline)
 user_route.get('/getorderdetails',auth.isLogin,orderController.loadorderdetails)
-// user_route.get('/usercancelorder',auth.isLogin,orderController.userCancel)
 user_route.post("/deleteorder",auth.isLogin,orderController.deleteOrder);
-user_route.post("/returnorder",auth.isLogin,orderController.returnOrder);
-// user_route.get('/userreturnorder',auth.isLogin,orderController.userReturnOrder)
+user_route.post("/return",auth.isLogin,orderController.returnOrder);
+user_route.post('/cancelreturn',auth.isLogin,orderController.cancelReturn)
 user_route.post('/applycoupon',auth.isLogin,orderController.applyCoupon);
 user_route.post('/verifypayment',auth.isLogin,orderController.verifyRazorpay);
 

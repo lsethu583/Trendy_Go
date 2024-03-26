@@ -188,12 +188,14 @@
 
             <!-- Hidden input field to store the order ID -->
             <% if(orders[i].orderStatus==="Delivered" ){ %>
-                <button class="btn btn-sm" type="submit" id="returnorder" name="returnorder"
+                <button class="btn btn-sm" type="submit" id="returnorder" onclick="returnOrder(`<%= orders[i]._id %>`,`<%= orders[i].products[i].size %>`,`<%= orders[i].products[i].quantity %>`)" name="returnorder"
                     value="Cancel Order">Return Order</button>
 
                 <% }else if(orders[i].orderStatus==="Returned"  ){ %>
                     <a href="/shop">already returned go back to shop</a>
-                    
+                    <%} else if(orders[i].orderStatus=="Return Processing" ){%>
+                        <button onclick="cancelReturn(`<%= orders[i]._id %>`,`<%= orders[i].products[i].size %>`,`<%= orders[i].products[i].quantity %>`)" class="btn  mr-10 mb-sm-15"><i
+                                class="fi-rs-cross mr-10"></i>Cancel Return</button>
 
                     <% }else if(orders[i].orderStatus==="Order Placed" || orders[i].orderStatus==="Shipped" ){ %>
                         <button class="btn btn-sm" type="submit" id="cancelorder" name="cancelorder"
@@ -250,12 +252,61 @@
     }
     })
 }
-      
+function returnOrder(orderID,size,quantity) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Are you sure, you want to return the product ',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, change it!',
+            cancelButtonText: 'No, cancel!',
+        })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/return', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderID ,size,quantity})
+                    })
+                        .then(response => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: 'Status has changed',
+                                    text: 'The status has changed successfully',
+                                    icon: 'success'
+                                })
+                                    .then(() => {
+                                        window.location.reload()
+                                    })
+                            }
+                        })
+                }
+            })
+    }
+
+    function cancelReturn(orderID,size,quantity) {
+        fetch('/cancelreturn', {
+            method: 'post',
+            headers: {
+                'Content-type': 'Application/json'
+            },
+            body: JSON.stringify({ orderID ,size,quantity})
+        })
+            .then(response => response.json())
+            .then((data) => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+    }  
 
     </script>
 
 
-<script>
+<!-- <script>
    
     // $(document).ready(function () {
     //     let cancelButton = $("#cancelorder");
@@ -403,4 +454,4 @@ error:function(xhr){
 
 
 
-</script>
+</script> -->
