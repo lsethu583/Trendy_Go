@@ -165,7 +165,7 @@
                                         function verifyPayment(order, response , data) {
                 
 
-                $.ajax({
+                             $.ajax({
                     url: "/verifypaymentwallet",
                     method: "POST",
                     data: {
@@ -732,7 +732,8 @@ background-color: #0056b3; /* Darker blue color on hover */
         </script>
         
 
-
+    </div>
+</div>
 
 
 <!-- //coupon  -->
@@ -800,43 +801,7 @@ background-color: #0056b3; /* Darker blue color on hover */
     }
         </script>
         
-        <script>
-            document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
-                event.preventDefault(); 
-                
-                // Prevent default form submission
         
-                // Get password values
-                const currentPassword = document.getElementById('currentPassword').value;
-                const newPassword = document.getElementById('newPassword').value;
-                const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-        
-                // Password strength regex pattern
-                const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{"':;?/>.<,])[A-Za-z\d!@#$%^&*()_+}{"':;?/>.<,]{6,}$/;
-        
-                // Validate new password strength
-                if (!passwordPattern.test(newPassword)) {
-                    alert('Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
-                    return;
-                }
-        
-                // Validate if new password matches confirm password
-                if (newPassword !== confirmNewPassword) {
-                    document.getElementById('passwordMismatch').style.display = 'block';
-                    return;
-                }
-        
-                // Validate if old password is different from new password
-                if (currentPassword === newPassword) {
-                    alert('New password should be different from the old password.');
-                    return;
-                }
-        
-                // Passwords match and meet strength criteria - Proceed with your password change logic here
-                // ...
-                this.submit();
-            });
-        </script>
         
         <div class="row" style="max-width:920px">
             <div class="col-md">
@@ -861,14 +826,59 @@ background-color: #0056b3; /* Darker blue color on hover */
 
 
                                     
-                                </div>
-                            </div>
+                                
+                            
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        </div>
         </section>
     </main>
+
+
+
+
+<script>
+
+         
+
+
+
+
+
+             function copyCouponCode(couponCode) {
+        // Create a temporary input element
+        var tempInput = document.createElement("input");
+
+        // Set the value of the input element to the coupon code
+        tempInput.value = couponCode;
+
+        // Append the input element to the body
+        document.body.appendChild(tempInput);
+
+        // Select the coupon code text
+        tempInput.select();
+
+        // Copy the selected text to the clipboard
+        document.execCommand("copy");
+
+        // Remove the temporary input element
+        document.body.removeChild(tempInput);
+
+        // Provide feedback to the user
+        Toastify({
+        text: "Coupon code copied to clipboard: " + couponCode,
+        duration: 3000,  // Duration in milliseconds
+        close: true,     // Whether to show a close button
+        gravity: "top",  // Toast position: 'top', 'bottom', 'left', 'right'
+        position: "right", // Toast position
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Background color
+    }).showToast();
+    
+    }
+        </script>
     <script>
       
     document.getElementById("addAddressForm").addEventListener("submit", function(event) {
@@ -922,6 +932,44 @@ background-color: #0056b3; /* Darker blue color on hover */
             }
         });
     </script>
+
+<script>
+    document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
+        event.preventDefault(); 
+        
+        // Prevent default form submission
+
+        // Get password values
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+        // Password strength regex pattern
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{"':;?/>.<,])[A-Za-z\d!@#$%^&*()_+}{"':;?/>.<,]{6,}$/;
+
+        // Validate new password strength
+        if (!passwordPattern.test(newPassword)) {
+            alert('Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+            return;
+        }
+
+        // Validate if new password matches confirm password
+        if (newPassword !== confirmNewPassword) {
+            document.getElementById('passwordMismatch').style.display = 'block';
+            return;
+        }
+
+        // Validate if old password is different from new password
+        if (currentPassword === newPassword) {
+            alert('New password should be different from the old password.');
+            return;
+        }
+
+        // Passwords match and meet strength criteria - Proceed with your password change logic here
+        // ...
+        this.submit();
+    });
+</script>
     
     <style>
         .address-type-btn {

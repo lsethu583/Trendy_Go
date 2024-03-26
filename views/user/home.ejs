@@ -291,10 +291,6 @@
                                             <!-- Add more default categories if needed -->
                                             <% } %>
                                     </ul>
-                                </div>
-                                
-            
-                                <div class="widget-category mb-30" id="sort-filter">
                                     <h5 class="section-title style-1 mb-30 wow fadeIn animated">Sort by</h5>
                                     <ul class="categories">
                                        
@@ -303,8 +299,6 @@
                                         <li><a href="/categorysort/A-Z">Aa - Zz</a></li>
                                         <li><a href="/categorysort/Z-A">Zz - Aa</a></li>
                                     </ul>
-                                </div>
-                                <div class="widget-category mb-30">
                                     <h5 class="section-title style-1 mb-30 wow fadeIn animated">Price Range</h5>
                                     <ul class="categories">
                                         <li><a href="/sorting?start=0&end=500">₹0-₹500</a></li>
@@ -314,6 +308,9 @@
                                         <li><a href="/sorting?start=2000&end=0">2000₹+</a></li>
                                     </ul>
                                 </div>
+                                
+            
+                                
                                
                                
                                 
@@ -336,16 +333,13 @@
                                             <div class="col-lg-4 col-md-4 col-12 col-sm-6">
                                                 <div class="product-cart-wrap mb-30">
                                                     <div class="product-img-action-wrap">
-                                                        <a href="/singleProductDetails/<%= products[i]._id %>"><div class="left">
+                                                        <a href="#"><div class="left">
                                                             <% if (products[i].image && products[i].image.length > 0) { %>
+                                                                
                                                                 <img src="assetsb/productImages/<%=products[i].image[0]%>" class="img-thumbnail custom-img-size" style="object-fit: contain;"  alt="<%= products[i].name %>">
                                                             
                                                         </div></a>
-                                                        <div class="product-action-1">
-                                                            
-                                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" onclick="addToWishlist('<%= products[i]._id %>')"  ><i class="fi-rs-heart"></i></a>
-                                                          
-                                                        </div>
+                                                        
                                                         <!-- <div class="product-badges product-badges-position product-badges-mrg">
                                                             <span class="hot">Hot</span>
                                                         </div> -->

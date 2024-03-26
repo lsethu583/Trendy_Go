@@ -50,11 +50,7 @@
                                                     <img src="/assetsb/productImages/<%= products[i].image[0] %>" class="img-thumbnail custom-img-size" style="object-fit: contain;"  alt="<%= products[i].name %>">
                                                 
                                             </div></a>
-                                            <div class="product-action-1">
-                                               
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" onclick="addToWishlist('<%= products[i]._id %>')"  ><i class="fi-rs-heart"></i></a>
-                                                
-                                            </div>
+                                           
                                             <div class="product-badges product-badges-position product-badges-mrg">
                                                 <span class="hot">Hot</span>
                                             </div>
@@ -71,7 +67,7 @@
                                                 </span>
                                             </div>
                                             <div class="product-price">
-                                                <span><%= products[i].offerPrice>0 ? products[i].offerPrice : products[i].discount_price %> </span>
+                                                <span><%= products[i].discount_price %> </span>
                                                 <span class="old-price"><%= products[i].price %></span>
                                             </div>
                                             <div class="product-action-1 show">
