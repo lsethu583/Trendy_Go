@@ -1,5 +1,6 @@
 <%- include('../layouts/adminHeader') %>
                 <%if(orders) { %>
+                   
                     <div class="content-header">
                         <div>
                             <h2 class="content-title card-title">Order detail</h2>
@@ -15,7 +16,7 @@
                                     </span> <br>
                                     <small class="text-muted">Order ID: <%=orders.orderId%></small>
                                 </div>
-                                <form action="/admin/updateorderstatus?OID=<%=orders._id%>" method="post">
+                             
 
                                 <div class="col-lg-6 col-md-6 ms-auto text-md-end"> 
                                     <% if(orders.orderStatus == "Cancelled" || orders.orderStatus == "Returned" || orders.orderStatus == "Delivered") {%>
@@ -43,7 +44,7 @@
 
 
 
-                            </form>
+                        
                             </div>   
                 <div class="card-body">
                     <div class="row mb-50 mt-20 order-info-wrap">
@@ -217,11 +218,14 @@
 
 <script>
     function changestatus(orderID, currentStatus) {
+       
         console.log(orderID);
+        console.log(currentStatus);
         const selectedStatus = document.getElementById('select').value;
         console.log(selectedStatus);
         if (selectedStatus !== currentStatus) {
             Swal.fire({
+                
                 title: 'Are you sure?',
                 text: 'Are you sure you want to change the status!',
                 icon: 'warning',
@@ -229,15 +233,16 @@
                 confirmButtonText: 'Yes, change it!',
                 cancelButtonText: 'No, cancel!',
             }).then((result) => {
+                console.log("its hereeeeeeeee");
                 if (result.isConfirmed) {
-                    console.log("its hereeeeeeeee");
-                    fetch('orderdetails', {
+                    
+                    fetch('/admin/orderdetails', {
                         method: 'post',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            orderID: orderID,
+                            orderID,
                             statusID: selectedStatus
                         })
                     })

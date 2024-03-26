@@ -79,9 +79,11 @@ const loadDashboard = async (req, res) => {
 const loadUserDashboard = async (req, res) => {
     try {
         const adminData = await User.findById(req.session.admin);
+        
+        
         const userData = await User.find({
             is_admin: 0
-        });
+        })
         res.render('userDashboard', { users: userData, admin: adminData });
     } catch (error) {
         console.log(error.message);

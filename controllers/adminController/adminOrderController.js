@@ -25,7 +25,8 @@ const loadOrderDetails=async(req,res)=>{
        const orderId=req.query.orderId;
       
         const orders=await Orders.findById(orderId).populate('products.productId').populate('userId')
-        
+       
+         
         
         res.render('orderdetail',{orders:orders})
     } catch (error) {
@@ -33,39 +34,39 @@ const loadOrderDetails=async(req,res)=>{
     }
 }
 
-const orderstatusupdate = async (req, res) => {
-    try {
-        const orderId = req.query.OID;
-        const newStatus = req.body.orderStatus;
+// const orderstatusupdate = async (req, res) => {
+//     try {
+//         const orderId = req.query.OID;
+//         const newStatus = req.body.orderStatus;
 
-        const result = await Orders.updateOne(
-            { _id: orderId, orderStatus: { $in: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"] } },
-            { $set: { orderStatus: newStatus } }
-        );
+//         const result = await Orders.updateOne(
+//             { _id: orderId, orderStatus: { $in: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"] } },
+//             { $set: { orderStatus: newStatus } }
+//         );
 
-        // if (order.paymentStatus === 'Success' && (newStatus === 'Returned' || newStatus==='Cancelled')) {
-        //     await User.findByIdAndUpdate(
-        //         order.userId,
-        //         { $inc: { wallet: order.discountedAmount } },
-        //         );
-        //         order.paymentStatus = 'Refunded';
-        //         await order.save()     
-        // }
+//         // if (order.paymentStatus === 'Success' && (newStatus === 'Returned' || newStatus==='Cancelled')) {
+//         //     await User.findByIdAndUpdate(
+//         //         order.userId,
+//         //         { $inc: { wallet: order.discountedAmount } },
+//         //         );
+//         //         order.paymentStatus = 'Refunded';
+//         //         await order.save()     
+//         // }
 
-        const order = await Orders.findById(orderId);
+//         const order = await Orders.findById(orderId);
 
-        // Fetch the order details with populated fields
-        const orders = await Orders.findById(orderId)
-            .populate('products.productId')
-            .populate('userId');
+//         // Fetch the order details with populated fields
+//         const orders = await Orders.findById(orderId)
+//             .populate('products.productId')
+//             .populate('userId');
 
-        // Render the template with the orders variable
-        res.render('orderdetail', { orders: orders, msg: true });
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send("Internal Server Error");
-    }
-}
+//         // Render the template with the orders variable
+//         res.render('orderdetail', { orders: orders, msg: true });
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send("Internal Server Error");
+//     }
+// }
 const cancelorder = async (req, res) => {
     try {
         const orderId = req.query.OID;
@@ -100,13 +101,19 @@ const cancelorder = async (req, res) => {
 
 const adminchangestatus = async (req, res) => {
     try {
-        const user = req.session.user_id
+        console.log('ivide ethi...');
+        const userId = req.session.user_id
+        console.log('userId',userId);
         const orderID = req.body.orderID
         const status = req.body.statusID
         const order = await Orders.findOne({ _id: orderID })
+        let quantityoforders=order.products[0].quantity;
+        let sizeoforders=order.products[0].size;
+        
         if (order) {
             const corder = await Orders.findByIdAndUpdate({ _id: orderID },
                 { $set: { orderStatus: status } }, { new: true })
+                console.log(corder);
             res.status(200).json({ success: true })
             if (corder.orderStatus == "Cancelled" || corder.orderStatus == "Returned") {
                 let productarray = []
@@ -119,18 +126,33 @@ const adminchangestatus = async (req, res) => {
                     productarray.push(productdata)
                 })
 
-                productarray.forEach(async (el) => {
-                    await Products.findByIdAndUpdate({ _id: el.productid }, { $inc: { [`size.${el.size}.quantity`]: el.quantityid } })
-                })
-            }
-            if (corder.paymentMethod = 'online') {
-                const userr = corder.user
-                const wallet = await Wallet.find({ user: userr })
-                if (wallet) {
-                    await Wallet.findOneAndUpdate({ user: userr }, { $push: { walletdata: { history: corder.totalamount, date: new Date(), paymentmethod: "razorpay" } } })
+                for (const product of corder.products) {
+                    const selectedProduct = await Products.findById(product.productId);
+                    console.log("selectedProduct", selectedProduct);
+                    const sizeIndex = selectedProduct.sizes.findIndex(size => size.size === product.size);
+        
+                    if (sizeIndex !== -1) {
+                        selectedProduct.sizes[sizeIndex].quantity += product.quantity;
+                        await selectedProduct.save();
+                    } else {
+                        console.log(`Size variant not found for product ID: ${product.productId} and size: ${product.size}`);
+                    }
                 }
+                console.log('its hereeee');
+                if(corder.orderStatus == 'Returned'){
+                    const userr = corder.userId
+                    console.log("userr",userr);
+                    const wallet=await Wallet.find({user:userr});
+                    console.log(wallet);
+                    if(wallet){
+                       
+                       let updatedWallet= await Wallet.findOneAndUpdate({user:userr},{$push:{transactions:{tamount:corder.totalAmount,tid:orderIdGenerate()}},$inc:{walletAmount:corder.totalAmount}})
+                        console.log("updatedWallet",updatedWallet);
+                   }
             }
-            res.status(200).json({ success: true })
+        }
+           
+            res.status(200).json({ success:true});
         } else {
             res.status(400).json({ success: false, message: 'Failed to update status.' });
         }
@@ -142,7 +164,7 @@ const adminchangestatus = async (req, res) => {
 module.exports={
     loadOrderList,
     loadOrderDetails,
-    orderstatusupdate,
+   
     cancelorder,
     adminchangestatus
 }

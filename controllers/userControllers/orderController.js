@@ -389,13 +389,7 @@ const deleteOrder = async(req,res)=>{
                         console.log(`Size variant not found for product ID: ${product.productId} and size: ${product.size}`);
                     }
                 }
-                if(order.orderStatus == 'online'){
-                    const wallet=await Wallet.find({user:userId});
-                    if(wallet){
-                       
-                        await Wallet.findOneAndUpdate({user:userId},{$push:{transactions:{tamount:updateOrder.totalAmount,tid:orderIdGenerate()}},$inc:{walletAmount:updateOrder.totalAmount}})
-                   }
-            }
+               
         }
            
             res.status(200).json({ success:true});
