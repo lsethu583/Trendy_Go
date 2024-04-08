@@ -35,7 +35,7 @@ onsubmit="return validationChecking()">
                                 <label for="inputPassword4" class="form-label">category</label>
                                 <select name="category"  class="form-control">
                                     
-                                     <option value="">Sweatshirt
+                                     <option value=""><%= selectedCategoryName %>
                                      </option>
                                      <% categories.forEach(category => { %>
                                         <option value="<%= category._id %>">
@@ -317,36 +317,19 @@ imgView.src = URL.createObjectURL(event.target.files[0]);
 
 
 function validationChecking() {
+    alert("kkkk")
     const product_title = document.getElementById("product_title").value;
+    alert("product_title"+ product_title)
     const description = document.getElementById("description").value;
+    alert("description", description)
     const fullDescription = document.getElementById("fullDescription").value;
+    alert("fullDescription", fullDescription)
     const product_price = document.getElementById("product_price").value;
     const discount_price = document.getElementById("discount_price").value;
     const product_category = document.querySelector('select[name="category"]').value.trim();
-const product_brand = document.querySelector('select[name="brand"]').value.trim();
-const product_gender = document.querySelector('select[name="gender"]').value.trim();
+    const product_brand = document.querySelector('select[name="brand"]').value.trim();
+    const product_gender = document.querySelector('select[name="gender"]').value.trim();
 
-
-
-for (let i = 1; i <= sizeCount; i++) {
-const sizeInput = document.getElementById(`size${i}`).value;
-const stockInput = document.getElementById(`stock${i}`).value;
-
-
-const sizeError = document.getElementById(`size${i}-error`);
-const stockError = document.getElementById(`stock${i}-error`);
-
-
-// Check if any of the fields are empty or invalid
-sizeError.innerHTML = sizeInput.trim() === "" || isNaN(sizeInput) || parseFloat(sizeInput) < 0
-    ? "Please enter a valid size"
-    : "";
-
-stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFloat(stockInput) < 0
-    ? "Please enter valid stock"
-    : "";
-
-}
     const product_title_error = document.getElementById("product_title-error");
     const description_error = document.getElementById("description-error");
     const fullDescription_error = document.getElementById("fullDescription-error");
@@ -358,18 +341,21 @@ stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFlo
 
     product_title_error.innerHTML = product_title.trim() === "" ? "Please enter product name" : "";
     description_error.innerHTML = description.trim() === "" ? "Please enter product description" : "";
-    description_error.innerHTML = fullDescription.trim() === "" ? "Please enter product fullDescription" : "";
+    fullDescription_error.innerHTML = fullDescription.trim() === "" ? "Please enter product fullDescription" : "";
     product_price_error.innerHTML = isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 0 ? "Please enter a valid price " : "";
     product_category_error.innerHTML = product_category.trim() === "" ? "Please enter product category" : "";
     product_brand_error.innerHTML = product_brand.trim() === "" ? "Please enter product brand" : "";
     gender_error.innerHTML = product_gender.trim() === "" ? "Please enter gender" : "";
     discount_price_error.innerHTML = isNaN(discount_price) || discount_price.trim() === "" || parseFloat(discount_price) < 0 ? "Please enter a valid discount price " : "";
 
+    // Validate if product_category is empty or not a valid ObjectId
+    if (product_category === "") {
+        product_category_error.innerHTML = "Please select a valid product category";
+    }
 
-   
-   
     return !(product_title.trim() === "" || description.trim() === "" ||  fullDescription.trim() === "" || product_price.trim() === ""|| discount_price.trim() === "" || product_category.trim() === "" || product_brand.trim() === "" || product_gender.trim() === ""); 
-   }
+}
+
 
 
 </script>

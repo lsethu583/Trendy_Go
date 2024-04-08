@@ -37,13 +37,7 @@ const getProfilePage= async(req,res)=>{
     try {
         const userID = req.session.user_id;
         let { addressType, name, houseName, landmark, city, state, pincode, phone, altPhone, editID } = req.body;
-        
-
-        // Check if all required fields are provided
-        // if (!addressType || !name || !houseName || !landmark || !city || !state || !pincode || !phone || !altPhone) {
-        //     return res.status(400).json({ message: 'All address fields are required' });
-        // }
-
+       
         let existingAddress = await Address.findOne({ userID: userID });
            
         // If editID is provided, find the matched address object
@@ -173,7 +167,6 @@ const changeuserpassword = async (req, res) => {
     try {
         const { oldpass, newpass, confirmNewPassword } = req.body;
         
-        // Retrieve user ID from session
         const userId = req.session.user_id;
 
         // Check if user ID exists in session
@@ -185,32 +178,24 @@ const changeuserpassword = async (req, res) => {
         const user = await User.findById(userId);
         
 
-        // Check if user exists
         if (!user) {
             return res.status(400).json({ status: false, message: "User not found" });
         }
-
-        // Validate if new password matches confirm password
         if (newpass !== confirmNewPassword) {
             return res.status(400).json({ status: false, message: "Passwords do not match" });
         }
-
-        // Validate if old password matches the one stored
         const isOldPasswordCorrect = await bcrypt.compare(oldpass, user.password);
         if (!isOldPasswordCorrect) {
             return res.status(400).json({ status: false, message: "Your current password is wrong" });
         }
-
-        // Hash the new password
-        const newHashedPassword = await bcrypt.hash(newpass, 10); // Increase the number of rounds for better security
-
-        // Update user password
+        const newHashedPassword = await bcrypt.hash(newpass, 10); 
         user.password = newHashedPassword;
 
-        // Save the updated user object
         await user.save();
 
-        return res.status(200).json({ status: true, message: "Password changed successfully" });
+        // return res.status(200).json({ status: true, message: "Password changed successfully" });
+         res.redirect("/profile");
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({ status: false, message: "Internal server error" });

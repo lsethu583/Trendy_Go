@@ -31,9 +31,20 @@
 
 <body>
     <header class="header-area header-style-5">
-       <div class="header-bottom sticky-bar sticky-white-bg">
+        <div class="logo logo-width-1">
+            <div class="text-center">
+                <div id="news-flash" class="d-inline-block">
+                    <ul>
+                        
+                        <li>Thank you for shopping, we are so glad !!! </li>
+                    </ul>
+            <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="TRendy_Go"></a>
+        </div> 
+        <div class="header-bottom sticky-bar sticky-white-bg">
             <div class="container">
-                
+                    </div>
+                </div>
+                  
             </div>
         </div>
     </header>
@@ -43,6 +54,7 @@
         <% for(let i=0;i<orders.length;i++) {%>
     <div class="content-header">
         <div>
+            <br><br>
             <h2 class="content-title card-title">Order detail</h2>
             <p>Details for Order ID: <%=orders[i].orderId%></p>
         </div>
@@ -83,7 +95,7 @@
                         <div class="text">
                             <h6 class="mb-1">Order info</h6>
                             <p class="mb-1">
-                                Shipping: Free Shipping <br> Pay method:<%= orders[i].paymentMethod %><br>Payment Status:<%= orders[i].paymentStatus %>
+                                Shipping: ₹ 50  <br> Pay method:<%= orders[i].paymentMethod %><br>Payment Status:<%= orders[i].paymentStatus %>
                                 
                                  
                             </p>
@@ -150,12 +162,12 @@
                                         <article class="float-end">
                                             
                                                 <span>Subtotal:</span>&nbsp&nbsp&nbsp&nbsp<span>₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity %>  </span><br>
-                                                <span>Shipping cost:</span>&nbsp&nbsp&nbsp&nbsp<span>₹0.00</span><br>
+                                                <span>Shipping cost:</span>&nbsp&nbsp&nbsp&nbsp<span>₹50.00</span><br>
                                                 <!-- <span>Applied Coupon:</span>&nbsp&nbsp&nbsp&nbsp<span>></span><br> -->
                                                 <!-- <span>Discount:</span>&nbsp&nbsp&nbsp&nbsp<span>₹//discount.00</span><br> -->
                                                
 
-                                                <span>Grand total:</span>&nbsp&nbsp&nbsp&nbsp<span class="text-brand">₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity %>  </span><br>
+                                                <span>Grand total:</span>&nbsp&nbsp&nbsp&nbsp<span class="text-brand">₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity + 50 %>  </span><br>
                                                 <span>Status:</span>&nbsp&nbsp&nbsp&nbsp  <%= orders[i].orderStatus %>  
                                                   
                                         </article>
@@ -182,7 +194,15 @@
 
                     <div class="h-25 pt-4">
                        <a href="/" class="btn btn-sm">Continue Shopping</a>
-                       <button id="print" class="btn btn-sm ">Download Invoice</button><br> <br>
+                       <% if(orders[i].orderStatus==="Payment Pending") {%>
+
+                        <a href="/repayment?id=<%= orders[i]._id %>" id="continuePayment" class="btn btn-sm continue-payment" data-orderid="<%= orders[i]._id %>">Continue Payment</a><br><br>
+
+                        <% }else{ %>
+                            <button id="print" class="btn btn-sm ">Download Invoice</button><br> <br>
+                            <% } %>
+
+                       
                        
             
 
@@ -224,6 +244,29 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+     
+    //  document.getElementById("continuePayment").addEventListener('click',function(event){
+    //     event.preventDefault()
+    //     alert("hello")
+    //     const orderId = this.dataset.orderid;
+    //     $.ajax({
+    //         url:"/repayment",
+    //         method:"POST",
+    //         data:{
+    //             orderId :orderId
+    //         },
+    //         success:function(response){
+    //             console.log("response : ",response);
+    //         },
+    //         error:function(xhr){
+    //             console.log("error : ", xhr);
+    //         }
+    //     })
+
+    //  })
+
+
+
     document
       .getElementById('print')
       .addEventListener('click', function() {

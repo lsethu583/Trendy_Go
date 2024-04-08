@@ -9,6 +9,7 @@ const orderController=require('../controllers/userControllers/orderController')
 const wishlistController=require('../controllers/userControllers/wishlistController')
 const sortController=require('../controllers/userControllers/sortController')
 const walletController=require('../controllers/userControllers/walletController')
+const reviewController=require("../controllers/userControllers/reviewController")
 
 user_route.set("view engine","ejs")
 user_route.set("views","./views")
@@ -85,6 +86,18 @@ user_route.get('/orderSuccess',orderController.orderSuccess);
 
 user_route.post('/addToWallet',walletController.addToWallet);
 user_route.post('/verifypaymentwallet',walletController.verifyPaymentWallet)
+
+user_route.post('/onlinepaymentfailed',orderController.onlinepaymentfailed)
+user_route.get('/repayment',orderController.repayment);
+user_route.post('/repayment',orderController.postRepaymentData);
+
+user_route.get('/about',userController.loadaboutpage)
+user_route.get('/contact',userController.loadcontactpage)
+user_route.post('/contact',userController.postQueries)
+
+// user_route.post("/reviewproduct",reviewController.postReviewDetails);
+
+
 
 
 

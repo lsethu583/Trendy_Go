@@ -48,18 +48,18 @@
                         
 
                         <div class="mb-4">
-                            <label for="product_name" class="form-label">Discount Amount</label>
+                            <label for="product_name" class="form-label">Discount Percentage</label>
                             <input type="text" placeholder="Type here" class="form-control" id="discount"
                                 name="discount" />
                                 <div id="discount_error" class="alert alert-danger" style="display: none;"></div>
                         </div>
-                        <div class="mb-4">
+                        <!-- <div class="mb-4">
                             <label>Minimum Purchase</label>
                             <input type="text" placeholder="Type here" class="form-control" name="purchase"
                                 id="purchase" />
                             <div id="purchase_error" style="display: none;"></div>
 
-                        </div>
+                        </div> -->
 
                         <div class="mb-4">
                             <label class="form-label">Starting Date</label>
@@ -106,7 +106,7 @@
                                     
                                     <th>Category</th>
                                     <th>Discount</th>
-                                    <th>Minimum purchase</th>
+                                    <!-- <th>Minimum purchase</th> -->
                                     <th>From</th>
                                     <th>To</th>
                                     <th class="text-end">Action</th>
@@ -126,9 +126,9 @@
                                                
                                             <td><%= offer[i].category  %></td>
                                             <td><%= offer[i].discount %></td>
-                                            <td><%= offer[i].purchaseamount %></td>
-                                            <td><%= offer[i].start %></td>
-                                            <td><%= offer[i].end %></td>
+                                           
+                                            <td><%= new Date(offer[i].start).toLocaleString() %></td>
+                                            <td><%= new Date(offer[i].end).toLocaleString() %></td>
                                                 
         
         

@@ -37,40 +37,51 @@ const loadCartPage=async(req,res)=>{
 
 const addToCart=async (req,res)=>{
     try {
-            const productId=req.query.id
-            
-            const size     =req.query.size
-            const quantity =parseInt(req.query.qty)
-            const userId=req.session.user_id;
-      
-            let userCart = await Cart.findOne({ userId:userId });
+        const productId = req.query.id;
+        const size = req.query.size;
+        const quantity = parseInt(req.query.qty);
+        const userId = req.session.user_id;
+        
+        let userCart = await Cart.findOne({ userId: userId });
+        console.log("userCart",userCart);
+        const product = await Product.findById(productId);
+        let selectedproduct = product.sizes.find(prod=>prod.size === size);
 
-            const product = await Product.findById(productId)
-            
-            
-            
+     console.log("selectedproduct", selectedproduct);
+        
         const selectedSize = product.sizes.find(s => s.size === size);
         if (!selectedSize || selectedSize.quantity === 0) {
             return res.send('Out of stock');
         }
-        // Add the product to the cart
+        
         if (!userCart) {
             userCart = new Cart({ userId: userId, products: [] });
         }
-
         
+      
+        const existingProductIndex = userCart.products.findIndex(item =>
+            item.productId.toString() === productId && item.size === size.toString()
+        );
+        console.log("existingProductIndex", existingProductIndex);
+        
+        if (existingProductIndex !== -1) {
+             if(userCart.products[existingProductIndex].quantity + quantity >selectedproduct.quantity ){
+                return res.send('Out of stock');
+                
+             }else{
+                userCart.products[existingProductIndex].quantity += quantity;
+               
+             }
+      
+           
+        } else {
+            // If the product doesn't exist, add it to the cart
             userCart.products.push({ productId, quantity, size });
+        }
         
-
-        // Add the product to the cart
-       
         await userCart.save();
-
-       
-
+        res.redirect('/cart');
         
-        
-        res.redirect('/cart')
     } catch (error) {
        console.log(error.message); 
     }

@@ -12,6 +12,9 @@ const moment = require("moment-timezone");
 const Offer = require("../../models/offerSchema");
 const idGenerator = require("../../helper/idgenerate");
 const orderIdGenerate = require("../../helper/idgenerate");
+const Message=require("../../models/messageSchema")
+// const Reviews=require('../../models/review')
+const mongoose=require('mongoose')
 
 let referralCodeGenerator = require("referral-code-generator");
 
@@ -147,6 +150,8 @@ const verifyLogin = async (req, res) => {
 
 const loadHome = async (req, res) => {
   try {
+    const userID=req.session.user_id
+   
     const pages = req.query.page || 1;
     const sizeOfPage = 5;
     const productSkip = (pages - 1) * sizeOfPage;
@@ -173,6 +178,8 @@ const loadHome = async (req, res) => {
         banner,
         numofPage,
         currentPage,
+        userID,
+        user:true
       });
     } else {
       let products = [];
@@ -305,9 +312,9 @@ const verifyOtp = async (req, res) => {
       await newWallet.save();
 
       //   res.send("OTP verification successful");
-      res.redirect("/login"); //loginpage
+      res.json({status:true})
     } else {
-      res.render("user/otp", { error: "Invalid OTP" });
+     res.json({status:'invalid'})
     }
   } catch (error) {
     console.log(error.message);
@@ -485,12 +492,77 @@ const loadProductDetail = async (req, res) => {
     const Product = await Products.findById(productId).populate(
       "productCategory"
     );
+  //   const reviews = await Reviews.aggregate([
+  //     {
+  //         $match: { product: new mongoose.Types.ObjectId(productId) }
+  //     },
+  //     {
+  //         $lookup: {
+  //             from: "users",
+  //             localField: "reviewbyuser",
+  //             foreignField: "_id",
+  //             as: "user"
+  //         }
+  //     },
+  //     {
+  //         $lookup: {
+  //             from: "products",
+  //             localField: "product",
+  //             foreignField: "_id",
+  //             as: "product"
+  //         }
+  //     }
+  // ]);
+  // console.log("reviews : ",reviews);
 
-    res.render("user/singleProductDetails", { Product });
+
+
+  
+    res.render("user/singleProductDetails", { Product});
   } catch (error) {
     console.log(error.message);
   }
 };
+
+const loadaboutpage=async(req,res)=>{
+  try {
+    res.render("user/about")
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const loadcontactpage=async(req,res)=>{
+  try {
+    res.render('user/contact')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const postQueries = async(req,res)=>{
+  try {
+      const{name,email,phone,subject,message} = req.body;
+      
+      const messageData = await Message.create({
+          name:name,
+          email:email,
+          phone:phone,
+          subject:subject,
+          message:message,
+          messagedat:moment().tz('Asia/Kolkata').format('DD/MM/YYYY hh:mm:ss A'),
+      })
+
+     
+      if(messageData){
+          res.status(200).json({message:"Message sent sucessfully !!!"})
+      }
+
+      
+  } catch (error) {
+      console.log(error.message);
+  }
+}
 
 module.exports = {
   loadRegister,
@@ -510,4 +582,7 @@ module.exports = {
   loadShop,
   loadSingleshop,
   loadProductDetail,
+  loadaboutpage,
+  loadcontactpage,
+  postQueries
 };

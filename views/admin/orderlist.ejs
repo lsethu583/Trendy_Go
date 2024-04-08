@@ -15,7 +15,7 @@
                                 </tr>
                             </thead>
                           
-                            <% for(let i=0;i<orders.length;i++) { %>
+                            <% for(let i=orders.length-1;i>=0;i--) { %>
                                 <% const date = new Date(orders[i].orderDate) %>
                                 <tr>
                                     <td><%= orders[i].orderId%></td>

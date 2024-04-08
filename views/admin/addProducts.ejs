@@ -1,19 +1,16 @@
 <%- include('../layouts/adminHeader.ejs') %>
 
-<form action="/admin/addProducts" method="post" enctype="multipart/form-data" id="product-form" onsubmit="return validationChecking()">
+<form action="/admin/addProducts" method="post" enctype="multipart/form-data" id="product-form" onsubmit="return validateForm()">
+
+
 
     <section class="content-main">
         <div class="row">
             <div class="col-12">
                 <div class="content-header">
                     <h2 class="content-title">Add New Product</h2>
-                    
                     <div>
-                        
-                             <!-- <button>
-                                class="btn btn-light rounded font-sm mr-5 text-body hover-up">Cancel</button> -->
-                                <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Upload">
-
+                     <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Upload ">
                     </div>
                 </div>
             </div>
@@ -35,32 +32,17 @@
                                     <option value="" disabled selected>Select a Category
                                     </option>
                                     <% category.forEach(category=> { 
-                                        
-                                        if (category.is_Listed) {
-                                            %>
-                                          
-                                          <option value="<%= category._id %>">
+                                        if (category.is_Listed) {%>
+                                        <option value="<%= category._id %>">
                                               <%= category.categoryName %>
-                                          </option>
-
-                                          <%
-                                        }
+                                        </option><%}
                                      }); %>
-
-
-                                  
-                                </select>
-                            
-                                <div class="error-message" style="color: red;" id="product_category-error"></div>
+                                    </select>
+                            <div class="error-message" style="color: red;" id="product_category-error"></div>
                             </div>
-
-
-
-                        </div>
-
-
-                    </div>
-                </div> <!-- card end// -->
+                            </div>
+                            </div>
+                            </div> 
         <div class="card mb-4">
             <div class="card-body">
                 <div class="row gx-3">
@@ -85,7 +67,7 @@
             <div class="size-container" id="size-container">
                 <div class="error-message" style="color: red;" id="sizes-error"></div>
         
-                <!-- Sizes input rows (initial sizes: S, M, L) -->
+               
                 <div class="row my-1">
                     <div class="col-4">
                         <label for="size-s">Size (S):</label>
@@ -178,167 +160,184 @@
                     <% } %>
                     
             </div>
-        </div> <!-- card end// -->
+        </div>
         </div>
 
         </div>
     </section>
 </form>
 
-
-
-
-
-
-
-
-
-
 <script>
-                                            function displayImages(input) {
-                                                const previewContainer = document.querySelector('.image-preview-container');
-                                                previewContainer.innerHTML = ''; // Clear previous previews
-                                        
-                                                if (input.files && input.files.length > 0) {
-                                                    for (let i = 0; i < input.files.length; i++) {
-                                                        const reader = new FileReader();
-                                                        reader.onload = function (e) {
-                                                            const imagePreview = document.createElement('div');
-                                                            imagePreview.classList.add('image-container');
-                                                            const img = document.createElement('image');
-                                                            img.src = e.target.result;
-                                                            img.style.width = '100px';
-                                                            img.style.height = '100px';
-                                                            img.style.marginBottom = '20px';
-                                                            img.style.marginRight = '5px'; 
-                                                            img.style.marginLeft = '5px'; 
-                                                            img.classList.add('image-preview');
-                                                            imagePreview.appendChild(image);
-                                                            previewContainer.appendChild(imagePreview);
-                                                        };
-                                                        reader.readAsDataURL(input.files[i]);
-                                                    }
-                                                } else {
-                                                    const defaultImagePreview = document.createElement('div');
-                                                    defaultImagePreview.classList.add('image-container');
-                                                    const defaultImg = document.createElement('image');
-                                                    defaultImg.src = '/uploads.svg';
-                                                    defaultImg.style.width = '100px';
-                                                    defaultImg.style.height = '100px';
-                                                    defaultImg.style.marginBottom = '20px';
-                                                    defaultImg.style.marginRight = '5px'; 
-                                                    defaultImg.style.marginLeft = '5px'; 
-                                                    defaultImg.classList.add('image-preview');
-                                                    defaultImagePreview.appendChild(defaultImg);
-                                                    previewContainer.appendChild(defaultImagePreview);
-                                                }
-                                                
-                                            }
-                                        </script>
+    function validateForm() {
+        var productName = document.getElementById("product_title").value;
+        var productCategory = document.getElementById("product_category").value;
+        var productPrice = parseFloat(document.getElementById("product_price").value);
+        var discountPrice = parseFloat(document.getElementById("discount_price").value);
+        var sizeS = parseInt(document.getElementById("size-s").value);
+        var sizeM = parseInt(document.getElementById("size-m").value);
+        var sizeL = parseInt(document.getElementById("size-l").value);
+        var description = document.getElementById("description").value;
+        var fullDescription = document.getElementById("fullDescription").value;
 
+        var errors = [];
 
+        if (productName.trim() === "") {
+            errors.push("Product title is required.");
+            document.getElementById("product_title-error").textContent = "Product title is required.";
+        } else {
+            document.getElementById("product_title-error").textContent = "";
+        }
 
+        if (productCategory.trim() === "") {
+            errors.push("Category is required.");
+            document.getElementById("product_category-error").textContent = "Category is required.";
+        } else {
+            document.getElementById("product_category-error").textContent = "";
+        }
 
+        if (isNaN(productPrice) || productPrice <= 0) {
+            errors.push("Price must be a valid positive number greater than 0.");
+            document.getElementById("product_price-error").textContent = "Price must be a valid positive number greater than 0.";
+        } else {
+            document.getElementById("product_price-error").textContent = "";
+        }
 
+        if (isNaN(discountPrice) || discountPrice < 0 || discountPrice >= productPrice) {
+            errors.push("Discount Price must be a valid number greater than or equal to 0 and less than Price.");
+            document.getElementById("discount_price-error").textContent = "Discount Price must be a valid number greater than or equal to 0 and less than Price.";
+        } else {
+            document.getElementById("discount_price-error").textContent = "";
+        }
 
+        if (isNaN(sizeS) || isNaN(sizeM) || isNaN(sizeL) || sizeS < 0 || sizeM < 0 || sizeL < 0) {
+            errors.push("Size and Quantity must be valid positive numbers.");
+            document.getElementById("sizes-error").textContent = "Size and Quantity must be valid positive numbers.";
+        } else {
+            document.getElementById("sizes-error").textContent = "";
+        }
 
+        if (description.trim() === "") {
+            errors.push("Description is required.");
+            document.getElementById("description-error").textContent = "Description is required.";
+        } else {
+            document.getElementById("description-error").textContent = "";
+        }
 
-<script>
+        if (fullDescription.trim() === "") {
+            errors.push("Full Description is required.");
+            document.getElementById("fullDescription-error").textContent = "Full Description is required.";
+        } else {
+            document.getElementById("fullDescription-error").textContent = "";
+        }
 
-function validationChecking() {
-    // Reset all error messages initially
-    resetErrorMessages();
+        if (errors.length > 0) {
+            alert(errors.join("\n"));
+            return false;
+        }
 
-    const product_title = document.getElementById("product_title").value;
-    const description = document.getElementById("description").value;
-    const fullDescription = document.getElementById("fullDescription").value;
-    const product_price = parseFloat(document.getElementById("product_price").value);
-    const discount_price = parseFloat(document.getElementById("discount_price").value);
-    const product_category = document.querySelector('select[name="category"]').value.trim();
-    const product_gender = document.querySelector('select[name="gender"]').value.trim();
-
-    // Validate product title
-    validateField(product_title, "product_title", "Please enter product name");
-
-    // Validate description
-    validateField(description, "description", "Please enter product description");
-
-    //validate Fulldescription
-    validateField(fullDescription, "fullDescription", "Please enter product fullDescription");
-
-    // Validate product price
-    validatePrice(product_price, "product_price", "Please enter a valid price");
-
-    // Validate discount price
-    validatePrice(discount_price, "discount_price", "Please enter a valid discount price");
-
-    // Validate category
-    validateField(product_category, "product_category", "Please enter product category");
-
-    // Validate gender
-    validateField(product_gender, "product_gender", "Please enter gender");
-
-    // Check if discount price is greater than price
-    if (discount_price > product_price) {
-        displayError("discount_price-error", 'Discount price cannot be greater than the actual price.');
+        return true;
     }
 
-    // Validate sizes
-    for (let i = 1; i <= sizeCount; i++) {
-        const sizeInput = document.getElementById(`size${i}`).value;
-        const stockInput = document.getElementById(`stock${i}`).value;
-
-        // Validate size
-        validateField(sizeInput, `size${i}`, "Please enter a valid size");
-
-        // Validate stock
-        validateStock(stockInput, `stock${i}`);
+    // Function to clear error messages when the user starts typing
+    function clearError(elementId) {
+        document.getElementById(elementId + "-error").textContent = "";
     }
 
-    // Check if any validation errors
-    return !checkForErrors();
-}
-
-function validateField(value, elementId, errorMessage) {
-    const errorElement = document.getElementById(`${elementId}-error`);
-    errorElement.innerHTML = value.trim() === "" ? errorMessage : "";
-}
-
-function validatePrice(value, elementId, errorMessage) {
-    const errorElement = document.getElementById(`${elementId}-error`);
-    errorElement.innerHTML = isNaN(value) || value < 0 ? errorMessage : "";
-}
-
-function validateStock(value, elementId) {
-    const errorElement = document.getElementById(`${elementId}-error`);
-    errorElement.innerHTML = isNaN(value) || value < 0 ? "Please enter valid stock" : "";
-}
-
-function displayError(elementId, errorMessage) {
-    const errorElement = document.getElementById(elementId);
-    errorElement.innerHTML = errorMessage;
-}
-
-function resetErrorMessages() {
-    // Reset all error messages
-    const errorElements = document.querySelectorAll('.error-message');
-    errorElements.forEach(element => {
-        element.innerHTML = '';
+    // Event listeners for input fields to clear errors
+    document.getElementById("product_title").addEventListener("input", function() {
+        clearError("product_title");
     });
-}
+    document.getElementById("product_category").addEventListener("input", function() {
+        clearError("product_category");
+    });
+    document.getElementById("product_price").addEventListener("input", function() {
+        clearError("product_price");
+    });
+    document.getElementById("discount_price").addEventListener("input", function() {
+        clearError("discount_price");
+    });
+    document.getElementById("size-s").addEventListener("input", function() {
+        clearError("sizes");
+    });
+    document.getElementById("size-m").addEventListener("input", function() {
+        clearError("sizes");
+    });
+    document.getElementById("size-l").addEventListener("input", function() {
+        clearError("sizes");
+    });
+    document.getElementById("description").addEventListener("input", function() {
+        clearError("description");
+    });
+    document.getElementById("fullDescription").addEventListener("input", function() {
+        clearError("fullDescription");
+    });
+</script>
 
-function checkForErrors() {
-    // Check if any error messages are present
-    const errorElements = document.querySelectorAll('.error-message');
-    for (const element of errorElements) {
-        if (element.innerHTML !== "") {
-            return true; // Errors found
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    function displayImages(input) {
+        const previewContainer = document.querySelector('.image-preview-container');
+
+        // Clear previous previews only if new files are selected
+        if (input.files && input.files.length > 0) {
+            previewContainer.innerHTML = ''; // Clear previous previews
+        }
+
+        // Function to create image preview with delete button
+        function createImagePreview(imageSrc) {
+            const imagePreview = document.createElement('div');
+            imagePreview.classList.add('image-container');
+
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.marginBottom = '20px';
+            img.style.marginRight = '5px';
+            img.style.marginLeft = '5px';
+            img.classList.add('image-preview');
+            imagePreview.appendChild(img);
+
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.classList.add('delete-button');
+            deleteButton.onclick = function () {
+                imagePreview.remove(); // Remove the image preview when delete button is clicked
+            };
+            imagePreview.appendChild(deleteButton);
+
+            return imagePreview;
+        }
+
+        // Show existing images
+        const existingImages = document.querySelectorAll('.existing-image');
+        existingImages.forEach(function(existingImage) {
+            const imageSrc = existingImage.getAttribute('src');
+            previewContainer.appendChild(createImagePreview(imageSrc));
+        });
+
+        // Show newly added images
+        if (input.files && input.files.length > 0) {
+            for (let i = 0; i < input.files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewContainer.appendChild(createImagePreview(e.target.result));
+                };
+                reader.readAsDataURL(input.files[i]);
+            }
         }
     }
-    return false; // No errors
-}
-
-
 </script>
 
 

@@ -78,16 +78,19 @@ const placeorder = async (req, res) => {
 
     
 
-         if(paymentMethod === 'Cash On Delivery'){
-            orderMethod = "cod";
-            order.paymentStatus="Pending"
-
-        }
+        if (paymentMethod === 'Cash On Delivery') {
+            if (totalAmount > 1000) {
+                console.log("COD is not possible on orders above 1000")
+                 res.json({ message: "COD is not possible on orders above 1000" });
+            } else {
+                orderMethod = "cod";
+                order.paymentStatus = "Pending";
+            
+        
 
         order.paymentMethod = orderMethod;
       
         await order.save();
-
         
 
         for (const product of userCart.products) {
@@ -106,6 +109,8 @@ const placeorder = async (req, res) => {
         await userCart.save();
 
         res.status(200).json({ message: "Order placed successfully" });
+    }
+    }
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ error: "Internal Server Error" });
@@ -127,7 +132,7 @@ const placeorderonline=async(req,res)=>{
         const userCart = await Cart.findOne({ userId: userId });
         const product = await Product.findById(productId);
         const coupon =await Coupon.find({})
-        console.log("coupon:", coupon);
+        console.log("coupon:", coupon)
         if (!product) {
             console.error("Product not found.");
             return res.status(404).json({ error: "Product not found" });
@@ -139,24 +144,24 @@ const placeorderonline=async(req,res)=>{
             size: productsize
         }];
 
-        const order = new Orders({
+        const onlineorder = new Orders({
             orderId: orderIdGenerate(),
             userId: userId,
             address: selectedAddress,
             totalAmount: totalAmount,
             paymentMethod: paymentMethod,
-        
             products: orderProducts,
-           
             coupon:coupon
-        });
+        })
 
         if(paymentMethod === 'online payment'){
             orderMethod = "online";
-            order.paymentStatus="Success"
-            order.paymentMethod = orderMethod;
+            onlineorder.paymentStatus="Success"
+            onlineorder.paymentMethod = orderMethod;
       
-            await order.save();
+            await onlineorder.save();
+            let orderid= onlineorder._id
+            console.log("online._id",onlineorder._id);
 
             
         for (const product of userCart.products) {
@@ -177,7 +182,7 @@ const placeorderonline=async(req,res)=>{
             const options = {
                 amount: totalAmount * 100,
                 currency: 'INR',
-                receipt: order.orderId,
+                receipt: onlineorder.orderId,
 
             };
 
@@ -190,7 +195,7 @@ const placeorderonline=async(req,res)=>{
 
                     
 
-                     res.json({ payment: false, method: "UPI", razorpayOrder: order,order:order,coupon:coupon});
+                     res.json({ payment: false, method: "UPI", razorpayOrder: order,order:orderid,coupon:coupon});
                 }
             });
 
@@ -206,6 +211,7 @@ const placeorderonline=async(req,res)=>{
 
 
 const verifyRazorpay=async(req,res)=>{
+
     try {
         const { order, payment } = req.body;
        
@@ -471,6 +477,102 @@ const deleteOrder = async(req,res)=>{
         }
         
 
+
+        const onlinepaymentfailed = async(req,res)=>{
+            try {
+                let order = req.body.order;
+                console.log("order._id : ",order);
+                const orderData = await Orders.findById(order);
+                console.log("orderData  : ", orderData);
+                orderData.orderStatus="Payment Pending";
+                orderData.paymentStatus="Payment Failed";
+                orderData.save();
+                res.status(200).json({})
+              
+
+                
+               
+                
+            } catch (error) {
+                
+            }
+        }
+        
+
+        const repayment=async(req,res)=>{
+            try {
+                const orderId=req.query.id;
+                console.log("orderId : ", orderId);
+                const orderData= await Orders.findById(orderId).populate('products.productId');
+
+            
+                console.log("orderData : ", orderData);
+                res.render('user/repayment',{order:orderData})
+                
+            } catch (error) {
+               console.log(error); 
+            }
+        }
+
+         
+const postRepaymentData = async(req,res)=>{
+    try{
+        const orderid = req.body.orderId;
+        const newOrderPayment = req.body.paymentMethod
+        const orderData = await Orders.findById(orderid);
+        console.log("orderData : ",orderData );
+        console.log("newOrderPayment : ",newOrderPayment );
+        console.log("orderid : ",orderid );
+   
+
+       
+        if(newOrderPayment === "Cash on Delivery"){
+
+            orderData.orderStatus="Order Placed";
+            orderData.paymentStatus="Success";
+        await orderData.save();
+        res.status(200).json({message:"order placed successfully"})
+     
+
+    }
+    else if(newOrderPayment === "online"){
+
+
+        orderData.orderStatus="Order Placed";
+        orderData.paymentStatus="Success";
+    await orderData.save();
+        
+    const options = {
+        amount: orderData.totalAmount * 100,
+        currency: 'INR',
+        receipt: orderData.orderId,
+
+    };
+
+    instance.orders.create(options, async function (err, order) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: "Failed to create Razorpay order" });
+            return;
+        } else {
+
+            
+
+             res.json({ payment: false, method: "UPI", razorpayOrder: order,order:orderid});
+        }
+        });
+
+    }
+        
+       
+
+    }
+    catch(error){
+        console.log("postRepaymentData page error : ",error);
+    }
+}
+
+
 module.exports={
 loadCheckoutPage,
 placeorder,
@@ -481,6 +583,9 @@ cancelReturn,
 applyCoupon,
 placeorderonline,
 verifyRazorpay,
-orderSuccess
+orderSuccess,
+onlinepaymentfailed,
+repayment,
+postRepaymentData
 
 }

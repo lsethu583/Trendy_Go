@@ -22,6 +22,7 @@ const loadCategoryList = async (req, res) => {
 const loadCategoryAdd = async (req, res) => {
     try {
         if (req.session.admin) {
+            
             res.render('addCategory');
         } else {
             res.redirect('/admin');

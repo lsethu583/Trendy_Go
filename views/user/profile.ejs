@@ -78,14 +78,16 @@
                                                         </thead>
                                                         <tbody>
                                                             <% if(orders && orders.length > 0) { %>
-                                                                <% for(let i=0; i < orders.length; i++) { %>
+                                                                <% for(let i=orders.length-1; i >=0; i--) { %>
                                                                     <tr>
                                                                         <td>#<%= orders[i].orderId %></td>
-                                                                        <td><%= orders[i].orderDate %></td>
+                                                                        <% const date=new Date( orders[i].orderDate).toLocaleString() %>
+                                                                        <td><%= date %></td>
                                                                         <td><%= orders[i].paymentStatus %></td>
                                                                         <td><%= orders[i].totalAmount %> for <%= orders[i].products.length %> item</td>
                                                                         <td><a href="/getorderdetails?OID=<%= orders[i].orderId %>" class="btn-small d-block">View</a></td>
                                                                     </tr>
+                                                                    
                                                                 <% } %>
                                                             <% } else { %>
                                                                 <tr>
@@ -94,10 +96,12 @@
                                                             <% } %>
                                                         </tbody>
                                                     </table>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     
 
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
@@ -613,8 +617,8 @@ background-color: #0056b3; /* Darker blue color on hover */
         </div>
         
         <script>
-            document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevent default form submission
+           document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
+    event.preventDefault();// Prevent default form submission
         
                 // Get password values
                 const currentPassword = document.getElementById('currentPassword').value;
@@ -645,7 +649,13 @@ background-color: #0056b3; /* Darker blue color on hover */
                 // Passwords match and meet strength criteria - Proceed with your password change logic here
                 // ...
                 this.submit();
+                
             });
+
+
+          
+
+
         </script>
         
         <div class="row" style="max-width:920px">

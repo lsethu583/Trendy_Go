@@ -8,6 +8,8 @@ const adminAuth = require('../middleware/adminAuth');
 const adminOrderController=require('../controllers/adminController/adminOrderController');
 const couponController = require('../controllers/adminController/couponController')
 const offerController=require('../controllers/adminController/offerController')
+const chartController=require('../controllers/adminController/chartController')
+const salesreportcontroller=require('../controllers/adminController/salesreportcontroller')
 
 //storage of images of category
 const storage = multer.diskStorage({
@@ -57,6 +59,7 @@ admin_route.set('views', './views/admin');
 
 
 admin_route.get('/dashboard', adminAuth.isLogin, adminController.loadDashboard);
+admin_route.post('/dashboard/chart',chartController.loadchart)
 admin_route.get('/userDashboard', adminAuth.isLogin, adminController.loadUserDashboard);
 admin_route.get('/logout', adminAuth.isLogin, adminController.logout);
 
@@ -103,8 +106,9 @@ admin_route.get('/offer',offerController.loadOfferPage);
 admin_route.post('/offer',offerController.postofferdetails)
 admin_route.get('/offer/delete',offerController.deleteOffer)
 
-
-
+admin_route.get('/salesreport',salesreportcontroller.getsalesreport)
+admin_route.post("/salesreport/excel",salesreportcontroller.excelData)
+admin_route.post("/salesreport",salesreportcontroller.getFilteredSalesReport);
 
 
 module.exports = admin_route;

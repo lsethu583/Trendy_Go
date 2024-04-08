@@ -62,15 +62,14 @@
 <body>
 
     <div class="wrapper">
-        <form action="/otp" method="post" id="otpForm" onsubmit="return validateOTP()">
+        <!-- <form action="/otp" method="post" id="otpForm" onsubmit="return validateOTP()"> -->
             <h3>OTP Verification</h3>
             <div class="form-group">
                 <input type="text" name="otp" placeholder="Enter OTP" class="form-control" id="otp">
-                <% if (typeof error !== 'undefined') { %>
-                    <div style="color: red; margin-bottom: 10px;"><%= error %></div>
-                  <% } %>
+                <p id="errotp" class="text" style="color: red;"></p>
+               
             </div>
-            <button type="submit">Submit
+            <button type="submit" onclick="otp()">Submit
                 <i class="zmdi zmdi-arrow-right"></i>
             </button>
             
@@ -78,9 +77,10 @@
                 <button type="button" id="resendBtn" onclick="resendOTP()">Resend OTP</button>
                 <span id="otpTimer"></span>
             </div>
-        </form>
+        <!-- </form> -->
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script>
         const timerElement = document.getElementById('otpTimer');
@@ -133,6 +133,28 @@
 
         // Call startOTPTimer when the page loads or when the OTP is initially sent
         startOTPTimer();
+
+        function otp(){
+            const otp= document.getElementById('otp').value;
+            const error=document.getElementById('errotp')
+            error.textContent = ''
+
+            $.ajax({
+                url:"/otp",
+                method:"post",
+                data:{
+                    otp
+                },
+               success:(response)=>{
+                if(response.status==true){
+                    window.location.href="/login"
+                }else if(response.status == "invalid"){
+                    error.textContent = 'invalid otp'
+                }
+               }
+
+            })
+        }
         
     </script>
 

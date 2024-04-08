@@ -6,6 +6,9 @@ const User = require('../../models/userModel');
 const Category = require('../../models/categoryModel');
 const Banner=require('../../models/bannerSchema')
 const path = require('path');
+const Product=require('../../models/productModel')
+const Order=require('../../models/orderSchema');
+
 
 const securePassword = async (password) => {
     try {
@@ -63,10 +66,21 @@ const logout = async (req, res) => {
 const loadDashboard = async (req, res) => {
     try {
         if (req.session.admin) {
-            // Admin is authenticated, render the dashboard
-            res.render('dashboard');
+            const product = await Product.find({});
+            const category=await Category.find({})
+            const users = await User.find({});
+            const orders = await Order.find({})
+
+           
+
+
+            
+              // Count orders by date
+            
+            
+            res.render('dashboard',{product,category,users,orders});
         } else {
-            // Admin is not authenticated, redirect to login page or handle accordingly
+            
             res.redirect('/admin');
         }
     } catch (error) {
@@ -78,13 +92,20 @@ const loadDashboard = async (req, res) => {
 
 const loadUserDashboard = async (req, res) => {
     try {
+
+        const page = req.query.page || 1;
+        const pageSize = 5;
+        const skip = (page - 1) * pageSize;
+        const usersCount = await User.countDocuments({});
+        totalPages = Math.ceil(usersCount/pageSize);
+       
         const adminData = await User.findById(req.session.admin);
         
         
         const userData = await User.find({
             is_admin: 0
-        })
-        res.render('userDashboard', { users: userData, admin: adminData });
+        }).skip(skip).limit(pageSize);
+        res.render('userDashboard', { users: userData, admin: adminData,totalPages,currentPage:page, });
     } catch (error) {
         console.log(error.message);
     }

@@ -117,8 +117,18 @@ const loadEditProductForm=async(req,res)=>{
         const id = req.query.id;
     const product = await Products.findOne({ _id: id }).populate('productCategory');
     let categories = await Category.find({})
+    let selectedCategory = null;
+
+if (product && product.productCategory) {
+    selectedCategory = await Category.findOne({ _id: product.productCategory });
+    console.log("selectedCategory : ", selectedCategory);
+}
+
+let selectedCategoryName= selectedCategory.categoryName;
+console.log("selectedCategoryName : ", selectedCategoryName);
+
     if (product) {
-      res.render("editProduct", { categories, product });
+      res.render("editProduct", { categories, product ,selectedCategoryName});
     } else {
       res.redirect("/products");
     }
