@@ -1,6 +1,6 @@
 
 const mongoose=require("mongoose")
-mongoose.connect("mongodb://127.0.0.1:27017/trendy_go")
+mongoose.connect("mongodb+srv://sethulb4878:Sethu%40123@cluster0.2em6nxn.mongodb.net/Trendy_Go")
 
 const express=require("express")
 const app=express()

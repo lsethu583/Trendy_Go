@@ -8,10 +8,7 @@ const offerSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    purchaseamount:{
-        type:Number,
-        required:true
-    },
+    
     start:{
         type:String,
         required:true

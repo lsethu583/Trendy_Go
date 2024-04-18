@@ -66,6 +66,39 @@
        padding-bottom: 2px;
        
     }
+    
+        .coupon-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+        }
+        .coupon-container h4 {
+            margin-bottom: 10px;
+        }
+        .coupon-list {
+            list-style: none;
+            padding: 0;
+        }
+        .coupon-list li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .coupon-list li button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .coupon-list li button:hover {
+            background-color: #0056b3;
+        }
+   
 
     </style>
     <header class="header-area header-style-1 header-height-2">
@@ -451,7 +484,7 @@
                         searchDataValue
                     },
                     success: (response) => {
-                        alert("jiijii")
+                      
                         const searchResultsContainer = document.getElementById('searchResultsContainer')
                         searchResultsContainer.innerHTML = ""
 
@@ -861,8 +894,34 @@
 
 
 
+                            <div class="coupon-container">
+                                <h4>Select Coupon:</h4>
+                                <ul class="coupon-list">
+                                    <% coupon.forEach(coupon => { %>
+                                        <li>
+                                            <%= coupon.name %> - <%= coupon.discount %> off
+                                            <button onclick="copyCouponName('<%= coupon.name %>')">Copy</button>
+                                        </li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                        
+                            <script>
+                                function copyCouponName(name) {
+                                    const el = document.createElement('textarea');
+                                    el.value = name;
+                                    document.body.appendChild(el);
+                                    el.select();
+                                    document.execCommand('copy');
+                                    document.body.removeChild(el);
+                                    alert('Coupon name copied to clipboard: ' + name);
+                                }
+                            </script>
+                       
                             <div class="col-lg-6">
                                 <div class="toggle_info">
+           
+        
                                     <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
                                 </div>
                                 <div class="panel-collapse collapse coupon_form " id="coupon">

@@ -23,6 +23,7 @@ const loadCategoryAdd = async (req, res) => {
     try {
         if (req.session.admin) {
             
+            
             res.render('addCategory');
         } else {
             res.redirect('/admin');
@@ -39,11 +40,14 @@ const addingNewCategory = async (req, res) => {
         
         
         const exist = await Category.findOne({ categoryName: req.body.categoryName });
+        console.log("exist : ",exist);
         if (exist) {
+            const category = await Category.find({});
             if (req.session.admin) {
-                res.render('categories', { message: "Category already exists" });
+                res.render('categories', { message: "Category already exists" ,category});
             }
         } else {
+
             const category = new Category({
                 categoryName: req.body.categoryName,
                 image:req.file.filename,
@@ -51,6 +55,7 @@ const addingNewCategory = async (req, res) => {
             });
             await category.save();
             res.redirect('/admin/addCategory');
+
         }
         
     } catch (error) {

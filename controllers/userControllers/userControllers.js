@@ -310,7 +310,7 @@ const verifyOtp = async (req, res) => {
 
       // Save the cart to the database
       await newWallet.save();
-
+      console.log('wallet',newWallet);
       //   res.send("OTP verification successful");
       res.json({status:true})
     } else {
@@ -465,7 +465,7 @@ const loadShop = async (req, res) => {
     const productData = await Products.find({ is_Listed: true });
 
     const categories = await Category.find();
-    res.render("user/shop", { products: productData });
+    res.render("user/shop", { products: productData, category:categories });
   } catch (error) {
     console.log(error.message);
   }

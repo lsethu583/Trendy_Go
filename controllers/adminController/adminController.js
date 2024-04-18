@@ -66,10 +66,19 @@ const logout = async (req, res) => {
 const loadDashboard = async (req, res) => {
     try {
         if (req.session.admin) {
+
+        const page = req.query.page || 1;
+        const pageSize = 6;
+        const skip = (page - 1) * pageSize;
+        const orderCount = await Order.countDocuments({});
+        totalPages = Math.ceil(orderCount/pageSize);
+
+
             const product = await Product.find({});
             const category=await Category.find({})
             const users = await User.find({});
-            const orders = await Order.find({})
+            const orders = await Order.find({}).skip(skip).limit(pageSize);
+            console.log("orders : ", orders);
 
            
 
@@ -78,7 +87,7 @@ const loadDashboard = async (req, res) => {
               // Count orders by date
             
             
-            res.render('dashboard',{product,category,users,orders});
+            res.render('dashboard',{product,category,users,orders,totalPages,currentPage:page});
         } else {
             
             res.redirect('/admin');

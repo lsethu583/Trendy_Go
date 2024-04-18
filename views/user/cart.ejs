@@ -97,7 +97,7 @@
                                  console.log(subtotal);
                                  
                                  
-                                 if (currentQuantity < max) {
+                                 if (currentQuantity <= max) {
                                     if(currentQuantity>1){
                                         quantityElement.textContent = currentQuantity ; // Update the quantity element
                                     subtotalElement.textContent = (subtotal + amount).toFixed(2); // Update the subtotal

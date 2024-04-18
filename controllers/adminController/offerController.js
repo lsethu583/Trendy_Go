@@ -17,17 +17,20 @@ const loadOfferPage=async(req,res)=>{
 
 const postofferdetails=async(req,res)=>{
     try {
-        const{category,discount,purchase,start,end}=req.body;
+        let offerAmount;
+        const{category,discount,start,end} = req.body;
         console.log(req.body.category);
-        const product=await Product.find().populate("productCategory")
+        const product=await Product.find().populate("productCategory");
+       
         const existingOffer = await Offer.findOne({ category : category});
+        
         if (existingOffer) {
             return res.status(200).json({ message: "Offer already added in this category" });
         }else{
             const offerData=await Offer.create({
             category:category,
             discount:discount,
-            purchaseamount:purchase,
+          
             start:start,
             end:end
         })
@@ -36,22 +39,27 @@ const postofferdetails=async(req,res)=>{
         res.status(200).json({msg:"success"})
             }
             const offerCategory=await Category.findOne({categoryName:category})
-            console.log("offerCategory",offerCategory);
+            console.log("offerCategory : ",offerCategory);
             const offer = await Offer.findOne({ category: category });
             
             
 
             const offerProducts = await Product.find({ 
-                price: { $gte: purchase }, 
+               
                 productCategory: offerCategory._id
             });
 
 
 for (const product of offerProducts) {
     
-    const offerPrice = product.price - discount;
+    const offerPrice = Math.floor(product.price * (1 - discount / 100));
+    console.log("offerPrice  : ",offerPrice);
 
     product.offerPrice = offerPrice;
+    product.discountApplied = true;
+    offerAmount  = product.price - product.offerPrice;
+  
+
 
     await product.save();
     
@@ -71,7 +79,35 @@ const deleteOffer=async(req,res)=>{
     try {
         const id=req.query.id;
         
-        await Offer.findByIdAndDelete(id);
+       let offerData = await Offer.findById(id);
+     
+       const offerCategory=await Category.findOne({categoryName:offerData.category});
+       
+       const offerProducts = await Product.find({ 
+               
+        productCategory: offerCategory._id
+    });
+
+    console.log(" offerProducts :    ",offerProducts);
+
+    for (const product of offerProducts) {
+    
+       
+        
+    
+        product.offerPrice = 0;
+        product.discountApplied = false;
+        offerAmount = 0
+      
+    
+    
+        await product.save();
+        
+    }
+
+    await Offer.findByIdAndDelete(id); 
+
+
         res.redirect('/admin/offer')
     } catch (error) {
         

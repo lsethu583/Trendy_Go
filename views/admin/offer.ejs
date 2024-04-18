@@ -172,7 +172,7 @@ const categoryDiv = document.getElementById("category-div");
 const brand = document.getElementById("brand")
 
 const discountInput = document.getElementById("discount");
-const purchaseInput = document.getElementById("purchase");
+
 const startDateInput = document.getElementById('start');
 const endDateInput = document.getElementById('end');
 const discountError = document.getElementById("discount_error");
@@ -182,7 +182,7 @@ const button = document.getElementById("btn");
 let selectedCategoryId;
  let selectedCategoryName
 let discount ;
-let purchaseAmount;
+
 let selectedStartDate;
 let selectedEndDate;
 
@@ -240,35 +240,24 @@ text: "Please select a date after start date",
     }
 }
 
+
 function validateDiscount() {
      discount = discountInput.value.trim();
-    if (/^([1-9]\d{0,4}|100000)$/.test(discount)) {
+    if (/^([1-4]?\d{0,1}|50)$/.test(discount)) {
         discountError.style.display = "none";
         return false;
     } else {
         discountError.style.display = "block";
         discountError.style.color = "red";
-        discountError.textContent = "Please enter a valid discount amount";
+        discountError.textContent = "Please enter a valid discount amount (maximum 50%)";
         return true;
     }
 }
 
-function validatePurchaseAmount() {
-     purchaseAmount = purchaseInput.value.trim();
-    const discount = discountInput.value.trim();
 
-    if (/^([1-9]\d{0,4}|100000)$/.test(purchaseAmount) && Number(purchaseAmount) > Number(discount) * 2) {
-        purchaseError.style.display = "none";
-        return false;
-    } else {
-        purchaseError.style.display = "block";
-        purchaseError.style.color = "red";
-        purchaseError.textContent = "Please enter a valid purchase amount";
-        return true;
-    }
-}
+
 button.addEventListener("click",function(event){
-    if(validatePurchaseAmount() || validateDiscount() || validateEndDate() ||validateStartDate() ){
+    if( validateDiscount() || validateEndDate() ||validateStartDate() ){
         event.preventDefault();
     }else{
         
@@ -281,7 +270,7 @@ button.addEventListener("click",function(event){
     
     console.log("category : ",selectedCategoryName);
     console.log("discount : ",discount);
-    console.log("purchaseAmount : ",purchaseAmount);
+   
     console.log("selectedStartDate : ",selectedStartDate);
   console.log("end : ",selectedEndDate);
    
@@ -296,7 +285,7 @@ button.addEventListener("click",function(event){
            
             category: selectedCategoryName,
             discount:discount,
-            purchase:purchaseAmount,
+            
             start:selectedStartDate,
             end:selectedEndDate
         },

@@ -1,11 +1,16 @@
 <%- include('../layouts/adminHeader.ejs') %>
 
-
+<style>
+  #error-message{
+    color: red;
+  }
+</style>
 <section class="content-main">
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Category List</h2>
             <p>Listed Categories - Trendy_Go</p>
+            <h2 id="error-message"><%= locals.message %></h2>
         </div>
         <div>
             <a href="#" class="btn btn-light rounded font-md">Export</a>

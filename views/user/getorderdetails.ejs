@@ -167,7 +167,7 @@
                                                 <!-- <span>Discount:</span>&nbsp&nbsp&nbsp&nbsp<span>₹//discount.00</span><br> -->
                                                
 
-                                                <span>Grand total:</span>&nbsp&nbsp&nbsp&nbsp<span class="text-brand">₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity + 50 %>  </span><br>
+                                                <span>Grand total:</span>&nbsp&nbsp&nbsp&nbsp<span class="text-brand">₹ <%= orders[i].totalAmount %>  </span><br>
                                                 <span>Status:</span>&nbsp&nbsp&nbsp&nbsp  <%= orders[i].orderStatus %>  
                                                   
                                         </article>
@@ -286,9 +286,9 @@
        
     },
     success:(response)=>{
-        alert("gahgahj")
+      
         if(response.success === true){
-            alert("nmsna,n")
+          
             
             window.location.reload()
     }

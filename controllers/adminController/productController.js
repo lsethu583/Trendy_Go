@@ -203,7 +203,7 @@ const storeEditProduct=async(req,res)=>{
         {
             $set:{
             product_name:name,
-            productCategory:category,
+            // productCategory:category,
             price:price,
             sizes:sizes,
             description:description,

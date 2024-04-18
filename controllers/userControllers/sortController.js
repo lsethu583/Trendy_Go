@@ -24,24 +24,24 @@ const categorySort=async(req,res)=>{
     }
 }
 
-const lowToHigh =  async(req,res)=>{
-    try{
-        
-       
+const lowToHigh = async (req, res) => {
+    try {
         const userId = req.session.user_id;
-        const products = await Products.find({}).sort({discount_price: 1});
-        const categoryData = await Category.find({is_Listed:true});
-        
-        
+        const categoryId = req.query.category; 
+        console.log("sortle category id:", categoryId);
 
-            res.render("user/categorysort",{user:userId,category:categoryData,products:products});
+       
+        const products = await Products.find({ category: categoryId }).sort({ discount_price: 1 });
+        console.log("sortle product :",products );
 
+        const categoryData = await Category.find({ is_Listed: true });
 
-    }
-    catch(error){
-        console.log(error,"lowToHigh page error");
+        res.render("user/categorysort", { user: userId, category: categoryData, products: products });
+    } catch (error) {
+        console.log(error, "lowToHigh page error");
     }
 }
+
 
 const HighToLow =  async(req,res)=>{
     try{

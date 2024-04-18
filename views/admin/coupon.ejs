@@ -8,6 +8,31 @@
                 
             </div>
             <div class="card">
+                <!-- <div class="col-md-4 col-12 mb-md-0 md-3">
+                    <form action="coupon/search" method="post" class="d-flex">
+                        <input type="text" class="form-control me-2" name="search" placeholder="Search by name" />
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </form>
+                </div> -->
+                <div class="row align-items-right">
+                    <div class="col-md-4 col-12 mb-md-0 mb-3">
+                        <form action="coupondate" method="post">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <input type="date" value="02.05.2022" class="form-control" name="date">
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-primary btn-block">Show</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4 col-12 mb-md-0 md-3">
+                        <form action="coupondate" method="post">
+                            
+                        </form>
+                    </div>
+           
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
@@ -94,6 +119,17 @@
                             </div>
                         </div> <!-- .col// -->
                     </div> <!-- .row // -->
+                    <div class="pagination-area mt-30 mb-50">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-start">
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                                        <a class="page-link" href="coupon?page=<%= i %>"><%= i %></a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </nav>
+                    </div>
                 </div> <!-- card body .// -->
             </div> <!-- card .// -->
         </section>

@@ -250,6 +250,7 @@ const loadorderdetails=async(req,res)=>{
         const user=await User.findById(req.session.user_id)
         const cart = await Cart.find({ userId: userId }).populate('products.productId');
         const orders=await Orders.find({orderId}).populate('products.productId').populate('userId');
+        console.log("orders in get ordredetails", orders);
         const coupon=await Coupon.find({})
        
         res.render('user/getorderdetails',{orderId,userId,user,cart,orders,coupon})

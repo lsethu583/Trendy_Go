@@ -63,6 +63,7 @@ admin_route.post('/dashboard/chart',chartController.loadchart)
 admin_route.get('/userDashboard', adminAuth.isLogin, adminController.loadUserDashboard);
 admin_route.get('/logout', adminAuth.isLogin, adminController.logout);
 
+
 admin_route.get('/', adminAuth.isLogout, adminController.loadLogin);
 admin_route.post('/', adminController.verifyLogin);
 admin_route.get('/unlistUser', adminAuth.isLogin, adminController.listUser);
@@ -96,6 +97,8 @@ admin_route.post('/orderdetails',adminAuth.isLogin,adminOrderController.admincha
 admin_route.get('/coupon',couponController.getcouponpage);
 admin_route.post('/coupon',couponController.postcoupondata);
 admin_route.post('/deletecoupon',couponController.deletecoupon)
+admin_route.post('/coupondate',couponController.showfilteredcoupon)
+// admin_route.post('/coupon/search',couponController.searchCoupon)
 
 admin_route.get('/banner', adminController.loadBanner)
 admin_route.post('/banner',uploadBanner.array('image'),adminController.addbanner)
@@ -109,6 +112,8 @@ admin_route.get('/offer/delete',offerController.deleteOffer)
 admin_route.get('/salesreport',salesreportcontroller.getsalesreport)
 admin_route.post("/salesreport/excel",salesreportcontroller.excelData)
 admin_route.post("/salesreport",salesreportcontroller.getFilteredSalesReport);
+
+
 
 
 module.exports = admin_route;

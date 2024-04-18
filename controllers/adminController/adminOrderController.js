@@ -22,6 +22,7 @@ const loadOrderList = async (req, res) => {
 
 const loadOrderDetails=async(req,res)=>{
     try {
+        
        const orderId=req.query.orderId;
       
         const orders=await Orders.findById(orderId).populate('products.productId').populate('userId')
