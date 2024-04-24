@@ -44,7 +44,7 @@ user_route.get('/cart',auth.isLogin,auth.isBlocked,cartController.loadCartPage )
 user_route.get('/addtocart',auth.isLogin,cartController.addToCart)
 user_route.post('/update-cart-quantity',auth.isLogin,cartController.updateCartQuantity)
 user_route.delete('/removeFromCart',auth.isLogin,cartController.removeFromCart)
-// user_route.put('/updateQuantity',auth.isLogin,cartController.updateQuantity)
+
 
 
 user_route.get('/profile',auth.isLogin,userProfileController.getProfilePage);
@@ -82,20 +82,20 @@ user_route.post('/verifypayment',auth.isLogin,orderController.verifyRazorpay);
 
 
 
-user_route.get('/orderSuccess',orderController.orderSuccess);
+user_route.get('/orderSuccess',auth.isLogin,orderController.orderSuccess);
 
-user_route.post('/addToWallet',walletController.addToWallet);
-user_route.post('/verifypaymentwallet',walletController.verifyPaymentWallet)
+user_route.post('/addToWallet',auth.isLogin,walletController.addToWallet);
+user_route.post('/verifypaymentwallet',auth.isLogin,walletController.verifyPaymentWallet)
 
-user_route.post('/onlinepaymentfailed',orderController.onlinepaymentfailed)
-user_route.get('/repayment',orderController.repayment);
-user_route.post('/repayment',orderController.postRepaymentData);
+user_route.post('/onlinepaymentfailed',auth.isLogin,orderController.onlinepaymentfailed)
+user_route.get('/repayment',auth.isLogin,orderController.repayment);
+user_route.post('/repayment',auth.isLogin,orderController.postRepaymentData);
 
 user_route.get('/about',userController.loadaboutpage)
 user_route.get('/contact',userController.loadcontactpage)
 user_route.post('/contact',userController.postQueries)
 
-// user_route.post("/reviewproduct",reviewController.postReviewDetails);
+
 
 
 

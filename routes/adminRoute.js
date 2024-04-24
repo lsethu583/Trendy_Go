@@ -68,12 +68,12 @@ admin_route.get('/', adminAuth.isLogout, adminController.loadLogin);
 admin_route.post('/', adminController.verifyLogin);
 admin_route.get('/unlistUser', adminAuth.isLogin, adminController.listUser);
 
-admin_route.get('/addCategory',categoryController.loadCategoryAdd)
-admin_route.get('/listCategory',categoryController.loadCategoryList)
-admin_route.post('/addCategory',upload.single('image'),categoryController.addingNewCategory)
-admin_route.get('/editCategory',categoryController.editCategory)
-admin_route.post('/editCategory',upload.single('category_logo'),categoryController.editCategorySubmiting)
-admin_route.get('/blockCategory',categoryController.blockCategory)
+admin_route.get('/addCategory',adminAuth.isLogin,categoryController.loadCategoryAdd)
+admin_route.get('/listCategory',adminAuth.isLogin,categoryController.loadCategoryList)
+admin_route.post('/addCategory',adminAuth.isLogin,upload.single('image'),categoryController.addingNewCategory)
+admin_route.get('/editCategory',adminAuth.isLogin,categoryController.editCategory)
+admin_route.post('/editCategory',adminAuth.isLogin,upload.single('category_logo'),categoryController.editCategorySubmiting)
+admin_route.get('/blockCategory',adminAuth.isLogin,categoryController.blockCategory)
 
 
 
@@ -82,36 +82,34 @@ admin_route.get('/addProducts',adminAuth.isLogin,productController.loadProductFo
 admin_route.post('/addProducts',uploadProduct.array('image'),productController.addProduct)
 admin_route.get('/deleteProduct/:id',adminAuth.isLogin,productController.deleteProduct)
 admin_route.get('/editProduct',adminAuth.isLogin,productController.loadEditProductForm)
-admin_route.post('/editProduct',uploadProduct.array('image'),productController.storeEditProduct)
+admin_route.post('/editProduct',adminAuth.isLogin,uploadProduct.array('image'),productController.storeEditProduct)
 admin_route.get('/listUnlist',productController.isListedUnlisted)
 
 
 admin_route.get('/orderlist',adminAuth.isLogin,adminOrderController.loadOrderList)
 admin_route.get('/orderdetail',adminAuth.isLogin,adminOrderController.loadOrderDetails)
-// admin_route.post('/updateorderstatus',adminAuth.isLogin,adminOrderController.orderstatusupdate)
 admin_route.get('/cancelorder',adminAuth.isLogin,adminOrderController.cancelorder);
 admin_route.post('/orderdetails',adminAuth.isLogin,adminOrderController.adminchangestatus)
 
 
 
-admin_route.get('/coupon',couponController.getcouponpage);
-admin_route.post('/coupon',couponController.postcoupondata);
-admin_route.post('/deletecoupon',couponController.deletecoupon)
-admin_route.post('/coupondate',couponController.showfilteredcoupon)
-// admin_route.post('/coupon/search',couponController.searchCoupon)
+admin_route.get('/coupon',adminAuth.isLogin,couponController.getcouponpage);
+admin_route.post('/coupon',adminAuth.isLogin,couponController.postcoupondata);
+admin_route.post('/deletecoupon',adminAuth.isLogin,couponController.deletecoupon)
+admin_route.post('/coupondate',adminAuth.isLogin,couponController.showfilteredcoupon)
 
-admin_route.get('/banner', adminController.loadBanner)
-admin_route.post('/banner',uploadBanner.array('image'),adminController.addbanner)
-admin_route.get('/editbanner',adminController.loadEditBannerPage)
-admin_route.post('/editbanner',uploadBanner.array('image'),adminController.updateBanner)
+admin_route.get('/banner', adminAuth.isLogin,adminController.loadBanner)
+admin_route.post('/banner',adminAuth.isLogin,uploadBanner.array('image'),adminController.addbanner)
+admin_route.get('/editbanner',adminAuth.isLogin,adminController.loadEditBannerPage)
+admin_route.post('/editbanner',adminAuth.isLogin,uploadBanner.array('image'),adminController.updateBanner)
 
-admin_route.get('/offer',offerController.loadOfferPage);
-admin_route.post('/offer',offerController.postofferdetails)
-admin_route.get('/offer/delete',offerController.deleteOffer)
+admin_route.get('/offer',adminAuth.isLogin,offerController.loadOfferPage);
+admin_route.post('/offer',adminAuth.isLogin,offerController.postofferdetails)
+admin_route.get('/offer/delete',adminAuth.isLogin,offerController.deleteOffer)
 
-admin_route.get('/salesreport',salesreportcontroller.getsalesreport)
-admin_route.post("/salesreport/excel",salesreportcontroller.excelData)
-admin_route.post("/salesreport",salesreportcontroller.getFilteredSalesReport);
+admin_route.get('/salesreport',adminAuth.isLogin,salesreportcontroller.getsalesreport)
+admin_route.post("/salesreport/excel",adminAuth.isLogin,salesreportcontroller.excelData)
+admin_route.post("/salesreport",adminAuth.isLogin,salesreportcontroller.getFilteredSalesReport);
 
 
 

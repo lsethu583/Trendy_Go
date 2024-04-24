@@ -249,8 +249,9 @@ const loadorderdetails=async(req,res)=>{
         const userId=req.session.user_id
         const user=await User.findById(req.session.user_id)
         const cart = await Cart.find({ userId: userId }).populate('products.productId');
-        const orders=await Orders.find({orderId}).populate('products.productId').populate('userId');
-        console.log("orders in get ordredetails", orders);
+        const orders=await Orders.findOne({orderId}).populate('products.productId').populate('userId');
+    
+        console.log("orders in get ordredetails", orders.products);
         const coupon=await Coupon.find({})
        
         res.render('user/getorderdetails',{orderId,userId,user,cart,orders,coupon})
@@ -305,6 +306,7 @@ const deleteOrder = async(req,res)=>{
     console.log([id,size,quantity])
     
     const findOrder =  await Orders.findOne({_id:id})
+    console.log("findoRDER", findOrder);
    
         let updateOrder = await Orders.findOneAndUpdate({_id:id},{
             $set:{
@@ -341,11 +343,12 @@ const deleteOrder = async(req,res)=>{
                 }
             }
 
-            if(findOrder.orderStatus == 'online'){
+            if(updateOrder.paymentMethod === 'online'){
             const wallet=await Wallet.find({user:userId});
+            console.log("orders nte wallet", wallet);
             if(wallet){
                
-                await Wallet.findOneAndUpdate({user:userId},{$push:{transactions:{tamount:updateOrder.totalAmount,tid:orderIdGenerate()}},$inc:{walletAmount:updateOrder.totalAmount}})
+                await Wallet.findOneAndUpdate({user:userId},{$push:{transactions:{tamount:findOrder.totalAmount,tid:orderIdGenerate()}},$inc:{walletAmount:findOrder.totalAmount}})
             }
         }
            

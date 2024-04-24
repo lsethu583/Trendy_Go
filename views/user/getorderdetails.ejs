@@ -51,12 +51,12 @@
 
 <section class="content-main" >
     <% if(orders){ %>
-        <% for(let i=0;i<orders.length;i++) {%>
+       
     <div class="content-header">
         <div>
             <br><br>
             <h2 class="content-title card-title">Order detail</h2>
-            <p>Details for Order ID: <%=orders[i].orderId%></p>
+            <p>Details for Order ID: <%=orders.orderId%></p>
         </div>
     </div>
     <div class="card" >
@@ -64,9 +64,9 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                     <span>
-                        <i class="material-icons md-calendar_today"></i>Date :  <b> <%= new Date(orders[i].orderDate).toLocaleString()%></b>
+                        <i class="material-icons md-calendar_today"></i>Date :  <b> <%= new Date(orders.orderDate).toLocaleString()%></b>
                     </span> <br>
-                    <span id="orderid">Order id: <%= orders[i].orderId %></span>
+                    <span id="orderid">Order id: <%= orders.orderId %></span>
                 </div>
                 
             </div>
@@ -81,7 +81,7 @@
                         <div class="text">
                             <h6 class="mb-1">Customer</h6>
                             <p class="mb-1">
-                              <%= orders[i].address.name %> <br> <%= orders[i].userId.email %> <br> +91 <%= orders[i].address.phone %>
+                              <%= orders.address.name %> <br> <%= orders.userId.email %> <br> +91 <%= orders.address.phone %>
                             </p>
                             <!-- <a href="#">View profile</a> -->
                         </div>
@@ -95,7 +95,7 @@
                         <div class="text">
                             <h6 class="mb-1">Order info</h6>
                             <p class="mb-1">
-                                Shipping: ₹ 50  <br> Pay method:<%= orders[i].paymentMethod %><br>Payment Status:<%= orders[i].paymentStatus %>
+                                Shipping: ₹ 50  <br> Pay method:<%= orders.paymentMethod %><br>Payment Status:<%= orders.paymentStatus %>
                                 
                                  
                             </p>
@@ -112,11 +112,11 @@
                             <h6 class="mb-1">Deliver to</h6>
                             <p class="mb-1">
                               
-                                <h6 class="text-muted"><%= orders[i].address.name %></h6>
-                                City:<%= orders[i].address.housename %>, <%= orders[i].address.city %> <br><%= orders[i].address.state %>, Landmark: <%= orders[i].address.landmark %>,<br>
-                                 Locality:<%= orders[i].address.city %>,
-                                 Pincode:<%= orders[i].address.pincode %><br>
-                                 Phone Number:<%= orders[i].address.phone %>
+                                <h6 class="text-muted"><%= orders.address.name %></h6>
+                                City:<%= orders.address.housename %>, <%= orders.address.city %> <br><%= orders.address.state %>, Landmark: <%= orders.address.landmark %>,<br>
+                                 Locality:<%= orders.address.city %>,
+                                 Pincode:<%= orders.address.pincode %><br>
+                                 Phone Number:<%= orders.address.phone %>
                             </p>
                             <!-- <a href="#">View profile</a> -->
                         </div>
@@ -135,22 +135,23 @@
                                     <th width="20%" class="text-end">Total</th>
                                 </tr>
                             </thead>
+                            <% console.log("orders in ooooo", orders) %>
                             <tbody>
-                           <% for(let j=0;j<orders[i].products.length && coupon;j++) {%>
+                           <% for(let j=0;j<orders.products.length ;j++) {%>
                                 <tr>
                                     <td>
                                         <a class="itemside" href="#">
                                            
 
                                             <div class="left">
-                                                <img src="/assetsb/productImages/<%= orders[i].products[j].productId.image %>" width="70" height="70" class="img-sm" alt="Item">
+                                                <img src="/assetsb/productImages/<%= orders.products[j].productId.image %>" width="70" height="70" class="img-sm" alt="Item">
                                             </div>
-                                            <div class="info">product: <%= orders[i].products[j].productId.product_name %> , size: <%= orders[i].products[j].size %> </div>
+                                            <div class="info">product: <%= orders.products[j].productId.product_name %> , size: <%= orders.products[j].size %> </div>
                                         </a>
                                     </td>
-                                    <td> ₹ <%= orders[i].products[j].productId.offerPrice>0 ? orders[i].products[j].productId.offerPrice : orders[i].products[j].productId.discount_price %></td>
-                                    <td><%= orders[i].products[j].quantity %> </td>
-                                    <td class="text-end"> ₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity %>  </td>
+                                    <td> ₹ <%= orders.products[j].productId.offerPrice>0 ? orders.products[j].productId.offerPrice : orders.products[j].productId.discount_price %></td>
+                                    <td><%= orders.products[j].quantity %> </td>
+                                    <td class="text-end"> ₹ <%= orders.products[j].productId.discount_price * orders.products[j].quantity %>  </td>
                                 </tr>
                             
                         
@@ -161,14 +162,14 @@
                                         
                                         <article class="float-end">
                                             
-                                                <span>Subtotal:</span>&nbsp&nbsp&nbsp&nbsp<span>₹ <%= orders[i].products[j].productId.discount_price * orders[i].products[j].quantity %>  </span><br>
+                                                <span>Subtotal:</span>&nbsp&nbsp&nbsp&nbsp<span>₹ <%= orders.products[j].productId.discount_price * orders.products[j].quantity %>  </span><br>
                                                 <span>Shipping cost:</span>&nbsp&nbsp&nbsp&nbsp<span>₹50.00</span><br>
                                                 <!-- <span>Applied Coupon:</span>&nbsp&nbsp&nbsp&nbsp<span>></span><br> -->
                                                 <!-- <span>Discount:</span>&nbsp&nbsp&nbsp&nbsp<span>₹//discount.00</span><br> -->
                                                
 
-                                                <span>Grand total:</span>&nbsp&nbsp&nbsp&nbsp<span class="text-brand">₹ <%= orders[i].totalAmount %>  </span><br>
-                                                <span>Status:</span>&nbsp&nbsp&nbsp&nbsp  <%= orders[i].orderStatus %>  
+                                                <span>Grand total:</span>&nbsp&nbsp&nbsp&nbsp<span class="text-brand">₹ <%= orders.totalAmount %>  </span><br>
+                                                <span>Status:</span>&nbsp&nbsp&nbsp&nbsp  <%= orders.orderStatus %>  
                                                   
                                         </article>
                                     </td>
@@ -184,9 +185,9 @@
                         <h6 class="mb-15">Payment info</h6>
                         <p>
                             <!-- <img src="/assetsb/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br> -->
-                            Payment: <h6><%=orders[i].PaymentMethod%></h6>
-                                    Business name: <%=orders[i].address.name %><br>
-                                    Phone: +91 <%=orders[i].userId.phone%>
+                            Payment: <h6><%=orders.PaymentMethod%></h6>
+                                    Business name: <%=orders.address.name %><br>
+                                    Phone: +91 <%=orders.userId.phone%>
                         </p>
                     </div>
         
@@ -194,9 +195,9 @@
 
                     <div class="h-25 pt-4">
                        <a href="/" class="btn btn-sm">Continue Shopping</a>
-                       <% if(orders[i].orderStatus==="Payment Pending") {%>
+                       <% if(orders.orderStatus==="Payment Pending") {%>
 
-                        <a href="/repayment?id=<%= orders[i]._id %>" id="continuePayment" class="btn btn-sm continue-payment" data-orderid="<%= orders[i]._id %>">Continue Payment</a><br><br>
+                        <a href="/repayment?id=<%= orders._id %>" id="continuePayment" class="btn btn-sm continue-payment" data-orderid="<%= orders._id %>">Continue Payment</a><br><br>
 
                         <% }else{ %>
                             <button id="print" class="btn btn-sm ">Download Invoice</button><br> <br>
@@ -207,19 +208,19 @@
             
 
             <!-- Hidden input field to store the order ID -->
-            <% if(orders[i].orderStatus==="Delivered" ){ %>
-                <button class="btn btn-sm" type="submit" id="returnorder" onclick="returnOrder(`<%= orders[i]._id %>`,`<%= orders[i].products[i].size %>`,`<%= orders[i].products[i].quantity %>`)" name="returnorder"
+            <% if(orders.orderStatus==="Delivered" ){ %>
+                <button class="btn btn-sm" type="submit" id="returnorder" onclick="returnOrder(`<%= orders._id %>`,`<%= orders.products[i].size %>`,`<%= orders.products[i].quantity %>`)" name="returnorder"
                     value="Cancel Order">Return Order</button>
 
-                <% }else if(orders[i].orderStatus==="Returned"  ){ %>
+                <% }else if(orders.orderStatus==="Returned"  ){ %>
                     <a href="/shop">already returned go back to shop</a>
-                    <%} else if(orders[i].orderStatus=="Return Processing" ){%>
-                        <button onclick="cancelReturn(`<%= orders[i]._id %>`,`<%= orders[i].products[i].size %>`,`<%= orders[i].products[i].quantity %>`)" class="btn  mr-10 mb-sm-15"><i
+                    <%} else if(orders.orderStatus=="Return Processing" ){%>
+                        <button onclick="cancelReturn(`<%= orders._id %>`,`<%= orders.products[i].size %>`,`<%= orders.products[i].quantity %>`)" class="btn  mr-10 mb-sm-15"><i
                                 class="fi-rs-cross mr-10"></i>Cancel Return</button>
 
-                    <% }else if(orders[i].orderStatus==="Order Placed" || orders[i].orderStatus==="Shipped" ){ %>
+                    <% }else if(orders.orderStatus==="Order Placed" || orders.orderStatus==="Shipped" ){ %>
                         <button class="btn btn-sm" type="submit" id="cancelorder" name="cancelorder"
-                        value="Cancel Order" onclick="cancelOrder('<%= orders[i]._id %>','<%= orders[i].products[i].size %>','<%= orders[i].products[i].quantity %>')">Cancel Order</button>
+                        value="Cancel Order" onclick="cancelOrder('<%= orders._id %>','<%= orders.products[i].size %>','<%= orders.products[i].quantity %>')">Cancel Order</button>
                    
                     <% }else{ %>
                         <a href="/profile"><button class="btn btn-sm" type="submit" id="pending-order" name="pending-order"
@@ -235,7 +236,7 @@
                 </div> <!-- col// -->
             </div>
         </div> <!-- card-body end// -->
-        <% } %>
+      
         <% } %>
 
         

@@ -39,13 +39,14 @@ const addingNewCategory = async (req, res) => {
     try {
         
         
-        const exist = await Category.findOne({ categoryName: req.body.categoryName });
-        console.log("exist : ",exist);
-        if (exist) {
-            const category = await Category.find({});
-            if (req.session.admin) {
-                res.render('categories', { message: "Category already exists" ,category});
-            }
+const categoryName = req.body.categoryName.toLowerCase();
+const exist = await Category.findOne({ categoryName: categoryName });
+
+if (exist) {
+    const category = await Category.find({});
+    if (req.session.admin) {
+        res.render('categories', { message: "Category already exists", category });
+    }
         } else {
 
             const category = new Category({

@@ -460,12 +460,18 @@ const newPasswordReset = async (req, res) => {
 
 const loadShop = async (req, res) => {
   try {
+    const page = req.query.page || 1;
+        const pageSize = 5;
+        const skip = (page - 1) * pageSize;
+        const productCount = await Products.countDocuments({});
+        totalPages = Math.ceil(productCount/pageSize);
+
     const userId = req.session.user_id;
     const userData = await User.findById(userId);
-    const productData = await Products.find({ is_Listed: true });
+    const productData = await Products.find({ is_Listed: true }).skip(skip).limit(pageSize);
 
     const categories = await Category.find();
-    res.render("user/shop", { products: productData, category:categories });
+    res.render("user/shop", { products: productData, category:categories ,totalPages,currentPage:page});
   } catch (error) {
     console.log(error.message);
   }
