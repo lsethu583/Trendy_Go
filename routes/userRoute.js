@@ -9,7 +9,7 @@ const orderController=require('../controllers/userControllers/orderController')
 const wishlistController=require('../controllers/userControllers/wishlistController')
 const sortController=require('../controllers/userControllers/sortController')
 const walletController=require('../controllers/userControllers/walletController')
-const reviewController=require("../controllers/userControllers/reviewController")
+
 
 user_route.set("view engine","ejs")
 user_route.set("views","./views")

@@ -12,11 +12,12 @@ require('dotenv').config();
 
 
 const crypto = require("crypto");
+const {YOUR_KEY_ID,YOUR_KEY_SECRET} = process.env;
 
 const Razorpay=require('razorpay')
 var instance = new Razorpay({
-    key_id: process.env.YOUR_KEY_ID,
-    key_secret: process.env.YOUR_KEY_SECRET
+    key_id: YOUR_KEY_ID,
+    key_secret: YOUR_KEY_SECRET
 });
 
 
@@ -250,6 +251,7 @@ const loadorderdetails=async(req,res)=>{
         const user=await User.findById(req.session.user_id)
         const cart = await Cart.find({ userId: userId }).populate('products.productId');
         const orders=await Orders.findOne({orderId}).populate('products.productId').populate('userId');
+        console.log("orders : : : : :  : ",orders);
     
         
         const coupon=await Coupon.find({})
