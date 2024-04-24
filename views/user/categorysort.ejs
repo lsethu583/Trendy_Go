@@ -16,6 +16,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-2">
+                <% if (typeof category !== 'undefined' && category) { %>
                 <!-- Category Filter and Sorting Options -->
                 <div class="widget-category mb-30" id="category-filter">
                     
@@ -23,7 +24,7 @@
                     <!-- Sorting Options -->
                     <h5 class="section-title style-1 mb-30 wow fadeIn animated">Sort by</h5>
                     <ul class="categories">
-                        <li><a href="/categorysort/lowtohigh?category=<%= category[i]._id %>">Price: Low to High</a></li>
+                        <li><a href="/categorysort/lowtohigh?category=<%= category._id %>">Price: Low to High</a></li>
                         <li><a href="/categorysort/hightolow?category=<%= category._id %>">Price: High to Low</a></li>
                         <li><a href="/categorysort/A-Z?category=<%= category._id %>">Aa - Zz</a></li>
                         <li><a href="/categorysort/Z-A?category=<%= category._id %>">Zz - Aa</a></li>
@@ -47,7 +48,7 @@
                     <div class="tab-content wow fadeIn animated" id="myTabContent">
                         <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
                             <div class="row product-grid-4">
-                                <% if (typeof category !== 'undefined' && category) { %>
+                                
 
                                 <% for (let i = 0; i < products.length; i++) { %>
                                 <div class="col-lg-4 col-md-4 col-12 col-sm-6">

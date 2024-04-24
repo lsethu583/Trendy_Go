@@ -18,7 +18,7 @@ const categorySort=async(req,res)=>{
         
         
        
-        res.render("user/categorysort",{user:userId,category:category,products:selectedProduct});
+        res.render("user/categorysort",{user:userId,category:myCategory,products:selectedProduct});
     } catch (error) {
         console.log(error.message);
     }
@@ -31,7 +31,7 @@ const lowToHigh = async (req, res) => {
         console.log("sortle category id:", categoryId);
 
        
-        const products = await Products.find({ category: categoryId }).sort({ discount_price: 1 });
+        const products = await Products.find({ productCategory: categoryId }).sort({ discount_price: 1 });
         console.log("sortle product :",products );
 
         const categoryData = await Category.find({ is_Listed: true });
@@ -48,7 +48,11 @@ const HighToLow =  async(req,res)=>{
         
        
         const userId = req.session.user_id;
-        const products = await Products.find({}).sort({discount_price: -1});
+        const categoryId = req.query.category; 
+        console.log("sortle category id:", categoryId);
+        
+        const products = await Products.find({ productCategory: categoryId }).sort({ discount_price: -1 });
+        console.log("sortle product :",products );
         const categoryData = await Category.find({is_Listed:true});
        
             res.render("user/categorysort",{user:userId,category:categoryData,products:products});
@@ -65,7 +69,9 @@ const AtoZ =  async(req,res)=>{
         
        
         const userId = req.session.user_id;
-        const products = await Products.find({}).sort({product_name: 1}).populate("productCategory")
+        const categoryId = req.query.category; 
+        const products = await Products.find({ productCategory: categoryId }).sort({ product_name: 1 });
+     
         const categoryData = await Category.find({is_Listed:true});
        
             res.render("user/categorysort",{user:userId,category:categoryData,products:products});
@@ -83,7 +89,8 @@ const ZtoA =  async(req,res)=>{
         
        
         const userId = req.session.user_id;
-        const products = await Products.find({}).sort({product_name: -1});
+        const categoryId = req.query.category; 
+        const products = await Products.find({ productCategory: categoryId }).sort({ product_name: -1 });
         const categoryData = await Category.find({is_Listed:true});
        
             res.render("user/categorysort",{user:userId,category:categoryData,products:products});
@@ -100,18 +107,17 @@ const sorting=async (req, res) => {
         const userId = req.session.user_id;
         const categoryData = await Category.find({is_Listed:true});
         const { start, end } = req.query;
+        console.log(start, end );
 
         
         const startPrice = parseInt(start);
         const endPrice = parseInt(end);
 
-        
         const products = await Products.find({
             discount_price: { $gte: startPrice, $lte: endPrice }
-        }).populate("productCategory");
+        });
         
-
-       
+        console.log(products);
         res.render("user/categorysort",{user:userId,category:categoryData,products:products});
     } catch (err) {
         

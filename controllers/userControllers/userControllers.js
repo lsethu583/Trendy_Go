@@ -266,7 +266,7 @@ const verifyOtp = async (req, res) => {
         password: obj.password,
         confirmPassword: obj.confirmPassword,
         is_admin: 0,
-      });
+      });  
 
       const userData = await user.save();
 
@@ -276,7 +276,7 @@ const verifyOtp = async (req, res) => {
       const referalData = await Referal.create({
         owner: user._id,
         code: myReferalCode,
-      });
+      });   
 
       // Create a cart for the user
       const newCart = new Cart({
