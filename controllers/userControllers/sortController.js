@@ -28,11 +28,11 @@ const lowToHigh = async (req, res) => {
     try {
         const userId = req.session.user_id;
         const categoryId = req.query.category; 
-        console.log("sortle category id:", categoryId);
+      
 
        
         const products = await Products.find({ productCategory: categoryId }).sort({ discount_price: 1 });
-        console.log("sortle product :",products );
+        
 
         const categoryData = await Category.find({ is_Listed: true });
 
@@ -49,10 +49,10 @@ const HighToLow =  async(req,res)=>{
        
         const userId = req.session.user_id;
         const categoryId = req.query.category; 
-        console.log("sortle category id:", categoryId);
+       
         
         const products = await Products.find({ productCategory: categoryId }).sort({ discount_price: -1 });
-        console.log("sortle product :",products );
+        
         const categoryData = await Category.find({is_Listed:true});
        
             res.render("user/categorysort",{user:userId,category:categoryData,products:products});
@@ -107,7 +107,7 @@ const sorting=async (req, res) => {
         const userId = req.session.user_id;
         const categoryData = await Category.find({is_Listed:true});
         const { start, end } = req.query;
-        console.log(start, end );
+       
 
         
         const startPrice = parseInt(start);
@@ -117,7 +117,7 @@ const sorting=async (req, res) => {
             discount_price: { $gte: startPrice, $lte: endPrice }
         });
         
-        console.log(products);
+      
         res.render("user/categorysort",{user:userId,category:categoryData,products:products});
     } catch (err) {
         
@@ -128,13 +128,13 @@ const sorting=async (req, res) => {
 
 const searchProducts = async(req,res)=>{
     try{
-        console.log("hiii");
+       
         const {searchDataValue} = req.body
-        console.log(searchDataValue);
+        
         const searchProducts = await Products.find({product_name:{
             $regex: searchDataValue , $options: 'i'
         }})
-        console.log(searchProducts)
+       
         res.json({status:"searched",searchProducts})
 
     }catch(err){

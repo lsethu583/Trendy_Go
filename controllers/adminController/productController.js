@@ -121,11 +121,11 @@ const loadEditProductForm=async(req,res)=>{
 
 if (product && product.productCategory) {
     selectedCategory = await Category.findOne({ _id: product.productCategory });
-    console.log("selectedCategory : ", selectedCategory);
+  
 }
 
 let selectedCategoryName= selectedCategory.categoryName;
-console.log("selectedCategoryName : ", selectedCategoryName);
+
 
     if (product) {
       res.render("editProduct", { categories, product ,selectedCategoryName});

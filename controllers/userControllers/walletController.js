@@ -14,9 +14,9 @@ const razorpayInstance = new razorPay({
 const addToWallet = async (req, res) => {
   try {
     const amount = req.body.amount;
-    console.log("amount : ", amount);
+   
     const userid = req.session.user_id;
-    console.log("user", userid);
+  
     data = {
       amount: Number(amount),
       createdOn: moment().tz("Asia/Kolkata").format("DD/MM/YYYY hh:mm:ss A"),
@@ -28,7 +28,7 @@ const addToWallet = async (req, res) => {
       currency: "INR",
       receipt: req.session.user_id,
     };
-    console.log("hiii", options);
+    
 
     const amountt = options.amount;
     req.session.amount = amountt;
@@ -39,7 +39,7 @@ const addToWallet = async (req, res) => {
         res.status(500).json({ error: "Failed to create Razorpay order" });
         return;
       } else {
-        console.log("order : ", order);
+       
         res.json({
           payment: false,
           method: "online",
@@ -63,8 +63,7 @@ const verifyPaymentWallet = async (req, res) => {
     hmac.update(`${response.razorpay_order_id}|${response.razorpay_payment_id}`);
     hmac = hmac.digest("hex");
     if (hmac === response.razorpay_signature) {
-      // const walletget = await Wallet.create(order)
-      // console.log(order)
+     
       const amount = parseInt(data.amount);
 
       const walletData = await Wallet.findOne({ user: userid });
@@ -76,8 +75,7 @@ const verifyPaymentWallet = async (req, res) => {
         walletData.walletAmount += amount
         walletData.transactions.push(newTransaction);
         walletData.save()
-        console.log(data);
-        // walletData.transactions.push(data);
+        
       } else {
         const wallet = {
           user: userid,
@@ -89,7 +87,7 @@ const verifyPaymentWallet = async (req, res) => {
         };
 
         const createProcess = await Wallet.create(wallet);;
-        console.log(createProcess);
+        
       }
       res.json({ status: "success" });
 

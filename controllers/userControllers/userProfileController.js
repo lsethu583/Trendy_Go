@@ -19,7 +19,7 @@ const getProfilePage= async(req,res)=>{
         const orders=await Orders.find({userId:id})
         const referalData = await Referal.findOne({owner:id});
         const wallet = await Wallet.findOne({user : id});
-        console.log("referalData",referalData);
+        
         if(address){
             address = address.address
         }
@@ -40,21 +40,21 @@ const getProfilePage= async(req,res)=>{
        
         let existingAddress = await Address.findOne({ userID: userID });
            
-        // If editID is provided, find the matched address object
+       
         if (editID) {
            
 if (!existingAddress) {
     return res.status(404).json({ message: 'Address not found' });
 }
 
-// Find the index of the matched address object
+
 const matchedAddressIndex = existingAddress.address.findIndex(obj => obj._id.toString() === editID);
 if (matchedAddressIndex === -1) {
     return res.status(404).json({ message: 'Address with the specified ID not found' });
 }
 
 try {
-    // Update the matched address object with the new values using findOneAndUpdate
+    
     await Address.findOneAndUpdate(
         { 'userID': userID, 'address._id': editID },
         {
@@ -80,14 +80,14 @@ try {
 }
 
         } else {
-            // If no editID, create a new address object
+            
             if (!existingAddress) {
                 existingAddress = await Address.create({
                     userID: userID,
                     address: []
                 });
             }
-            // Add a new address object
+            
             existingAddress.address.push({
                 addresstype: addressType,
                 name: name,
@@ -120,15 +120,12 @@ const getAddress = async (req, res) => {
             return res.status(404).json({ message: 'Address not found' });
         }
 
-        // Find the address object that matches the provided addressID
         const matchedAddress = address.address.find(obj => obj._id.toString() === addressID);
 
         if (!matchedAddress) {
             return res.status(404).json({ message: 'Specified address not found' });
         }
 
-        console.log(matchedAddress);
-        // Send the matched address data as JSON response
         res.json(matchedAddress);
     } catch (error) {
         console.error('Error fetching address:', error);
@@ -169,12 +166,12 @@ const changeuserpassword = async (req, res) => {
         
         const userId = req.session.user_id;
 
-        // Check if user ID exists in session
+      
         if (!userId) {
             return res.status(400).json({ status: false, message: "User session not found" });
         }
 
-        // Find user by ID
+       
         const user = await User.findById(userId);
         
 
@@ -193,7 +190,7 @@ const changeuserpassword = async (req, res) => {
 
         await user.save();
 
-        // return res.status(200).json({ status: true, message: "Password changed successfully" });
+        
          res.redirect("/profile");
 
     } catch (error) {
@@ -209,7 +206,7 @@ const createAddressFromCheckout = async (req, res) => {
         const userID = req.session.user_id;
         const { address_type, name, housename, landmark, city, state, pincode, phone, altphone } = req.body;
 
-        // Create a new address object
+       
         const newAddress = {
             addresstype: address_type,
             name,
@@ -222,19 +219,18 @@ const createAddressFromCheckout = async (req, res) => {
             altphone
         }
 
-        // Find the user's address
+       
         let userAddress = await Address.findOne({ userID: userID });
 
-        // If user's address not found, create a new one
+       
         if (!userAddress) {
             userAddress = new Address({ userID: userID, address: [] });
         }
 
-        // Push the new address to the address array and save
         userAddress.address.push(newAddress);
         await userAddress.save();
 
-        // Send success response
+       
         res.redirect("/checkout");
     } catch (error) {
         console.error('Error creating address:', error);

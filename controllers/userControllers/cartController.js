@@ -13,7 +13,7 @@ const loadCartPage=async(req,res)=>{
 
         if(req.session.user_id){
   
-       // Assuming you have a function to fetch the cart for a specific user
+      
       let arr=[]
        const userCart = await Cart.findOne({ userId: userId }).populate('products.productId')
        const modifiedProducts = userCart.products.map(item => {
@@ -43,11 +43,10 @@ const addToCart=async (req,res)=>{
         const userId = req.session.user_id;
         
         let userCart = await Cart.findOne({ userId: userId });
-        console.log("userCart",userCart);
+        
         const product = await Product.findById(productId);
         let selectedproduct = product.sizes.find(prod=>prod.size === size);
 
-     console.log("selectedproduct", selectedproduct);
         
         const selectedSize = product.sizes.find(s => s.size === size);
         if (!selectedSize || selectedSize.quantity === 0) {
@@ -62,8 +61,6 @@ const addToCart=async (req,res)=>{
         const existingProductIndex = userCart.products.findIndex(item =>
             item.productId.toString() === productId && item.size === size.toString()
         );
-        console.log("existingProductIndex", existingProductIndex);
-        
         if (existingProductIndex !== -1) {
              if(userCart.products[existingProductIndex].quantity + quantity >selectedproduct.quantity ){
                 return res.send('Out of stock');
@@ -75,7 +72,7 @@ const addToCart=async (req,res)=>{
       
            
         } else {
-            // If the product doesn't exist, add it to the cart
+            
             userCart.products.push({ productId, quantity, size });
         }
         
@@ -106,24 +103,23 @@ const removeFromCart = async (req, res) => {
     try {
         const { cartId, productId } = req.query;
 
-        // Validate inputs
+       
         if (!cartId || !productId) {
             return res.status(400).json({ success: false, error: "Missing cartId or productId" });
         }
 
-        // Find the cart by its ID
         const cart = await Cart.findById(cartId);
         if (!cart) {
             return res.status(404).json({ success: false, error: "Cart not found" });
         }
 
-        // Find the index of the product to be removed
+       
         const productIndex = cart.products.findIndex(product => product._id.toString() === productId);
         if (productIndex === -1) {
             return res.status(404).json({ success: false, error: "Product not found in cart" });
         }
 
-        // Remove the product from the products array
+       
         cart.products.splice(productIndex, 1);
         await cart.save();
 
@@ -134,37 +130,6 @@ const removeFromCart = async (req, res) => {
     }
 };
 
-
-
-  
-// const updateQuantity = async (req, res) => {
-//     try {
-//         const { cartId, PID, newQuantity } = req.body;
-        
-//         // Update the quantity of the specific product in the cart
-//         const updatedCart = await Cart.findOneAndUpdate(
-//             { 
-//                 _id: cartId,
-//                 "products._id": PID // Find the cart with given ID and the specific product ID
-//             },
-//             { 
-//                 $set: { "products.$.quantity": newQuantity } // Update the quantity of the specific product in the cart
-//             },
-//             { new: true }
-//         );
-        
-//         if (!updatedCart) {
-//             // If no cart was found with the given cartId or the product was not found in the cart
-//             return res.status(404).json({ error: 'Cart or product not found' });
-//         }
-
-//         // Cart updated successfully
-//         res.redirect('/user/cart');
-//     } catch (error) {
-//         console.error('Error updating quantity:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// }
 
 
 module.exports = { loadCartPage, addToCart,removeFromCart,updateCartQuantity};

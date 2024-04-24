@@ -78,7 +78,7 @@ const loadDashboard = async (req, res) => {
             const category=await Category.find({})
             const users = await User.find({});
             const orders = await Order.find({}).skip(skip).limit(pageSize);
-            console.log("orders : ", orders);
+           
 
            
 
@@ -190,7 +190,7 @@ const addbanner = async(req,res)=>{
 
         // Save the Brand document to the database
         const savedBanner = await newBanner.save()
-        console.log("banner added ",savedBanner);
+        
         res.redirect('/admin/banner')
     } catch (error) {
         console.log(error.message);
@@ -202,7 +202,7 @@ const loadEditBannerPage = async(req,res)=>{
     try{
         const bannerId=req.query.bannerId
         const banner = await Banner.findOne({_id:bannerId})
-        console.log("hiiiiiii",banner)
+       
         res.render('editbanner',{banner})
     }catch(err){
         console.log(err.message);

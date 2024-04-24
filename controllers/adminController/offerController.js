@@ -19,7 +19,7 @@ const postofferdetails=async(req,res)=>{
     try {
         let offerAmount;
         const{category,discount,start,end} = req.body;
-        console.log(req.body.category);
+        
         const product=await Product.find().populate("productCategory");
        
         const existingOffer = await Offer.findOne({ category : category});
@@ -39,7 +39,7 @@ const postofferdetails=async(req,res)=>{
         res.status(200).json({msg:"success"})
             }
             const offerCategory=await Category.findOne({categoryName:category})
-            console.log("offerCategory : ",offerCategory);
+           
             const offer = await Offer.findOne({ category: category });
             
             
@@ -53,7 +53,7 @@ const postofferdetails=async(req,res)=>{
 for (const product of offerProducts) {
     
     const offerPrice = Math.floor(product.price * (1 - discount / 100));
-    console.log("offerPrice  : ",offerPrice);
+   
 
     product.offerPrice = offerPrice;
     product.discountApplied = true;
@@ -88,7 +88,7 @@ const deleteOffer=async(req,res)=>{
         productCategory: offerCategory._id
     });
 
-    console.log(" offerProducts :    ",offerProducts);
+    
 
     for (const product of offerProducts) {
     

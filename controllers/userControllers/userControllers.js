@@ -310,7 +310,7 @@ const verifyOtp = async (req, res) => {
 
       // Save the cart to the database
       await newWallet.save();
-      console.log('wallet',newWallet);
+     
       //   res.send("OTP verification successful");
       res.json({status:true})
     } else {
@@ -498,28 +498,7 @@ const loadProductDetail = async (req, res) => {
     const Product = await Products.findById(productId).populate(
       "productCategory"
     );
-  //   const reviews = await Reviews.aggregate([
-  //     {
-  //         $match: { product: new mongoose.Types.ObjectId(productId) }
-  //     },
-  //     {
-  //         $lookup: {
-  //             from: "users",
-  //             localField: "reviewbyuser",
-  //             foreignField: "_id",
-  //             as: "user"
-  //         }
-  //     },
-  //     {
-  //         $lookup: {
-  //             from: "products",
-  //             localField: "product",
-  //             foreignField: "_id",
-  //             as: "product"
-  //         }
-  //     }
-  // ]);
-  // console.log("reviews : ",reviews);
+
 
 
 

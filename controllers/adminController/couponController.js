@@ -72,7 +72,7 @@ const showfilteredcoupon = async (req, res) => {
         
         const dateString = req.body.date;
        
-        console.log("dateString : ", dateString);
+        
 
         if (dateString !== undefined) {
             // Assuming dateString is in the format 'YYYY-MM-DD'
@@ -91,7 +91,7 @@ const showfilteredcoupon = async (req, res) => {
                        moment(coupon.end).endOf('day').toDate() >= formattedDate;
             });
         
-            console.log("couponData", couponData);
+           
         
             return res.render("coupon", { coupons: couponData ,totalPages,currentPage:page}); 
         }
@@ -102,29 +102,6 @@ const showfilteredcoupon = async (req, res) => {
     }
 }
 
-// const searchCoupon = async (req, res) => {
-//     try {
-
-//         const page = req.query.page || 1;
-//         const pageSize = 5;
-//         const skip = (page - 1) * pageSize;
-//         const couponCount = await User.countDocuments({});
-//         totalPages = Math.ceil(couponCount/pageSize);
-        
-//         const searchQuery = req.body.search;
-//         if (!searchQuery) {
-//             return res.render("coupon", { alertMessage: "Please enter a name to search coupons.", coupons: [] });
-//         }
-        
-//         // Assuming your Coupon model is named Coupon
-//         const coupons = await Coupon.find({ name: { $regex: searchQuery, $options: 'i' } }).skip(skip).limit(pageSize);
-
-//         return res.render("coupon", { coupons: coupons,totalPages,currentPage:page}); // Render the coupon page with filtered results
-//     } catch (error) {
-//         console.error("Error:", error);
-//         return res.status(500).send("Internal Server Error");
-//     }
-// };
 
 
 module.exports={

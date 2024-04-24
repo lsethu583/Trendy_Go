@@ -61,8 +61,7 @@ const getFilteredSalesReport = async (req, res) => {
 
         const filterOptions = req.body.selectstatus;
         const dateString = req.body.date;
-        console.log("filterOptions : ",filterOptions);
-        console.log("dateString : ",dateString);
+       
 
         
 
@@ -73,7 +72,7 @@ const getFilteredSalesReport = async (req, res) => {
                 const formattedDate = today.format('DD/MM/YYYY hh:mm:ss A');
                 
                 const deliveredOrders = await Orders.find({orderStatus:'Delivered'});
-                console.log("orders in salesreport",deliveredOrders);
+               
                 let orderData = [];
             
                 for (let order of deliveredOrders) {
@@ -92,13 +91,13 @@ const getFilteredSalesReport = async (req, res) => {
                 const endOfWeek = moment().endOf('week');
                 const formattedDate = startOfWeek.format('DD/MM/YYYY hh:mm:ss A').toString();
                 const deliveredOrders = await Orders.find({orderStatus:'Delivered'});
-                console.log("deliveredOrders : ",deliveredOrders);
+           
                 for(let order of deliveredOrders){
                     const orderDate = moment(order.orderDate, 'DD/MM/YYYY hh:mm:ss A');
                     if (orderDate.isBetween(startOfWeek, endOfWeek)) {
                         orderData.push(order);
                     }
-                    console.log("orderData : ",orderData);
+                   
 
                 }
                 return res.render("salesreport", { deliveredOrders: orderData });
@@ -130,7 +129,7 @@ const getFilteredSalesReport = async (req, res) => {
             const formattedDate = moment(reversedDate, 'DD-MM-YYYY').toDate();
         
             const deliveredOrders = await Orders.find({orderStatus:'Delivered'});
-            console.log("deliveredOrders : ", deliveredOrders);
+           
             
             // Finding orders within the specified date range
             const orderData = deliveredOrders.filter(order => {

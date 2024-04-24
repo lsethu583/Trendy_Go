@@ -122,7 +122,7 @@ const placeorder = async (req, res) => {
 
 const placeorderonline=async(req,res)=>{
     try {
-        console.log("here i am here")
+       
         const userId = req.session.user_id;
       
         const { addressId, totalAmount, paymentMethod, productId, productsize, productqty } = req.body;
@@ -132,7 +132,7 @@ const placeorderonline=async(req,res)=>{
         const userCart = await Cart.findOne({ userId: userId });
         const product = await Product.findById(productId);
         const coupon =await Coupon.find({})
-        console.log("coupon:", coupon)
+       
         if (!product) {
             console.error("Product not found.");
             return res.status(404).json({ error: "Product not found" });
@@ -161,7 +161,7 @@ const placeorderonline=async(req,res)=>{
       
             await onlineorder.save();
             let orderid= onlineorder._id
-            console.log("online._id",onlineorder._id);
+           
 
             
         for (const product of userCart.products) {
@@ -251,7 +251,7 @@ const loadorderdetails=async(req,res)=>{
         const cart = await Cart.find({ userId: userId }).populate('products.productId');
         const orders=await Orders.findOne({orderId}).populate('products.productId').populate('userId');
     
-        console.log("orders in get ordredetails", orders.products);
+        
         const coupon=await Coupon.find({})
        
         res.render('user/getorderdetails',{orderId,userId,user,cart,orders,coupon})
@@ -262,58 +262,22 @@ const loadorderdetails=async(req,res)=>{
 
 
 
-// const deleteOrder = async (req, res) => {
-//     try {
-//         const orderId = req.body.orderId
-//         console.log("orderId", orderId);
-
-//         const orderDetails = await Orders.findById(orderId);
-//         console.log("orderDetails",orderDetails);
-//         for (let item of orderDetails.cart) {
-//             try {
-
-//                 const products = orderDetails.products.find(prod => prod._id.toString() === item.id);
-//                 if (products && products.status === 'confirmed') {
-//                     await Product.updateOne(
-//                         { _id: item.id },
-//                         { $inc: { quantity: item.quantity } }
-//                     )
-//                 }
-
-//             }
-//             catch (error) {
-//                 console.log(error);
-
-//             }
-//         }
-//         await Orders.findByIdAndDelete(orderId);
-//         res.status(200).json({ success: true, message: "Your order has been deleted" });
-
-
-
-
-//     }
-//     catch (error) {
-//         console.log(error, "deleteOrder  page error");
-//     }
-// }
-
 const deleteOrder = async(req,res)=>{
     try{
     const userId = req.session.user_id;
     const userCart = await Cart.findOne({ userId: userId });
     const {id,size,quantity} = req.body;
-    console.log([id,size,quantity])
+   
     
     const findOrder =  await Orders.findOne({_id:id})
-    console.log("findoRDER", findOrder);
+   
    
         let updateOrder = await Orders.findOneAndUpdate({_id:id},{
             $set:{
                 orderStatus:'Cancelled'
             }
         })
-        console.log("updaeorder",updateOrder);
+        
 
         let productSet = []
 
@@ -325,14 +289,14 @@ const deleteOrder = async(req,res)=>{
             }
 
             productSet.push(productStore)
-            console.log("productSet",productSet);
+          
 
             })
 
            
             for (const product of updateOrder.products) {
                 const selectedProduct = await Product.findById(product.productId);
-                console.log("selectedProduct", selectedProduct);
+                
                 const sizeIndex = selectedProduct.sizes.findIndex(size => size.size === product.size);
     
                 if (sizeIndex !== -1) {
@@ -345,7 +309,7 @@ const deleteOrder = async(req,res)=>{
 
             if(updateOrder.paymentMethod === 'online'){
             const wallet=await Wallet.find({user:userId});
-            console.log("orders nte wallet", wallet);
+            
             if(wallet){
                
                 await Wallet.findOneAndUpdate({user:userId},{$push:{transactions:{tamount:findOrder.totalAmount,tid:orderIdGenerate()}},$inc:{walletAmount:findOrder.totalAmount}})
@@ -372,7 +336,7 @@ const deleteOrder = async(req,res)=>{
                     orderStatus:"Return Processing"
                 }})
 
-                console.log("return order",order);
+             
     
             if(order.orderStatus =="Returned"){
                 let productArray = []
@@ -384,12 +348,12 @@ const deleteOrder = async(req,res)=>{
                     }
                     productArray.push(productData)
                 })
-                console.log('the product array is ',productArray);
+                
 
 
                 for (const product of order.products) {
                     const selectedProduct = await Product.findById(product.productId);
-                    console.log("selectedProduct", selectedProduct);
+                    
                     const sizeIndex = selectedProduct.sizes.findIndex(size => size.size === product.size);
         
                     if (sizeIndex !== -1) {
@@ -485,9 +449,9 @@ const deleteOrder = async(req,res)=>{
         const onlinepaymentfailed = async(req,res)=>{
             try {
                 let order = req.body.order;
-                console.log("order._id : ",order);
+             
                 const orderData = await Orders.findById(order);
-                console.log("orderData  : ", orderData);
+               
                 orderData.orderStatus="Payment Pending";
                 orderData.paymentStatus="Payment Failed";
                 orderData.save();
@@ -506,11 +470,11 @@ const deleteOrder = async(req,res)=>{
         const repayment=async(req,res)=>{
             try {
                 const orderId=req.query.id;
-                console.log("orderId : ", orderId);
+               
                 const orderData= await Orders.findById(orderId).populate('products.productId');
 
             
-                console.log("orderData : ", orderData);
+               
                 res.render('user/repayment',{order:orderData})
                 
             } catch (error) {
@@ -524,9 +488,7 @@ const postRepaymentData = async(req,res)=>{
         const orderid = req.body.orderId;
         const newOrderPayment = req.body.paymentMethod
         const orderData = await Orders.findById(orderid);
-        console.log("orderData : ",orderData );
-        console.log("newOrderPayment : ",newOrderPayment );
-        console.log("orderid : ",orderid );
+        
    
 
        

@@ -27,45 +27,36 @@ const loadchart=async(req,res)=>{
 
     let productIds= Object.keys(productCounts);
     let productNumbers=Object.values(productCounts)
-    console.log("productidssss: ", productIds);
-    console.log("productNumbersssss", productNumbers);
+   
     let totalSale = await Orders.countDocuments();
-    console.log("total sale : ",totalSale);
+   
 
 
     const products = await Product.find({ _id: { $in: productIds } });
     
     const productNames = products.map(product => product.product_name);
     const productCategories = products.map(product => product.productCategory);
-    console.log("productCategories : ",productCategories);
+   
     let result = [];
     for(let item of productCategories){
       result.push(await category.findById(item))
       
     }
-    console.log("results : ",result);
+   
     let categoryNamesofOrder = result.map(cat =>cat.categoryName);
-    console.log("categoryNamesofOrder : ",categoryNamesofOrder);
+   
     const categories = await category.find({ _id: { $in: productCategories } });
-    console.log("categories : ",categories);
+  
 
  
     const categoryNames = categories.map(category => category.categoryName);
-    console.log("productNames :", productNames);
+ 
 
-console.log("categoryNames :", categoryNames);
 
-    // if (productName) {
-    //     productCountsWithNames[productName] = productCounts[productId];
-    // } else {
-    //     console.log(`Product name not found for product ID: ${productId}`);
-    // }
 
-    console.log("productCounts: ", productCounts);
+    
     let data4 = Object.values(productCounts)
    
-    // console.log("array :", array);
-    // console.log("ordersssss : " ,orders);
     function countOrdersByDate(orders) {
         const ordersCount = {};
       
@@ -99,20 +90,18 @@ console.log("categoryNames :", categoryNames);
         return ordersCount;
       }
       
-      // Count orders by date
+      
       const ordersCount = countOrdersByDate(orders);
       
-      // Create an object to store date key-value pairs
+      
       const ordersByDateObject = {};
       
-      // Store date key-value pairs in the object
+     
       for (const dateKey in ordersCount) {
         ordersByDateObject[dateKey] = ordersCount[dateKey];
       }
       
-      // Display the object containing date key-value pairs
-      console.log(ordersByDateObject);
-
+     
 
       res.status(200).json({data:ordersByDateObject,data1:productNumbers,data2:productNames,data3:categoryNamesofOrder,data4:data4})
 }
