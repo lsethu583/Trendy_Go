@@ -144,7 +144,7 @@
                                            
 
                                             <div class="left">
-                                                <img src="/assetsb/productImages/<%= orders.products[j].productId.image %>" width="70" height="70" class="img-sm" alt="Item">
+                                                <img src="/assetsb/productImages/<%= orders.products[j].productId.image[0] %>" width="70" height="70" class="img-sm" alt="Item">
                                             </div>
                                             <div class="info">product: <%= orders.products[j].productId.product_name %> , size: <%= orders.products[j].size %> </div>
                                         </a>
@@ -205,7 +205,7 @@
 
                        
                        
-            
+           <%for(let i=0;i<orders.products.length;i++){%> 
 
             <!-- Hidden input field to store the order ID -->
             <% if(orders.orderStatus==="Delivered" ){ %>
@@ -220,9 +220,9 @@
 
                     <% }else if(orders.orderStatus==="Order Placed" || orders.orderStatus==="Shipped" ){ %>
                         <button class="btn btn-sm" type="submit" id="cancelorder" name="cancelorder"
-                        value="Cancel Order" onclick="cancelOrder('<%= orders._id %>','<%= orders.products[i].size %>','<%= orders.products[i].quantity %>')">Cancel Order</button>
+                        value="Cancel Order" onclick="cancelOrder('<%= orders._id %>',`<%= orders.products[i].size %>`,'<%= orders.products[i].quantity %>')">Cancel Order</button>
                    
-                    <% }else{ %>
+                    <% }else if(i===0){ %>
                         <a href="/profile"><button class="btn btn-sm" type="submit" id="pending-order" name="pending-order"
                             value="Cancel Order">Back</button></a>
                         <% } %>
@@ -237,7 +237,7 @@
             </div>
         </div> <!-- card-body end// -->
       
-        <% } %>
+        <% }} %>
 
         
     </div> <!-- card end// -->

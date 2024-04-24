@@ -139,11 +139,25 @@ const placeorderonline=async(req,res)=>{
             return res.status(404).json({ error: "Product not found" });
         }
     
-        const orderProducts = [{
-            productId: product._id,
-            quantity: productqty,
-            size: productsize
-        }];
+        const orderProducts = [];
+
+for (const product of userCart.products) {
+    const selectedProduct = await Product.findById(product.productId);
+    const sizeIndex = selectedProduct.sizes.findIndex(size => size.size === product.size);
+
+    if (sizeIndex !== -1) {
+        selectedProduct.sizes[sizeIndex].quantity -= product.quantity;
+        await selectedProduct.save();
+        orderProducts.push({
+            productId: selectedProduct._id,
+            quantity: product.quantity,
+            size: product.size
+        });
+    } else {
+        console.log(`Size variant not found for product ID: ${product.productId} and size: ${product.size}`);
+    }
+}
+
 
         const onlineorder = new Orders({
             orderId: orderIdGenerate(),
@@ -164,18 +178,7 @@ const placeorderonline=async(req,res)=>{
             let orderid= onlineorder._id
            
 
-            
-        for (const product of userCart.products) {
-            const selectedProduct = await Product.findById(product.productId);
-            const sizeIndex = selectedProduct.sizes.findIndex(size => size.size === product.size);
-
-            if (sizeIndex !== -1) {
-                selectedProduct.sizes[sizeIndex].quantity -= product.quantity;
-                await selectedProduct.save();
-            } else {
-                console.log(`Size variant not found for product ID: ${product.productId} and size: ${product.size}`);
-            }
-        }
+          
 
         userCart.products = [];
         await userCart.save();
